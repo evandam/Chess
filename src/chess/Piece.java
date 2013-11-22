@@ -16,55 +16,89 @@ public class Piece {
 	
 	public byte type;	// pawn, knight, etc
 	public byte color;	// white or black
-	public byte[] pos;	// file, rank (col, row) - we'll need some map from char -> num for files
 	
+	public Piece(byte type, byte color) {
+		this.type = type;
+		this.color = color;
+	}
+		
 	// get the positions of the piece for all possible moves it can make
-	public ArrayList<byte[]> getPossibleMoves() {
+	public ArrayList<byte[]> getPossibleMoves(byte[] pos) {
 		switch(type) {
 			case PAWN:
-				return getPawnMoves();
+				return getPawnMoves(pos);
 			case KNIGHT:
-				return getKnightMoves();
+				return getKnightMoves(pos);
 			case BISHOP:
-				return getBishopMoves();
+				return getBishopMoves(pos);
 			case ROOK:
-				return getRookMoves();
+				return getRookMoves(pos);
 			case QUEEN:
-				return getQueenMoves();
-			case KING:
-				return getKingMoves();
+				return getQueenMoves(pos);
 			default:
-				return null;
+				return getKingMoves(pos);
 		}
 	}
 
-	private ArrayList<byte[]> getKingMoves() {
+	private ArrayList<byte[]> getKingMoves(byte[] pos) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	private ArrayList<byte[]> getQueenMoves() {
+	private ArrayList<byte[]> getQueenMoves(byte[] pos) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	private ArrayList<byte[]> getRookMoves() {
+	private ArrayList<byte[]> getRookMoves(byte[] pos) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	private ArrayList<byte[]> getBishopMoves() {
+	private ArrayList<byte[]> getBishopMoves(byte[] pos) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	private ArrayList<byte[]> getKnightMoves() {
+	private ArrayList<byte[]> getKnightMoves(byte[] pos) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	private ArrayList<byte[]> getPawnMoves() {
+	private ArrayList<byte[]> getPawnMoves(byte[] pos) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+	
+	// COLOR + PIECE...ie WP = white pawn
+	@Override
+	public String toString() {
+		String str = "";
+		if(color == WHITE) 
+			str += "W";
+		else
+			str += "B";
+		
+		switch(type) {
+			case PAWN:
+				str += "P";
+				break;
+			case KNIGHT:
+				str += "N";
+				break;
+			case BISHOP:
+				str += "B";
+				break;
+			case ROOK:
+				str += "R";
+				break;
+			case QUEEN:
+				str += "Q";
+				break;
+			default:
+				str += "K";
+				break;
+		}
+		return str;
 	}
 }

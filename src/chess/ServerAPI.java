@@ -21,34 +21,67 @@ public class ServerAPI {
 	private static String teamSecret = "32c68cae";	// temporary
 	private static String root = "http://www.bencarle.com/chess/";
 	
+	public static void setTeam1() {
+		teamNumber = 1;
+		teamSecret = "32c68cae";
+	}
+	
+	public static void setTeam2() {
+		teamNumber = 2;
+		teamSecret = "1a77594c";
+	}
+	
 	public static Map<String, String> poll() {
-		String url = root + "poll/" + gameId + "/" + teamNumber + "/" + teamSecret;
-		String response = readURL(url);
-		System.out.println(response);
-		Map<String, String> map = new HashMap<String, String>();
-		// easy enough to just use regexes to get the values from json
-		String pat = "\\{\"ready\": (\\w+), \"secondsleft\": ([\\d\\.]+), \"lastmovenumber\": (\\d+), \"lastmove\": \"(\\.*?)\"\\}";
-		Pattern r = Pattern.compile(pat);
-		Matcher m = r.matcher(response);
-		if(m.find()) {
-			map.put("ready", m.group(1));
-			map.put("secondsleft", m.group(2));
-			map.put("lastmovenumber", m.group(3));
-			map.put("lastmove", m.group(4));
-			return map;
-		}
-		else {
-			System.out.println("I'm bad at regexes");
+		try {
+			String url = root + "poll/" + gameId + "/" + teamNumber + "/" + teamSecret;
+			String response = readURL(url);
+			System.out.println(response);
+			Map<String, String> map = new HashMap<String, String>();
+			// easy enough to just use regexes to get the values from json
+			String pat = "\\{\"ready\": (\\w+), \"secondsleft\": ([\\d\\.]+), \"lastmovenumber\": (\\d+)(, \"lastmove\": \"(\\.*?)\")?\\}";
+			Pattern r = Pattern.compile(pat);
+			Matcher m = r.matcher(response);
+			if(m.find()) {
+				map.put("ready", m.group(1));
+				map.put("secondsleft", m.group(2));
+				map.put("lastmovenumber", m.group(3));
+				map.put("lastmove", m.group(5));
+				return map;
+			}
+			else {
+				System.out.println("I'm bad at regexes");
+			}
+		} catch(IOException e) {
+			System.out.println("Maybe a bad team number/secret combo?");
 		}
 		return null;
 	}
 	
-	public static void move(String moveString) {
+	public static Map<String, String> move(String moveString) {
 		String url = root + "move/" + gameId + "/" + teamNumber + "/" + teamSecret + "/" + moveString;
-		readURL(url);
+		try {
+			String response = readURL(url);
+			System.out.println(response);
+			Map<String, String> map = new HashMap<String, String>();
+			// Regex to get the vars out of JSON
+			String pat = "\\{\"message\": \"(\\.*?)\", \"result\": (\\w+)\\}";
+			Pattern r = Pattern.compile(pat);
+			Matcher m = r.matcher(response);
+			if(m.find()) {
+				map.put("message", m.group(1));
+				map.put("result", m.group(2));
+				return map;
+			}
+			else {
+				System.out.println("I'm bad at regexes");
+			}
+		} catch(IOException e) {
+			System.out.println("Maybe a bad team number/secret combo?");
+		}
+		return null;
 	}
 	
-	private static String readURL(String url) {
+	private static String readURL(String url) throws IOException {
 		String response = "";
 		try {
 			URL apiCall = new URL(url);
@@ -59,12 +92,8 @@ public class ServerAPI {
 				response += line;
 			}
 		} catch (MalformedURLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		} 
 		return response;
 	}
 }

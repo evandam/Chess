@@ -9,11 +9,10 @@ public class program {
 	 */
 	public static void main(String[] args) {
 		Board board = new Board();
-		System.out.println(board);
 		
-		byte[] start = {Board.R2, Board.A};
-		byte[] end = {Board.R4, Board.A};
-		board.move(start, end);
+		byte[] start = {Board.R1, Board.B};
+		byte[] end = {Board.R3, Board.C};
+		System.out.println(board.move(start, end));
 		System.out.println(board);
 		
 		

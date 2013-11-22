@@ -58,9 +58,44 @@ public class Board {
 		return board[rank][file];
 	}
 	
-	public void move(byte[] start, byte[] end) {
+	// return the movestring that can be sent to the server
+	// don't handle any fancy moves yet
+	public String move(byte[] start, byte[] end) {
 		board[end[0]][end[1]] = board[start[0]][start[1]];
 		board[start[0]][start[1]] = null;
+		
+		// i.e. Pd2d3, Nb1c3
+		String moveString = board[end[0]][end[1]].toString();	// piece type
+		moveString += getFile(start[1]) + "" + getRank(start[0]);	// beginning pos
+		moveString += getFile(end[1]) + "" + getRank(end[0]);		// end pos
+		return moveString;
+	}
+	
+	// convert the constant back to a character (a-h)
+	public char getFile(byte i) {
+		switch(i) {
+		case A:
+			return 'a';
+		case B:
+			return 'b';
+		case C:
+			return 'c';
+		case D:
+			return 'd';
+		case E:
+			return 'e';
+		case F:
+			return 'f';
+		case G:
+			return 'g';
+		default:
+			return 'h';
+		}
+	}
+	
+	// convert from constant (0-7) to standard repr. for chess (8-1)
+	public byte getRank(byte i) {
+		return (byte) (8 - i);
 	}
 	
 	@Override
@@ -69,6 +104,10 @@ public class Board {
 		for(byte rank = 0; rank < 8; rank++) {
 			for(byte file = 0; file < 8; file++) {
 				if(board[rank][file] != null) {
+					if(board[rank][file].color == Piece.WHITE)
+						str += "W";
+					else
+						str += "B";
 					str += board[rank][file].toString() + " ";
 				}
 				else {

@@ -74,11 +74,6 @@ public class Piece {
 	@Override
 	public String toString() {
 		String str = "";
-		if(color == WHITE) 
-			str += "W";
-		else
-			str += "B";
-		
 		switch(type) {
 			case PAWN:
 				str += "P";

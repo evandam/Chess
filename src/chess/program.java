@@ -12,11 +12,11 @@ public class program {
 		Board board = new Board();
 		
 		// moves for white bishop
-		byte[] start = new byte[]{Board.R1, Board.C};
-		byte[] end = new byte[]{Board.R3, Board.C};
+		byte[] start = new byte[]{Board.R2, Board.B};
+		byte[] end = new byte[]{Board.R3, Board.B};
 		// move king to see what positions are open
-		board.move(start, end);
-		List<byte[]> moves = board.get(end[0], end[1]).getPossibleMoves(board, end);
+//		board.move(start, end);
+		List<byte[]> moves = board.get(start[0], start[1]).getPossibleMoves(board, start);
 		System.out.println("possible moves: ");
 		
 		for(byte[] newPos : moves) {

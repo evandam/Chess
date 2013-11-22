@@ -41,15 +41,17 @@ public class Piece {
 	}
 
 	// A king can move into any adjacent square
+	// look into castling?
 	private ArrayList<byte[]> getKingMoves(Board board, byte[] pos) {
 		ArrayList<byte[]> moves = new ArrayList<byte[]>();
+		Piece p;
 		for(byte rank = (byte) (pos[0] - 1); rank <= (byte) (pos[0] + 1); rank++) {
 			for(byte file = (byte) (pos[1] - 1); file <= (byte) (pos[1] + 1); file++) {
 				// make sure it's on the board
 				if(rank >= 0 && rank < 8 && file >= 0 && file < 8) {
-					Piece neighbor = board.get(rank, file);
+					p = board.get(rank, file);
 					// can move into an empty space or take out an opponent
-					if(neighbor == null || neighbor.color != this.color)
+					if(p == null || p.color != this.color)
 						moves.add(new byte[]{rank, file});
 				}
 			}
@@ -67,9 +69,10 @@ public class Piece {
 	// A rook can move any number of spaces horizontally or vertically
 	private ArrayList<byte[]> getRookMoves(Board board, byte[] pos) {
 		ArrayList<byte[]> moves = new ArrayList<byte[]>();
+		Piece p;
 		// get moves along same file going down
 		for(byte r = (byte) (pos[0] - 1); r >= 0; r--) {
-			Piece p = board.get(r, pos[1]);
+			p = board.get(r, pos[1]);
 			if(p == null) 
 				moves.add(new byte[] {r, pos[1]});
 			else if(p.color != this.color) {
@@ -81,7 +84,7 @@ public class Piece {
 		}
 		// get moves along same file going up
 		for(byte r = (byte) (pos[0] + 1); r < 8; r++) {
-			Piece p = board.get(r, pos[1]);
+			p = board.get(r, pos[1]);
 			if(p == null) 
 				moves.add(new byte[] {r, pos[1]});
 			else if(p.color != this.color) {
@@ -93,7 +96,7 @@ public class Piece {
 		}
 		// get moves along same rank going left
 		for(byte f = (byte) (pos[1] - 1); f >= 0; f--) {
-			Piece p = board.get(pos[0], f);
+			p = board.get(pos[0], f);
 			if(p == null) 
 				moves.add(new byte[] {pos[0], f});
 			else if(p.color != this.color) {
@@ -105,7 +108,7 @@ public class Piece {
 		}
 		// get moves along same file going right
 		for(byte f = (byte) (pos[1] + 1); f < 8; f++) {
-			Piece p = board.get(pos[0], f);
+			p = board.get(pos[0], f);
 			if(p == null) 
 				moves.add(new byte[] {pos[0], f});
 			else if(p.color != this.color) {
@@ -121,12 +124,12 @@ public class Piece {
 	// A bishop can move any number of spaces along a diagonal
 	private ArrayList<byte[]> getBishopMoves(Board board, byte[] pos) {
 		ArrayList<byte[]> moves = new ArrayList<byte[]>();
-	
+		Piece p;
 		// top-left diagonal
 		byte rank = (byte) (pos[0] - 1);
 		byte file = (byte) (pos[1] - 1);
 		while(rank >= 0 && file >= 0) {
-			Piece p = board.get(rank, file);
+			p = board.get(rank, file);
 			if(p == null)
 				moves.add(new byte[] {rank, file});
 			else if(p.color != this.color) {
@@ -142,7 +145,7 @@ public class Piece {
 		rank = (byte) (pos[0] + 1);
 		file = (byte) (pos[1] + 1);
 		while(rank < 8 && file < 8) {
-			Piece p = board.get(rank, file);
+			p = board.get(rank, file);
 			if(p == null)
 				moves.add(new byte[] {rank, file});
 			else if(p.color != this.color) {
@@ -158,7 +161,7 @@ public class Piece {
 		rank = (byte) (pos[0] - 1);
 		file = (byte) (pos[1] + 1);
 		while(rank >= 0 && file < 8) {
-			Piece p = board.get(rank, file);
+			p = board.get(rank, file);
 			if(p == null)
 				moves.add(new byte[] {rank, file});
 			else if(p.color != this.color) {
@@ -174,7 +177,7 @@ public class Piece {
 		rank = (byte) (pos[0] + 1);
 		file = (byte) (pos[1] - 1);
 		while(rank < 8 && file >= 0) {
-			Piece p = board.get(rank, file);
+			p = board.get(rank, file);
 			if(p == null)
 				moves.add(new byte[] {rank, file});
 			else if(p.color != this.color) {
@@ -189,13 +192,121 @@ public class Piece {
 		return moves;
 	}
 
+	// An "L" shape, need to hardcode each move I think
 	private ArrayList<byte[]> getKnightMoves(Board board, byte[] pos) {
 		ArrayList<byte[]> moves = new ArrayList<byte[]>();
+		// 1x2 moves
+		byte rank = (byte) (pos[0] - 1);
+		byte file = (byte) (pos[1] - 2);
+		Piece p;
+		if(rank >= 0 && file >= 0) {
+			p = board.get(rank, file);
+			if(p == null || p.color != this.color)
+				moves.add(new byte[] {rank, file});
+		}
+		rank = (byte) (pos[0] + 1);
+		file = (byte) (pos[1] + 2);
+		if(rank < 8 && file < 8) {
+			p = board.get(rank, file);
+			if(p == null || p.color != this.color)
+				moves.add(new byte[] {rank, file});
+		}
+		rank = (byte) (pos[0] - 1);
+		file = (byte) (pos[1] + 2);
+		if(rank >= 0 && file < 8) {
+			p = board.get(rank, file);
+			if(p == null || p.color != this.color)
+				moves.add(new byte[] {rank, file});
+		}
+		rank = (byte) (pos[0] + 1);
+		file = (byte) (pos[1] - 2);
+		if(rank >= 0 && file < 8) {
+			p = board.get(rank, file);
+			if(p == null || p.color != this.color)
+				moves.add(new byte[] {rank, file});
+		}		
+		// 2x1 moves
+		rank = (byte) (pos[0] - 2);
+		file = (byte) (pos[1] - 1);
+		if(rank >= 0 && file >= 0) {
+			p = board.get(rank, file);
+			if(p == null || p.color != this.color)
+				moves.add(new byte[] {rank, file});
+		}
+		rank = (byte) (pos[0] + 2);
+		file = (byte) (pos[1] + 1);
+		if(rank < 8 && file < 8) {
+			p = board.get(rank, file);
+			if(p == null || p.color != this.color)
+				moves.add(new byte[] {rank, file});
+		}
+		rank = (byte) (pos[0] - 2);
+		file = (byte) (pos[1] + 1);
+		if(rank >= 0 && file < 8) {
+			p = board.get(rank, file);
+			if(p == null || p.color != this.color)
+				moves.add(new byte[] {rank, file});
+		}
+		rank = (byte) (pos[0] + 2);
+		file = (byte) (pos[1] - 1);
+		if(rank >= 0 && file < 8) {
+			p = board.get(rank, file);
+			if(p == null || p.color != this.color)
+				moves.add(new byte[] {rank, file});
+		}		
 		return moves;
 	}
 
+	// can move one space ahead, 2 if in starting position
+	// captures diagonally - figure out en passant captures
 	private ArrayList<byte[]> getPawnMoves(Board board, byte[] pos) {
 		ArrayList<byte[]> moves = new ArrayList<byte[]>();
+		// white moves up (towards 0) and black moves down(towards 7)
+		byte forward = 1;
+		byte limit = 8;
+		if(this.color == WHITE) {
+			forward = -1;
+			limit = -1;
+		}
+		byte rank = pos[0];
+		byte file = pos[1];
+		Piece p;
+		// check for attacking moves - diagonal
+		if(rank + forward != limit && file - 1 >= 0) {
+			p = board.get((byte) (rank + forward), (byte) (file - 1));
+			if(p != null && p.color == BLACK) {
+				moves.add(new byte[] {(byte) (rank + forward), (byte) (file - 1)});
+			}
+		}
+		if(rank + forward != limit && file + 1 < 8) {
+			p = board.get((byte) (rank + forward), (byte) (file + 1));
+			if(p != null && p.color == BLACK) {
+				moves.add(new byte[] {(byte) (rank + forward), (byte) (file + 1)});
+			}
+		}
+		// move forward
+		if(rank + forward != limit) {
+			p = board.get((byte) (rank + forward), file);
+			if(p == null)
+				moves.add(new byte[] {(byte) (rank + forward), file});
+		}
+		// move two spaces on first turn
+		// do en passant here? I don't fully understand it...
+		if(this.color == WHITE) {
+			if(rank == Board.R2){
+				p = board.get((byte) (Board.R4), file);
+				if(p == null)
+					moves.add(new byte[]{Board.R4, file});
+			}
+		}
+		else {
+			if(rank == Board.R7){
+				p = board.get((byte) (Board.R5), file);
+				if(p == null)
+					moves.add(new byte[]{Board.R5, file});
+			}
+		}			
+		
 		return moves;
 	}
 	

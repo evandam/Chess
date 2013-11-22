@@ -23,54 +23,66 @@ public class Piece {
 	}
 		
 	// get the positions of the piece for all possible moves it can make
-	public ArrayList<byte[]> getPossibleMoves(byte[] pos) {
+	public ArrayList<byte[]> getPossibleMoves(Board board, byte[] pos) {
 		switch(type) {
 			case PAWN:
-				return getPawnMoves(pos);
+				return getPawnMoves(board, pos);
 			case KNIGHT:
-				return getKnightMoves(pos);
+				return getKnightMoves(board, pos);
 			case BISHOP:
-				return getBishopMoves(pos);
+				return getBishopMoves(board, pos);
 			case ROOK:
-				return getRookMoves(pos);
+				return getRookMoves(board, pos);
 			case QUEEN:
-				return getQueenMoves(pos);
+				return getQueenMoves(board, pos);
 			default:
-				return getKingMoves(pos);
+				return getKingMoves(board, pos);
 		}
 	}
 
-	private ArrayList<byte[]> getKingMoves(byte[] pos) {
+	private ArrayList<byte[]> getKingMoves(Board board, byte[] pos) {
+		ArrayList<byte[]> moves = new ArrayList<byte[]>();
+		// Can move into an adjacent space that isn't taken by own color
+		for(byte rank = (byte) (pos[0] - 1); rank <= (byte) (pos[0] + 1); rank++) {
+			for(byte file = (byte) (pos[1] - 1); file <= (byte) (pos[1] + 1); file++) {
+				// make sure it's on the board
+				if(rank >= 0 && rank < 8 && file >= 0 && file < 8) {
+					Piece neighbor = board.get(rank, file);
+					// can move into an empty space or take out an opponent
+					if(neighbor == null || neighbor.color != this.color)
+						moves.add(new byte[]{rank, file});
+				}
+			}
+		}
+		return moves;
+	}
+
+	private ArrayList<byte[]> getQueenMoves(Board board, byte[] pos) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	private ArrayList<byte[]> getQueenMoves(byte[] pos) {
+	private ArrayList<byte[]> getRookMoves(Board board, byte[] pos) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	private ArrayList<byte[]> getRookMoves(byte[] pos) {
+	private ArrayList<byte[]> getBishopMoves(Board board, byte[] pos) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	private ArrayList<byte[]> getBishopMoves(byte[] pos) {
+	private ArrayList<byte[]> getKnightMoves(Board board, byte[] pos) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	private ArrayList<byte[]> getKnightMoves(byte[] pos) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	private ArrayList<byte[]> getPawnMoves(byte[] pos) {
+	private ArrayList<byte[]> getPawnMoves(Board board, byte[] pos) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 	
-	// COLOR + PIECE...ie WP = white pawn
+	// char for the piece type - {P, N, B, R, Q, K}
 	@Override
 	public String toString() {
 		String str = "";

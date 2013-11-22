@@ -1,5 +1,6 @@
 package chess;
 
+import java.util.List;
 import java.util.Map;
 
 public class program {
@@ -10,10 +11,23 @@ public class program {
 	public static void main(String[] args) {
 		Board board = new Board();
 		
-		byte[] start = {Board.R1, Board.B};
+		// moves for white king
+		byte[] start = new byte[]{Board.R1, Board.D};
+		byte[] end = new byte[]{Board.R3, Board.D};
+		// move king to see what positions are open
+		board.move(start, end);
+		List<byte[]> moves = board.get(end[0], end[1]).getPossibleMoves(board, end);
+		System.out.println("possible moves: ");
+		for(byte[] newPos : moves) {
+			System.out.println(newPos[0] + ", " + newPos[1]);
+		}
+		
+		System.out.println(board);
+		
+		/*byte[] start = {Board.R1, Board.B};
 		byte[] end = {Board.R3, Board.C};
 		System.out.println(board.move(start, end));
-		System.out.println(board);
+		System.out.println(board);*/
 		
 		
 		// set this up at

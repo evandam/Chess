@@ -40,9 +40,9 @@ public class Piece {
 		}
 	}
 
+	// A king can move into any adjacent square
 	private ArrayList<byte[]> getKingMoves(Board board, byte[] pos) {
 		ArrayList<byte[]> moves = new ArrayList<byte[]>();
-		// Can move into an adjacent space that isn't taken by own color
 		for(byte rank = (byte) (pos[0] - 1); rank <= (byte) (pos[0] + 1); rank++) {
 			for(byte file = (byte) (pos[1] - 1); file <= (byte) (pos[1] + 1); file++) {
 				// make sure it's on the board
@@ -57,63 +57,146 @@ public class Piece {
 		return moves;
 	}
 
+	// A queen can move like a rook or a bishop (horizontal, vertical, diagonal)
 	private ArrayList<byte[]> getQueenMoves(Board board, byte[] pos) {
-		// TODO Auto-generated method stub
-		return null;
+		ArrayList<byte[]> moves = getRookMoves(board, pos);
+		moves.addAll(getBishopMoves(board, pos));
+		return moves;
 	}
 
+	// A rook can move any number of spaces horizontally or vertically
 	private ArrayList<byte[]> getRookMoves(Board board, byte[] pos) {
 		ArrayList<byte[]> moves = new ArrayList<byte[]>();
-		
-		// rook can move horizontally or vertically until it hits another piece or edge of board
 		// get moves along same file going down
 		for(byte r = (byte) (pos[0] - 1); r >= 0; r--) {
 			Piece p = board.get(r, pos[1]);
-			if(p == null || p.color != this.color)
+			if(p == null) 
 				moves.add(new byte[] {r, pos[1]});
-			else if(p.color == this.color)
+			else if(p.color != this.color) {
+				moves.add(new byte[] {r, pos[1]});
+				break;
+			}
+			else
 				break;
 		}
 		// get moves along same file going up
 		for(byte r = (byte) (pos[0] + 1); r < 8; r++) {
 			Piece p = board.get(r, pos[1]);
-			if(p == null || p.color != this.color)
+			if(p == null) 
 				moves.add(new byte[] {r, pos[1]});
-			else if(p.color == this.color)
+			else if(p.color != this.color) {
+				moves.add(new byte[] {r, pos[1]});
+				break;
+			}
+			else
 				break;
 		}
 		// get moves along same rank going left
 		for(byte f = (byte) (pos[1] - 1); f >= 0; f--) {
 			Piece p = board.get(pos[0], f);
-			if(p == null || p.color != this.color)
+			if(p == null) 
 				moves.add(new byte[] {pos[0], f});
-			else if(p.color == this.color)
+			else if(p.color != this.color) {
+				moves.add(new byte[] {pos[0], f});
+				break;
+			}
+			else
 				break;
 		}
 		// get moves along same file going right
 		for(byte f = (byte) (pos[1] + 1); f < 8; f++) {
 			Piece p = board.get(pos[0], f);
-			if(p == null || p.color != this.color)
+			if(p == null) 
 				moves.add(new byte[] {pos[0], f});
-			else if(p.color == this.color)
+			else if(p.color != this.color) {
+				moves.add(new byte[] {pos[0], f});
+				break;
+			}
+			else
 				break;
 		}
 		return moves;
 	}
 
+	// A bishop can move any number of spaces along a diagonal
 	private ArrayList<byte[]> getBishopMoves(Board board, byte[] pos) {
-		// TODO Auto-generated method stub
-		return null;
+		ArrayList<byte[]> moves = new ArrayList<byte[]>();
+	
+		// top-left diagonal
+		byte rank = (byte) (pos[0] - 1);
+		byte file = (byte) (pos[1] - 1);
+		while(rank >= 0 && file >= 0) {
+			Piece p = board.get(rank, file);
+			if(p == null)
+				moves.add(new byte[] {rank, file});
+			else if(p.color != this.color) {
+				moves.add(new byte[] {rank, file});
+				break;
+			}
+			else
+				break;
+			rank--;
+			file--;
+		}
+		// bottom-right diagonal
+		rank = (byte) (pos[0] + 1);
+		file = (byte) (pos[1] + 1);
+		while(rank < 8 && file < 8) {
+			Piece p = board.get(rank, file);
+			if(p == null)
+				moves.add(new byte[] {rank, file});
+			else if(p.color != this.color) {
+				moves.add(new byte[] {rank, file});
+				break;
+			}
+			else
+				break;
+			rank++;
+			file++;
+		}
+		// top-right diagonal
+		rank = (byte) (pos[0] - 1);
+		file = (byte) (pos[1] + 1);
+		while(rank >= 0 && file < 8) {
+			Piece p = board.get(rank, file);
+			if(p == null)
+				moves.add(new byte[] {rank, file});
+			else if(p.color != this.color) {
+				moves.add(new byte[] {rank, file});
+				break;
+			}
+			else
+				break;
+			rank--;
+			file++;
+		}
+		// bottom-left diagonal
+		rank = (byte) (pos[0] + 1);
+		file = (byte) (pos[1] - 1);
+		while(rank < 8 && file >= 0) {
+			Piece p = board.get(rank, file);
+			if(p == null)
+				moves.add(new byte[] {rank, file});
+			else if(p.color != this.color) {
+				moves.add(new byte[] {rank, file});
+				break;
+			}
+			else
+				break;
+			rank++;
+			file--;
+		}
+		return moves;
 	}
 
 	private ArrayList<byte[]> getKnightMoves(Board board, byte[] pos) {
-		// TODO Auto-generated method stub
-		return null;
+		ArrayList<byte[]> moves = new ArrayList<byte[]>();
+		return moves;
 	}
 
 	private ArrayList<byte[]> getPawnMoves(Board board, byte[] pos) {
-		// TODO Auto-generated method stub
-		return null;
+		ArrayList<byte[]> moves = new ArrayList<byte[]>();
+		return moves;
 	}
 	
 	// char for the piece type - {P, N, B, R, Q, K}

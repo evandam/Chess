@@ -11,9 +11,9 @@ public class program {
 	public static void main(String[] args) {
 		Board board = new Board();
 		
-		// moves for white rook
-		byte[] start = new byte[]{Board.R1, Board.A};
-		byte[] end = new byte[]{Board.R3, Board.A};
+		// moves for white bishop
+		byte[] start = new byte[]{Board.R1, Board.C};
+		byte[] end = new byte[]{Board.R3, Board.C};
 		// move king to see what positions are open
 		board.move(start, end);
 		List<byte[]> moves = board.get(end[0], end[1]).getPossibleMoves(board, end);

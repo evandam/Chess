@@ -11,13 +11,14 @@ public class program {
 	public static void main(String[] args) {
 		Board board = new Board();
 		
-		// moves for white king
-		byte[] start = new byte[]{Board.R1, Board.D};
-		byte[] end = new byte[]{Board.R3, Board.D};
+		// moves for white rook
+		byte[] start = new byte[]{Board.R1, Board.A};
+		byte[] end = new byte[]{Board.R3, Board.A};
 		// move king to see what positions are open
 		board.move(start, end);
 		List<byte[]> moves = board.get(end[0], end[1]).getPossibleMoves(board, end);
 		System.out.println("possible moves: ");
+		
 		for(byte[] newPos : moves) {
 			System.out.println(newPos[0] + ", " + newPos[1]);
 		}

@@ -63,8 +63,42 @@ public class Piece {
 	}
 
 	private ArrayList<byte[]> getRookMoves(Board board, byte[] pos) {
-		// TODO Auto-generated method stub
-		return null;
+		ArrayList<byte[]> moves = new ArrayList<byte[]>();
+		
+		// rook can move horizontally or vertically until it hits another piece or edge of board
+		// get moves along same file going down
+		for(byte r = (byte) (pos[0] - 1); r >= 0; r--) {
+			Piece p = board.get(r, pos[1]);
+			if(p == null || p.color != this.color)
+				moves.add(new byte[] {r, pos[1]});
+			else if(p.color == this.color)
+				break;
+		}
+		// get moves along same file going up
+		for(byte r = (byte) (pos[0] + 1); r < 8; r++) {
+			Piece p = board.get(r, pos[1]);
+			if(p == null || p.color != this.color)
+				moves.add(new byte[] {r, pos[1]});
+			else if(p.color == this.color)
+				break;
+		}
+		// get moves along same rank going left
+		for(byte f = (byte) (pos[1] - 1); f >= 0; f--) {
+			Piece p = board.get(pos[0], f);
+			if(p == null || p.color != this.color)
+				moves.add(new byte[] {pos[0], f});
+			else if(p.color == this.color)
+				break;
+		}
+		// get moves along same file going right
+		for(byte f = (byte) (pos[1] + 1); f < 8; f++) {
+			Piece p = board.get(pos[0], f);
+			if(p == null || p.color != this.color)
+				moves.add(new byte[] {pos[0], f});
+			else if(p.color == this.color)
+				break;
+		}
+		return moves;
 	}
 
 	private ArrayList<byte[]> getBishopMoves(Board board, byte[] pos) {

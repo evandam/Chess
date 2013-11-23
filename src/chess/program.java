@@ -15,16 +15,14 @@ public class program {
 		byte[] start = new byte[]{Board.R2, Board.B};
 		byte[] end = new byte[]{Board.R3, Board.B};
 		// move king to see what positions are open
-//		board.move(start, end);
-		List<byte[]> moves = board.get(start[0], start[1]).getPossibleMoves(board, start);
+		board.move(start, end);
+		List<byte[]> moves = board.get(end[0], end[1]).getPossibleMoves(board, end);
 		System.out.println("possible moves: ");
 		
 		for(byte[] newPos : moves) {
 			System.out.println(newPos[0] + ", " + newPos[1]);
 		}
-		
-		System.out.println(board);
-		
+				
 		/*byte[] start = {Board.R1, Board.B};
 		byte[] end = {Board.R3, Board.C};
 		System.out.println(board.move(start, end));

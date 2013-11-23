@@ -24,14 +24,33 @@ public class Board {
 	// [col, row] or [rank, file]
 	private Piece[][] board;
 	
+	// keep track of where the white/black pieces are on the board...quicker to access
+	// max size is 16 pieces so a plain old array is best
+	public byte[][] whitePieces, blackPieces;
+	
+	
 	// init all the pieces on the board
 	public Board() {
 		board = new Piece[8][8];
+		// hold the [rank, file] of each side's pieces
+		whitePieces = new byte[16][2];
+		blackPieces = new byte[16][2];
 
-		// pawns
 		for(byte file = 0; file < 8; file++) {
+			// both sides' pawns
 			board[R2][file] = new Piece(Piece.PAWN, Piece.WHITE);
 			board[R7][file] = new Piece(Piece.PAWN, Piece.BLACK);
+			
+			// while we're looping thru the files, set up the starting positions
+			whitePieces[file][0] = R1;
+			whitePieces[file][1] = file;
+			whitePieces[file + 8][0] = R2;
+			whitePieces[file + 8][1] = file;
+			
+			blackPieces[file][0] = R8;
+			blackPieces[file][1] = file;
+			blackPieces[file + 8][0] = R7;
+			blackPieces[file + 8][1] = file;
 		}
 		// white pieces
 		board[R1][A] = new Piece(Piece.ROOK, Piece.WHITE);
@@ -61,11 +80,27 @@ public class Board {
 	// return the movestring that can be sent to the server
 	// don't handle any fancy moves yet
 	public String move(byte[] start, byte[] end) {
+		// check if opponent's piece was in that spot and update black + white piece positions
+		Piece endPiece = board[end[0]][end[1]];
+		// piece is captured, remove it from the list
+		if(endPiece != null) {
+			byte[][] pieces = whitePieces;
+			if(endPiece.color == Piece.BLACK) 
+				pieces = blackPieces;
+			// find the piece's element in the array
+			for(int i = 0; i < pieces.length; i++) {
+				if(pieces[i][0] == end[0] && pieces[i][1] == end[1]) {
+					pieces[i] = null;
+					break;
+				}
+			}
+		}
+		
 		board[end[0]][end[1]] = board[start[0]][start[1]];
 		board[start[0]][start[1]] = null;
 		
 		// i.e. Pd2d3, Nb1c3
-		String moveString = board[end[0]][end[1]].toString();	// piece type
+		String moveString = board[end[0]][end[1]].toString();		// piece type
 		moveString += getFile(start[1]) + "" + getRank(start[0]);	// beginning pos
 		moveString += getFile(end[1]) + "" + getRank(end[0]);		// end pos
 		return moveString;

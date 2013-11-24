@@ -1,5 +1,6 @@
 package chess;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class Board {
@@ -178,13 +179,50 @@ public class Board {
 					}
 				}
 			}
+			// queening promotion - should this be dynamic to allow others?
+			else if(end[0] == 0 || end[0] == 7) {
+				startPiece.type = Piece.QUEEN;					
+			}
+		}
+		// check for castling - moved 2 files
+		else if(startPiece.type == Piece.KING) {
+			// king side castle
+			if(start[1] == E && end[1] == G) {
+				// move the rook too
+				board[start[0]][F] = board[start[0]][H];
+				board[start[0]][H] = null;
+				// update the player's array
+				byte[][] pieces = whitePieces;
+				if(startPiece.color == Piece.BLACK)
+					pieces = blackPieces;
+				pieces[ROOK + 1][1] = F; 
+			}
+			// queen side castle
+			else if(start[1] == E && end[1] == C) {
+				// move the rook too
+				board[start[0]][D] = board[start[0]][A];
+				board[start[0]][A] = null;
+				// update the player's array
+				byte[][] pieces = whitePieces;
+				if(startPiece.color == Piece.BLACK)
+					pieces = blackPieces;
+				pieces[ROOK][1] = D; 
+			}
 		}
 				
-		// TBD - break off into separate method
-		// TODO add check to remove pawn for en passant
 		board[end[0]][end[1]] = board[start[0]][start[1]];
 		board[start[0]][start[1]] = null;
 		
+		// update the teams array of pieces
+		byte[][] pieces = whitePieces;
+		if(startPiece.color == Piece.BLACK)
+			pieces = blackPieces;
+		for(byte[] pos : pieces) {
+			if(start[0] == pos[0] && start[1] == pos[1]) {
+				pos[0] = end[0];
+				pos[1] = end[1];
+			}
+		}
 		
 	}
 	
@@ -197,6 +235,22 @@ public class Board {
 		return moveString;
 	}
 	
+	// check all possible enemy moves to see if they can attack the location
+	public boolean isUnderAttack(byte rank, byte file, byte color) {
+		byte[][] pieces = whitePieces;
+		if(color == Piece.WHITE) 
+			pieces = blackPieces;
+		Piece p;
+		// go through each piece the enemy has and check if it can move into the square
+		for(byte[] pos : pieces) {
+			p = board[pos[0]][pos[1]];
+			// the square can be attacked
+			if(p != null && rank == pos[0] && file == pos[1])
+				return true;
+		}
+		return false;
+	}
+		
 	// convert the constant back to a character (a-h)
 	public static char getFile(byte i) {
 		switch(i) {

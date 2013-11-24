@@ -1,7 +1,5 @@
 package chess;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 
 public class Board {
 	// convert files (a - h) to numerical values
@@ -244,9 +242,13 @@ public class Board {
 		// go through each piece the enemy has and check if it can move into the square
 		for(byte[] pos : pieces) {
 			p = board[pos[0]][pos[1]];
-			// the square can be attacked
-			if(p != null && rank == pos[0] && file == pos[1])
-				return true;
+			if(p != null) {
+				for(byte[] attackLoc : p.getPossibleMoves(this, new byte[]{rank, file})) {
+					// the square can be attacked
+					if(rank == attackLoc[0] && file == attackLoc[1])
+						return true;
+				}
+			}
 		}
 		return false;
 	}

@@ -311,7 +311,7 @@ public class Piece {
 				if(lastmove != null) {
 					p = board.get(lastmove[0], lastmove[1]);
 					// last move was a pawn advancing 2 spaces
-					if(p.hasMoved > 1) {
+					if(p != null && p.hasMoved > 1) {
 						moves.add(new byte[]{Board.R6, lastmove[1]});
 					}
 				}
@@ -329,7 +329,7 @@ public class Piece {
 				if(lastmove != null) {
 					p = board.get(lastmove[0], lastmove[1]);
 					// last move was a pawn advancing 2 spaces
-					if(p.hasMoved > 1) {
+					if(p != null && p.hasMoved > 1) {
 						moves.add(new byte[]{Board.R3, lastmove[1]});
 					}
 				}

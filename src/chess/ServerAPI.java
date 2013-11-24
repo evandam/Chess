@@ -22,9 +22,9 @@ public class ServerAPI {
 	private static String root = "http://www.bencarle.com/chess/";
 	
 	// data from polling
-	public static boolean ready = false;
-	public static float secondsleft = -1;
-	public static int lastmovenumber = 0;
+	public static boolean ready;
+	public static float secondsleft;
+	public static int lastmovenumber;
 	public static String lastmove = "Pd7d5";	// default to test en passant
 	
 	
@@ -86,15 +86,24 @@ public class ServerAPI {
 	
 	// movestring functions
 	public static byte getLastMovedPiece() {
-		return Piece.getType(lastmove.charAt(0));		
+		if(lastmove.length() > 0)
+			return Piece.getType(lastmove.charAt(0));
+		else 
+			return -1;
 	}
 	
 	public static byte[] getLastMoveStartPos() {
-		return new byte[] { Board.getFile(lastmove.charAt(2)), Board.getRank((byte) lastmove.charAt(1)) };
+		if(lastmove.length() > 2)
+			return new byte[] { Board.getRank(Byte.parseByte(lastmove.charAt(2) + "")), Board.getFile(lastmove.charAt(1))  };
+		else
+			return null;
 	}
 	
 	public static byte[] getLastEndPos() {
-		return new byte[] { Board.getFile(lastmove.charAt(4)), Board.getRank((byte) lastmove.charAt(3)) };
+		if(lastmove.length() > 4)
+			return new byte[] { Board.getRank(Byte.parseByte(lastmove.charAt(4) + "")), Board.getFile(lastmove.charAt(3)) };
+		else
+			return null;
 	}
 	
 	private static String readURL(String url) throws IOException {

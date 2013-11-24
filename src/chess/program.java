@@ -11,6 +11,7 @@ public class program {
 	public static void main(String[] args) {
 		ServerAPI.setTeam1();
 		ServerAPI.poll();
+		
 		Board board = new Board();
 		
 		// moves for white bishop

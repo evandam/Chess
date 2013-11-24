@@ -13,16 +13,23 @@ public class program {
 		
 		// moves for white bishop
 		byte[] start = new byte[]{Board.R2, Board.B};
-		byte[] end = new byte[]{Board.R3, Board.B};
+		byte[] end = new byte[]{Board.R5, Board.B};
 		// move king to see what positions are open
 		board.move(start, end);
+		board.move(new byte[] {Board.R7, Board.C}, new byte[] {Board.R5, Board.C});
+		
+//		System.out.println(board);
+		
 		List<byte[]> moves = board.get(end[0], end[1]).getPossibleMoves(board, end);
-		System.out.println("possible moves: ");
+//		System.out.println("possible moves: ");
 		
 		for(byte[] newPos : moves) {
-			System.out.println(newPos[0] + ", " + newPos[1]);
+//			System.out.println(newPos[0] + ", " + newPos[1]);
 		}
 				
+		// test en passant
+		board.move(end, new byte[]{2, 2});
+//		System.out.println(board);
 		/*byte[] start = {Board.R1, Board.B};
 		byte[] end = {Board.R3, Board.C};
 		System.out.println(board.move(start, end));
@@ -31,24 +38,18 @@ public class program {
 		
 		// set this up at
 		// http://www.bencarle.com/chess/startgame
-		ServerAPI.gameId = 350;
-		
-		/*
-		// test polling server
-		Map<String, String> pollData = ServerAPI.poll();
-		for(String key : pollData.keySet()) {
-			System.out.println(key + ": " + pollData.get(key));
-		}
+		ServerAPI.gameId = 352;
 		
 		// test moving
 		ServerAPI.setTeam1();
 		
-		String moveString = "Pd3d4";
+		String moveString = "Pe5d6";
 		Map<String, String> moveData = ServerAPI.move(moveString);
-		for(String key : moveData.keySet()) {
-			System.out.println(key + ": " + moveData.get(key));
+		if(moveData != null) {
+			for(String key : moveData.keySet()) {
+				System.out.println(key + ": " + moveData.get(key));
+			}
 		}
-		*/
 	}
 
 }

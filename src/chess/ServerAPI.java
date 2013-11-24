@@ -21,6 +21,13 @@ public class ServerAPI {
 	private static String teamSecret = "32c68cae";	// temporary
 	private static String root = "http://www.bencarle.com/chess/";
 	
+	// data from polling
+	public static boolean ready;
+	public static float secondsleft;
+	public static int lastmovenumber;
+	public static String lastmove;
+	
+	
 	public static void setTeam1() {
 		teamNumber = 1;
 		teamSecret = "32c68cae";
@@ -31,22 +38,19 @@ public class ServerAPI {
 		teamSecret = "1a77594c";
 	}
 	
-	public static Map<String, String> poll() {
+	public static void poll() {
 		try {
 			String url = root + "poll/" + gameId + "/" + teamNumber + "/" + teamSecret;
 			String response = readURL(url);
-			System.out.println(response);
-			Map<String, String> map = new HashMap<String, String>();
 			// easy enough to just use regexes to get the values from json
 			String pat = "\\{\"ready\": (\\w+), \"secondsleft\": ([\\d\\.]+), \"lastmovenumber\": (\\d+)(, \"lastmove\": \"(\\.*?)\")?\\}";
 			Pattern r = Pattern.compile(pat);
 			Matcher m = r.matcher(response);
 			if(m.find()) {
-				map.put("ready", m.group(1));
-				map.put("secondsleft", m.group(2));
-				map.put("lastmovenumber", m.group(3));
-				map.put("lastmove", m.group(5));
-				return map;
+				ready = m.group(1).equals("true");
+				secondsleft = Float.parseFloat(m.group(2));
+				lastmovenumber = Integer.parseInt(m.group(3));
+				lastmove = m.group(5);
 			}
 			else {
 				System.out.println("I'm bad at regexes");
@@ -54,7 +58,6 @@ public class ServerAPI {
 		} catch(IOException e) {
 			System.out.println("Maybe a bad team number/secret combo?");
 		}
-		return null;
 	}
 	
 	public static Map<String, String> move(String moveString) {
@@ -79,6 +82,19 @@ public class ServerAPI {
 			System.out.println("Maybe a bad team number/secret combo?");
 		}
 		return null;
+	}
+	
+	// movestring functions
+	public static byte getLastMovedPiece() {
+		return Piece.getType(lastmove.charAt(0));		
+	}
+	
+	public static byte[] getLastMoveStartPos() {
+		return new byte[] { Board.getFile(lastmove.charAt(2)), Board.getRank((byte) lastmove.charAt(1)) };
+	}
+	
+	public static byte[] getLastEndPos() {
+		return new byte[] { Board.getFile(lastmove.charAt(4)), Board.getRank((byte) lastmove.charAt(3)) };
 	}
 	
 	private static String readURL(String url) throws IOException {

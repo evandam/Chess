@@ -33,9 +33,11 @@ public class Board {
 	public Board() {
 		board = new Piece[8][8];
 		// hold the [rank, file] of each side's pieces
-		whitePieces = new byte[16][2];
-		blackPieces = new byte[16][2];
+		whitePieces = new byte[16][2];	// its more memory efficient to do [2][16]
+		blackPieces = new byte[16][2];	// store rank and file in one byte
 
+		// TODO - know which indexes refer to which pieces
+		
 		for(byte file = 0; file < 8; file++) {
 			// both sides' pawns
 			board[R2][file] = new Piece(Piece.PAWN, Piece.WHITE);
@@ -66,8 +68,8 @@ public class Board {
 		board[R8][A] = new Piece(Piece.ROOK, Piece.BLACK);
 		board[R8][B] = new Piece(Piece.KNIGHT, Piece.BLACK);
 		board[R8][C] = new Piece(Piece.BISHOP, Piece.BLACK);
-		board[R8][D] = new Piece(Piece.QUEEN, Piece.BLACK);
-		board[R8][E] = new Piece(Piece.KING, Piece.BLACK);
+		board[R8][D] = new Piece(Piece.KING, Piece.BLACK);		// swap
+		board[R8][E] = new Piece(Piece.QUEEN, Piece.BLACK);
 		board[R8][F] = new Piece(Piece.BISHOP, Piece.BLACK);
 		board[R8][G] = new Piece(Piece.KNIGHT, Piece.BLACK);
 		board[R8][H] = new Piece(Piece.ROOK, Piece.BLACK);
@@ -96,6 +98,8 @@ public class Board {
 			}
 		}
 		
+		// TBD - break off into separate method
+		// TODO add check to remove pawn for en passant
 		board[end[0]][end[1]] = board[start[0]][start[1]];
 		board[start[0]][start[1]] = null;
 		

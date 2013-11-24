@@ -22,10 +22,10 @@ public class ServerAPI {
 	private static String root = "http://www.bencarle.com/chess/";
 	
 	// data from polling
-	public static boolean ready;
-	public static float secondsleft;
-	public static int lastmovenumber;
-	public static String lastmove;
+	public static boolean ready = false;
+	public static float secondsleft = -1;
+	public static int lastmovenumber = 0;
+	public static String lastmove = "Pd7d5";	// default to test en passant
 	
 	
 	public static void setTeam1() {

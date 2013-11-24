@@ -19,6 +19,8 @@ public class Piece {
 	public byte color;	// white or black
 	public byte hasMoved;	// 0 for false, 1 for true, 2 for pawn moving 2 spaces on first turn
 	
+	// TODO add bool for if moved already or not for castling
+	
 	public Piece(byte type, byte color) {
 		this.type = type;
 		this.color = color;
@@ -57,6 +59,7 @@ public class Piece {
 					if(p == null || p.color != this.color)
 						moves.add(new byte[]{rank, file});
 				}
+				// TODO check for castling and add to move list 
 			}
 		}
 		// castling here
@@ -268,23 +271,24 @@ public class Piece {
 		// white moves up (towards 0) and black moves down(towards 7)
 		byte forward = 1;
 		byte limit = 8;
-		if(this.color == WHITE) {
+		if(this.color == WHITE) {		// switch rank
 			forward = -1;
 			limit = -1;
 		}
 		byte rank = pos[0];
 		byte file = pos[1];
 		Piece p;
-		// check for attacking moves - diagonal
+		// check for attacking moves - diagonal					// TODO check if in row for en passant and check last move
 		if(rank + forward != limit && file - 1 >= 0) {
 			p = board.get((byte) (rank + forward), (byte) (file - 1));
-			if(p != null && p.color != this.color) {
+
+			if(p != null && p.color != p.color) {
 				moves.add(new byte[] {(byte) (rank + forward), (byte) (file - 1)});
 			}
 		}
 		if(rank + forward != limit && file + 1 < 8) {
 			p = board.get((byte) (rank + forward), (byte) (file + 1));
-			if(p != null && p.color != this.color) {
+			if(p != null && p.color != p.color) {
 				moves.add(new byte[] {(byte) (rank + forward), (byte) (file + 1)});
 			}
 		}
@@ -304,10 +308,12 @@ public class Piece {
 			// en passant
 			else if(rank == Board.R5 && ServerAPI.getLastMovedPiece() == PAWN) {
 				byte[] lastmove = ServerAPI.getLastEndPos();
-				p = board.get(lastmove[0], lastmove[1]);
-				// last move was a pawn advancing 2 spaces
-				if(p.hasMoved > 1) {
-					moves.add(new byte[]{Board.R6, lastmove[1]});
+				if(lastmove != null) {
+					p = board.get(lastmove[0], lastmove[1]);
+					// last move was a pawn advancing 2 spaces
+					if(p.hasMoved > 1) {
+						moves.add(new byte[]{Board.R6, lastmove[1]});
+					}
 				}
 			}
 		}
@@ -320,10 +326,12 @@ public class Piece {
 			// en passant
 			else if(rank == Board.R4 && ServerAPI.getLastMovedPiece() == PAWN) {
 				byte[] lastmove = ServerAPI.getLastEndPos();
-				p = board.get(lastmove[0], lastmove[1]);
-				// last move was a pawn advancing 2 spaces
-				if(p.hasMoved > 1) {
-					moves.add(new byte[]{Board.R3, lastmove[1]});
+				if(lastmove != null) {
+					p = board.get(lastmove[0], lastmove[1]);
+					// last move was a pawn advancing 2 spaces
+					if(p.hasMoved > 1) {
+						moves.add(new byte[]{Board.R3, lastmove[1]});
+					}
 				}
 			}
 		}			

@@ -138,16 +138,28 @@ public class Board {
 		// check if opponent's piece was in that spot and update black + white piece positions
 		Piece startPiece = board[start[0]][start[1]];
 		
+		// update the teams array of pieces
+		byte[][] pieces = whitePieces;
+		if(startPiece.color == Piece.BLACK)
+			pieces = blackPieces;
+		for(byte[] pos : pieces) {
+			if(start[0] == pos[0] && start[1] == pos[1]) {
+				pos[0] = end[0];
+				pos[1] = end[1];
+				break;
+			}
+		}
+		
 		Piece endPiece = board[end[0]][end[1]];
 		// piece is captured, remove it from the list
 		if(endPiece != null) {
-			byte[][] pieces = whitePieces;
+			byte[][] enemyPieces = blackPieces;
 			if(endPiece.color == Piece.BLACK) 
-				pieces = blackPieces;
+				enemyPieces = whitePieces;
 			// find the piece's element in the array
-			for(int i = 0; i < pieces.length; i++) {
-				if(pieces[i][0] == end[0] && pieces[i][1] == end[1]) {
-					pieces[i] = null;
+			for(int i = 0; i < enemyPieces.length; i++) {
+				if(enemyPieces[i][0] == end[0] && enemyPieces[i][1] == end[1]) {
+					enemyPieces[i] = null;
 					break;
 				}
 			}
@@ -166,9 +178,7 @@ public class Board {
 			else if(start[1] != end[1] && endPiece == null) {
 				endPiece = board[start[0]][end[1]];
 				board[start[0]][end[1]] = null;
-				byte[][] pieces = whitePieces;
-				if(endPiece.color == Piece.BLACK) 
-					pieces = blackPieces;
+
 				// find the piece's element in the array and remove it
 				for(int i = 0; i < pieces.length; i++) {
 					if(pieces[i][0] == end[0] && pieces[i][1] == end[1]) {
@@ -190,9 +200,6 @@ public class Board {
 				board[start[0]][C] = board[start[0]][A];
 				board[start[0]][A] = null;
 				// update the player's array
-				byte[][] pieces = whitePieces;
-				if(startPiece.color == Piece.BLACK)
-					pieces = blackPieces;
 				pieces[ROOK + 1][1] = C; 
 			}
 			// queen side castle
@@ -201,9 +208,6 @@ public class Board {
 				board[start[0]][E] = board[start[0]][H];
 				board[start[0]][H] = null;
 				// update the player's array
-				byte[][] pieces = whitePieces;
-				if(startPiece.color == Piece.BLACK)
-					pieces = blackPieces;
 				pieces[ROOK][1] = E; 
 			}
 		}
@@ -211,16 +215,7 @@ public class Board {
 		board[end[0]][end[1]] = board[start[0]][start[1]];
 		board[start[0]][start[1]] = null;
 		
-		// update the teams array of pieces
-		byte[][] pieces = whitePieces;
-		if(startPiece.color == Piece.BLACK)
-			pieces = blackPieces;
-		for(byte[] pos : pieces) {
-			if(start[0] == pos[0] && start[1] == pos[1]) {
-				pos[0] = end[0];
-				pos[1] = end[1];
-			}
-		}
+		
 		
 	}
 	

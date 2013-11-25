@@ -278,19 +278,19 @@ public class Board {
 	// convert the char to a constant byte
 	public static byte getFile(char c) {
 		switch(c) {
-		case 'A':
+		case 'a':
 			return A;
-		case 'B':
+		case 'b':
 			return B;
-		case 'C':
+		case 'c':
 			return C;
-		case 'D':
+		case 'd':
 			return D;
-		case 'E':
+		case 'e':
 			return E;
-		case 'F':
+		case 'f':
 			return F;
-		case 'G':
+		case 'g':
 			return G;
 		default:
 			return H;

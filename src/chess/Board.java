@@ -185,26 +185,26 @@ public class Board {
 		// check for castling - moved 2 files
 		else if(startPiece.type == Piece.KING) {
 			// king side castle
-			if(start[1] == E && end[1] == G) {
+			if(start[1] == D && end[1] == B) {
 				// move the rook too
-				board[start[0]][F] = board[start[0]][H];
-				board[start[0]][H] = null;
-				// update the player's array
-				byte[][] pieces = whitePieces;
-				if(startPiece.color == Piece.BLACK)
-					pieces = blackPieces;
-				pieces[ROOK + 1][1] = F; 
-			}
-			// queen side castle
-			else if(start[1] == E && end[1] == C) {
-				// move the rook too
-				board[start[0]][D] = board[start[0]][A];
+				board[start[0]][C] = board[start[0]][A];
 				board[start[0]][A] = null;
 				// update the player's array
 				byte[][] pieces = whitePieces;
 				if(startPiece.color == Piece.BLACK)
 					pieces = blackPieces;
-				pieces[ROOK][1] = D; 
+				pieces[ROOK + 1][1] = C; 
+			}
+			// queen side castle
+			else if(start[1] == D && end[1] == F) {
+				// move the rook too
+				board[start[0]][E] = board[start[0]][H];
+				board[start[0]][H] = null;
+				// update the player's array
+				byte[][] pieces = whitePieces;
+				if(startPiece.color == Piece.BLACK)
+					pieces = blackPieces;
+				pieces[ROOK][1] = E; 
 			}
 		}
 				

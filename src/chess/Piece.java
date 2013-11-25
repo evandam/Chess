@@ -65,27 +65,26 @@ public class Piece {
 		// king must not have moved yet
 		if(this.hasMoved == 0) {
 			// check for king-side castling
-			p = board.get(pos[0], Board.H);
-			// rook must not have been moved already
-			if(p != null && p.type == ROOK && p.hasMoved == 0) {
-				// all spaces in between must be open
-				if(board.get(pos[0], Board.F) == null && board.get(pos[0], Board.G) == null) {
-					// the spaces in between must not be under attack
-					if(!board.isUnderAttack(pos[0], Board.F, this.color) && !board.isUnderAttack(pos[0], Board.G, this.color))
-						moves.add(new byte[]{pos[0], Board.G});
-				}
-			}
-			
-			// queen-side castling
 			p = board.get(pos[0], Board.A);
 			// rook must not have been moved already
 			if(p != null && p.type == ROOK && p.hasMoved == 0) {
 				// all spaces in between must be open
-				if(board.get(pos[0], Board.D) == null && board.get(pos[0], Board.C) == null && board.get(pos[0], Board.B) == null) {
+				if(board.get(pos[0], Board.B) == null && board.get(pos[0], Board.C) == null) {
 					// the spaces in between must not be under attack
-					if(!board.isUnderAttack(pos[0], Board.D, this.color) && !board.isUnderAttack(pos[0], Board.C, this.color) 
-							&& !board.isUnderAttack(pos[0], Board.B, this.color))
-						moves.add(new byte[]{pos[0], Board.C});
+					if(!board.isUnderAttack(pos[0], Board.C, this.color) && !board.isUnderAttack(pos[0], Board.B, this.color))
+						moves.add(new byte[]{pos[0], Board.B});
+				}
+			}
+			
+			// queen-side castling
+			p = board.get(pos[0], Board.H);
+			// rook must not have been moved already
+			if(p != null && p.type == ROOK && p.hasMoved == 0) {
+				// all spaces in between must be open
+				if(board.get(pos[0], Board.E) == null && board.get(pos[0], Board.F) == null) {
+					// the spaces in between must not be under attack
+					if(!board.isUnderAttack(pos[0], Board.E, this.color) && !board.isUnderAttack(pos[0], Board.F, this.color))
+						moves.add(new byte[]{pos[0], Board.F});
 				}
 			}
 		}

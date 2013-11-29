@@ -6,7 +6,9 @@ public class SearchUtils {
 	public static void AlphaBetaSearch(ChessBoard board) {
 		int v = MaxValue(board, Integer.MIN_VALUE, Integer.MAX_VALUE);
 		
-		// TODO - check for 
+		// TODO - check for ... forgot what I was gonna say here
+		
+		// return move
 	}
 	
 	public static int MaxValue(ChessBoard board, int alpha, int beta) {

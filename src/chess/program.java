@@ -21,7 +21,7 @@ public class program {
 			gameId = Integer.parseInt(args[1]);
 		}
 		
-		Board board = new Board();
+		ChessBoard board = new ChessBoard();
 		
 		//ServerAPI.setOurTeamDetails(007, "bond");		// hard code our team details here
 		ServerAPI.setGameId(gameId);
@@ -53,14 +53,14 @@ public class program {
 		//ServerAPI.setTeam1();
 		ServerAPI.poll();
 		
-		Board board = new Board();
+		ChessBoard board = new ChessBoard();
 		
 		// moves for white bishop
-		byte[] start = new byte[]{Board.R2, Board.B};
-		byte[] end = new byte[]{Board.R5, Board.B};
+		byte[] start = new byte[]{ChessBoard.R2, ChessBoard.B};
+		byte[] end = new byte[]{ChessBoard.R5, ChessBoard.B};
 		// move king to see what positions are open
 		board.move(start, end);
-		board.move(new byte[] {Board.R7, Board.C}, new byte[] {Board.R5, Board.C});
+		board.move(new byte[] {ChessBoard.R7, ChessBoard.C}, new byte[] {ChessBoard.R5, ChessBoard.C});
 		
 //		System.out.println(board);
 		

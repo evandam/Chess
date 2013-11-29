@@ -1,7 +1,6 @@
 package chess;
 
-
-public class Board {
+public class ChessBoard {
 	// convert files (a - h) to numerical values - these are the COLUMNS
 	public static final byte A = 0;
 	public static final byte B = 1;
@@ -24,12 +23,12 @@ public class Board {
 	
 	// indexes in white/blackPieces arrays for each piece
 	// to access the 2nd piece, add 1 to the starting index (ie ROOK + 1)
-	public static byte KING = 0;
-	public static byte QUEEN = 1;
-	public static byte ROOK = 2;
+	public static byte KING   = 0;
+	public static byte QUEEN  = 1;
+	public static byte ROOK   = 2;
 	public static byte BISHOP = 4;
 	public static byte KNIGHT = 6;
-	public static byte PAWN = 8;
+	public static byte PAWN   = 8;
 	
 	// variable to hold which color we are, this matters because we need to be correctly oriented
 	private byte ourColor;
@@ -40,10 +39,11 @@ public class Board {
 	// keep track of where the white/black pieces are on the board...quicker to access
 	// max size is 16 pieces so a plain old array is best
 	public byte[][] whitePieces, blackPieces;
+	// TODO - thinking of just keeping a count of number of each piece for each color for quick eval function calculations
 	
 	
 	// init all the pieces on the board
-	public Board() {
+	public ChessBoard() {
 		board = new Piece[8][8];
 		// hold the [rank, file] of each side's pieces
 		whitePieces = new byte[16][2];	// its more memory efficient to do [2][16]
@@ -51,7 +51,8 @@ public class Board {
 
 		// TODO - know which indexes refer to which pieces
 		
-		for(byte file = 0; file < 8; file++) {
+		// go through and set the pawns on each side
+		for(byte file = A; file <= H; file++) {
 			// both sides' pawns
 			board[R2][file] = new Piece(Piece.PAWN, Piece.WHITE);
 			board[R7][file] = new Piece(Piece.PAWN, Piece.BLACK);
@@ -62,6 +63,7 @@ public class Board {
 			blackPieces[PAWN + file][0] = R7;
 			blackPieces[PAWN + file][1] = file;
 		}
+		
 		// white pieces
 		board[R1][D] = new Piece(Piece.KING, Piece.WHITE);
 		whitePieces[KING][0] = R1;
@@ -130,6 +132,11 @@ public class Board {
 		blackPieces[KNIGHT + 1][1] = G;
 	}
 	
+	/**
+	 * Sets which color we are which determines our perspective. 
+	 * 
+	 * @param color - the color we are for this game
+	 */
 	public void setOurColor(byte color) {
 		this.ourColor = color;
 	}
@@ -220,9 +227,6 @@ public class Board {
 				
 		board[end[0]][end[1]] = board[start[0]][start[1]];
 		board[start[0]][start[1]] = null;
-		
-		
-		
 	}
 	
 	// add promotion to this too...
@@ -253,7 +257,34 @@ public class Board {
 		}
 		return false;
 	}
+	
+	
+	public int Utility() {
+		// TODO - actually write code to calculate this, have it calculate each time a move is made in searching maybe?
 		
+		/* Evaluation function to use?
+		 
+			f(p) = 200(K-K')
+		       + 9(Q-Q')
+		       + 5(R-R')
+		       + 3(B-B' + N-N')
+		       + 1(P-P')
+		       - 0.5(D-D' + S-S' + I-I')
+		       + 0.1(M-M') + ...
+		 
+			KQRBNP = number of kings, queens, rooks, bishops, knights and pawns
+			D,S,I = doubled, blocked and isolated pawns
+			M = Mobility (the number of legal moves)
+			
+		 */
+		
+		return 0;
+	}
+	
+	
+	
+	
+	
 	// convert the constant back to a character (a-h)
 	public static char getFile(byte i) {
 		switch(i) {

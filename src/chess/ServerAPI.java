@@ -43,7 +43,7 @@ public class ServerAPI {
 	}
 	
 	/**
-	 * Sets the game id from command line parameters
+	 * Sets the game id from command line parameters.
 	 * 
 	 * @param id - game id
 	 */
@@ -70,8 +70,8 @@ public class ServerAPI {
 			Matcher m = r.matcher(response);
 			if(m.find()) {
 				ready = m.group(1).equals("true");
-				secondsleft = Float.parseFloat(m.group(2));
-				lastmovenumber = Integer.parseInt(m.group(3));
+				secondsleft = Float.parseFloat(m.group(2));		// TODO - when its game over we get the following returned to us
+				lastmovenumber = Integer.parseInt(m.group(3));	// {"secondsleft": -47.027484, "lastmovenumber": 2, "lastmove": "Pa7a6", "winner": 1, "gameover": true, "ready": false}
 				lastmove = m.group(5);
 			}
 			else {
@@ -93,9 +93,9 @@ public class ServerAPI {
 			Pattern r = Pattern.compile(pat);
 			Matcher m = r.matcher(response);
 			if(m.find()) {
-				map.put("message", m.group(1));
-				map.put("result", m.group(2));
-				return map;
+				map.put("message", m.group(1));	// TODO - have to check for when the game is over which will be returned after a move
+				map.put("result", m.group(2));	// so instead of {"message": "", "result": true}
+				return map;						// we get a {"gameover": true, "winner": 1} if it is the end of the game
 			}
 			else {
 				System.out.println("I'm bad at regexes");
@@ -116,14 +116,14 @@ public class ServerAPI {
 	
 	public static byte[] getLastMoveStartPos() {
 		if(lastmove.length() > 2)
-			return new byte[] { Board.getRank(Byte.parseByte(lastmove.charAt(2) + "")), Board.getFile(lastmove.charAt(1))  };
+			return new byte[] { ChessBoard.getRank(Byte.parseByte(lastmove.charAt(2) + "")), ChessBoard.getFile(lastmove.charAt(1))  };
 		else
 			return null;
 	}
 	
 	public static byte[] getLastEndPos() {
 		if(lastmove.length() > 4)
-			return new byte[] { Board.getRank(Byte.parseByte(lastmove.charAt(4) + "")), Board.getFile(lastmove.charAt(3)) };
+			return new byte[] { ChessBoard.getRank(Byte.parseByte(lastmove.charAt(4) + "")), ChessBoard.getFile(lastmove.charAt(3)) };
 		else
 			return null;
 	}

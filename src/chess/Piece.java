@@ -28,7 +28,7 @@ public class Piece {
 	}
 		
 	// get the positions of the piece for all possible moves it can make
-	public ArrayList<byte[]> getPossibleMoves(Board board, byte[] pos) {
+	public ArrayList<byte[]> getPossibleMoves(ChessBoard board, byte[] pos) {
 		switch(type) {
 			case PAWN:
 				return getPawnMoves(board, pos);
@@ -47,7 +47,7 @@ public class Piece {
 
 	// A king can move into any adjacent square
 	// look into castling?
-	private ArrayList<byte[]> getKingMoves(Board board, byte[] pos) {
+	private ArrayList<byte[]> getKingMoves(ChessBoard board, byte[] pos) {
 		ArrayList<byte[]> moves = new ArrayList<byte[]>();
 		Piece p;
 		for(byte rank = (byte) (pos[0] - 1); rank <= (byte) (pos[0] + 1); rank++) {
@@ -65,26 +65,26 @@ public class Piece {
 		// king must not have moved yet
 		if(this.hasMoved == 0) {
 			// check for king-side castling
-			p = board.get(pos[0], Board.A);
+			p = board.get(pos[0], ChessBoard.A);
 			// rook must not have been moved already
 			if(p != null && p.type == ROOK && p.hasMoved == 0) {
 				// all spaces in between must be open
-				if(board.get(pos[0], Board.B) == null && board.get(pos[0], Board.C) == null) {
+				if(board.get(pos[0], ChessBoard.B) == null && board.get(pos[0], ChessBoard.C) == null) {
 					// the spaces in between must not be under attack
-					if(!board.isUnderAttack(pos[0], Board.C, this.color) && !board.isUnderAttack(pos[0], Board.B, this.color))
-						moves.add(new byte[]{pos[0], Board.B});
+					if(!board.isUnderAttack(pos[0], ChessBoard.C, this.color) && !board.isUnderAttack(pos[0], ChessBoard.B, this.color))
+						moves.add(new byte[]{pos[0], ChessBoard.B});
 				}
 			}
 			
 			// queen-side castling
-			p = board.get(pos[0], Board.H);
+			p = board.get(pos[0], ChessBoard.H);
 			// rook must not have been moved already
 			if(p != null && p.type == ROOK && p.hasMoved == 0) {
 				// all spaces in between must be open
-				if(board.get(pos[0], Board.E) == null && board.get(pos[0], Board.F) == null) {
+				if(board.get(pos[0], ChessBoard.E) == null && board.get(pos[0], ChessBoard.F) == null) {
 					// the spaces in between must not be under attack
-					if(!board.isUnderAttack(pos[0], Board.E, this.color) && !board.isUnderAttack(pos[0], Board.F, this.color))
-						moves.add(new byte[]{pos[0], Board.F});
+					if(!board.isUnderAttack(pos[0], ChessBoard.E, this.color) && !board.isUnderAttack(pos[0], ChessBoard.F, this.color))
+						moves.add(new byte[]{pos[0], ChessBoard.F});
 				}
 			}
 		}
@@ -92,14 +92,14 @@ public class Piece {
 	}
 
 	// A queen can move like a rook or a bishop (horizontal, vertical, diagonal)
-	private ArrayList<byte[]> getQueenMoves(Board board, byte[] pos) {
+	private ArrayList<byte[]> getQueenMoves(ChessBoard board, byte[] pos) {
 		ArrayList<byte[]> moves = getRookMoves(board, pos);
 		moves.addAll(getBishopMoves(board, pos));
 		return moves;
 	}
 
 	// A rook can move any number of spaces horizontally or vertically
-	private ArrayList<byte[]> getRookMoves(Board board, byte[] pos) {
+	private ArrayList<byte[]> getRookMoves(ChessBoard board, byte[] pos) {
 		ArrayList<byte[]> moves = new ArrayList<byte[]>();
 		Piece p;
 		// get moves along same file going down
@@ -154,7 +154,7 @@ public class Piece {
 	}
 
 	// A bishop can move any number of spaces along a diagonal
-	private ArrayList<byte[]> getBishopMoves(Board board, byte[] pos) {
+	private ArrayList<byte[]> getBishopMoves(ChessBoard board, byte[] pos) {
 		ArrayList<byte[]> moves = new ArrayList<byte[]>();
 		Piece p;
 		// top-left diagonal
@@ -225,7 +225,7 @@ public class Piece {
 	}
 
 	// An "L" shape, need to hardcode each move I think
-	private ArrayList<byte[]> getKnightMoves(Board board, byte[] pos) {
+	private ArrayList<byte[]> getKnightMoves(ChessBoard board, byte[] pos) {
 		ArrayList<byte[]> moves = new ArrayList<byte[]>();
 		// 1x2 moves
 		byte rank = (byte) (pos[0] - 1);
@@ -291,7 +291,7 @@ public class Piece {
 
 	// can move one space ahead, 2 if in starting position
 	// captures diagonally - figure out en passant captures
-	private ArrayList<byte[]> getPawnMoves(Board board, byte[] pos) {
+	private ArrayList<byte[]> getPawnMoves(ChessBoard board, byte[] pos) {
 		ArrayList<byte[]> moves = new ArrayList<byte[]>();
 		// white moves up (towards 0) and black moves down(towards 7)
 		byte forward = 1;
@@ -325,37 +325,37 @@ public class Piece {
 		}
 		// move two spaces on first turn
 		if(this.color == WHITE) {
-			if(rank == Board.R2){
-				p = board.get((byte) (Board.R4), file);
+			if(rank == ChessBoard.R2){
+				p = board.get((byte) (ChessBoard.R4), file);
 				if(p == null)
-					moves.add(new byte[]{Board.R4, file});
+					moves.add(new byte[]{ChessBoard.R4, file});
 			}
 			// en passant
-			else if(rank == Board.R5 && ServerAPI.getLastMovedPiece() == PAWN) {
+			else if(rank == ChessBoard.R5 && ServerAPI.getLastMovedPiece() == PAWN) {
 				byte[] lastmove = ServerAPI.getLastEndPos();
 				if(lastmove != null) {
 					p = board.get(lastmove[0], lastmove[1]);
 					// last move was a pawn advancing 2 spaces
 					if(p != null && p.hasMoved > 1) {
-						moves.add(new byte[]{Board.R6, lastmove[1]});
+						moves.add(new byte[]{ChessBoard.R6, lastmove[1]});
 					}
 				}
 			}
 		}
 		else {
-			if(rank == Board.R7){
-				p = board.get((byte) (Board.R5), file);
+			if(rank == ChessBoard.R7){
+				p = board.get((byte) (ChessBoard.R5), file);
 				if(p == null)
-					moves.add(new byte[]{Board.R5, file});
+					moves.add(new byte[]{ChessBoard.R5, file});
 			}
 			// en passant
-			else if(rank == Board.R4 && ServerAPI.getLastMovedPiece() == PAWN) {
+			else if(rank == ChessBoard.R4 && ServerAPI.getLastMovedPiece() == PAWN) {
 				byte[] lastmove = ServerAPI.getLastEndPos();
 				if(lastmove != null) {
 					p = board.get(lastmove[0], lastmove[1]);
 					// last move was a pawn advancing 2 spaces
 					if(p != null && p.hasMoved > 1) {
-						moves.add(new byte[]{Board.R3, lastmove[1]});
+						moves.add(new byte[]{ChessBoard.R3, lastmove[1]});
 					}
 				}
 			}

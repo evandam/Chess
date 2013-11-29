@@ -16,10 +16,12 @@ import java.util.regex.Pattern;
  *
  */
 public class ServerAPI {
-	public static int gameId;	// need to set this when game is started 
-	private static int teamNumber = 1;	// temporary
+	public static int gameId;						// need to set this when game is started 
+	private static int teamNumber = 1;				// temporary
 	private static String teamSecret = "32c68cae";	// temporary
 	private static String root = "http://www.bencarle.com/chess/";
+	
+	private static int pollInterval = 1; 
 	
 	// data from polling
 	public static boolean ready;
@@ -28,14 +30,34 @@ public class ServerAPI {
 	public static String lastmove = "Pd7d5";	// default to test en passant
 	
 	
-	public static void setTeam1() {
-		teamNumber = 1;
-		teamSecret = "32c68cae";
+	/**
+	 * Method to set our team number and secret once it is given to us,
+	 * otherwise it defaults to the given team 1.
+	 * 
+	 * @param num - team number
+	 * @param secret - team secret
+	 */
+	public static void setOurTeamDetails(int num, String secret) {
+		teamNumber = num;
+		teamSecret = secret;
 	}
 	
-	public static void setTeam2() {
-		teamNumber = 2;
-		teamSecret = "1a77594c";
+	/**
+	 * Sets the game id from command line parameters
+	 * 
+	 * @param id - game id
+	 */
+	public static void setGameId(int id) {
+		gameId = id;
+	}
+	
+	/**
+	 * Changes the poll interval should it be the case that we need to change it on the fly.
+	 * 
+	 * @param interval - new polling interval
+	 */
+	public static void setPollInterval(int interval) {
+		pollInterval = interval;
 	}
 	
 	public static void poll() {

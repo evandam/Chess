@@ -2,7 +2,7 @@ package chess;
 
 
 public class Board {
-	// convert files (a - h) to numerical values
+	// convert files (a - h) to numerical values - these are the COLUMNS
 	public static final byte A = 0;
 	public static final byte B = 1;
 	public static final byte C = 2;
@@ -12,15 +12,15 @@ public class Board {
 	public static final byte G = 6;
 	public static final byte H = 7;
 	
-	// ranks have a funny representation (highest on top, also start at 1)
-	public static final byte R8 = 0;
-	public static final byte R7 = 1;
-	public static final byte R6 = 2;
-	public static final byte R5 = 3;
-	public static final byte R4 = 4;
-	public static final byte R3 = 5;
-	public static final byte R2 = 6;
-	public static final byte R1 = 7;
+	// ranks have a funny representation (highest on top, also start at 1) - these are the ROWS
+	public static final byte R8 = 7;
+	public static final byte R7 = 6;
+	public static final byte R6 = 5;
+	public static final byte R5 = 4;
+	public static final byte R4 = 3;
+	public static final byte R3 = 2;
+	public static final byte R2 = 1;
+	public static final byte R1 = 0;
 	
 	// indexes in white/blackPieces arrays for each piece
 	// to access the 2nd piece, add 1 to the starting index (ie ROOK + 1)
@@ -31,6 +31,8 @@ public class Board {
 	public static byte KNIGHT = 6;
 	public static byte PAWN = 8;
 	
+	// variable to hold which color we are, this matters because we need to be correctly oriented
+	private byte ourColor;
 	
 	// [col, row] or [rank, file]
 	private Piece[][] board;
@@ -126,6 +128,10 @@ public class Board {
 		board[R8][G] = new Piece(Piece.KNIGHT, Piece.BLACK);
 		blackPieces[KNIGHT + 1][0] = R8;
 		blackPieces[KNIGHT + 1][1] = G;
+	}
+	
+	public void setOurColor(byte color) {
+		this.ourColor = color;
 	}
 	
 	public Piece get(byte rank, byte file) {

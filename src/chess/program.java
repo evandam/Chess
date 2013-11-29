@@ -3,6 +3,7 @@ package chess;
 import java.util.List;
 import java.util.Map;
 
+/* Code base for project */
 public class program {
 
 	/**

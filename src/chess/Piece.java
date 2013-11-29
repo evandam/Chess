@@ -15,9 +15,9 @@ public class Piece {
 	public static final byte BLACK = 1;
 	
 	// TODO: merge all of these into one byte
-	public byte type;	// pawn, knight, etc
-	public byte color;	// white or black
-	public byte hasMoved;	// 0 for false, 1 for true, 2 for pawn moving 2 spaces on first turn
+	private byte type;		// pawn, knight, etc
+	private byte color;		// white or black
+	private byte hasMoved;	// 0 for false, 1 for true, 2 for pawn moving 2 spaces on first turn
 	
 	// TODO add bool for if moved already or not for castling
 	
@@ -26,7 +26,31 @@ public class Piece {
 		this.color = color;
 		this.hasMoved = 0;
 	}
-		
+	
+	public byte getType() {
+		return this.type;
+	}
+	
+	public void setType(byte t) {
+		this.type = t;
+	}
+	
+	public byte getColor() {
+		return this.color;
+	}
+	
+	public void setColor(byte c) {
+		this.color = c;
+	}
+	
+	public byte getHasMoved() {
+		return this.hasMoved;
+	}
+	
+	public void setHasMoved(byte b) {
+		this.hasMoved = b;
+	}
+	
 	// get the positions of the piece for all possible moves it can make
 	public ArrayList<byte[]> getPossibleMoves(ChessBoard board, byte[] pos) {
 		switch(type) {
@@ -391,20 +415,20 @@ public class Piece {
 		return str;
 	}
 	
-	public static byte getType(char c) {
+	public static byte getNumericType(char c) {
 		switch(c) {
-		case 'P':
-			return PAWN;
-		case 'N':
-			return KNIGHT;
-		case 'B':
-			return BISHOP;
-		case 'R':
-			return ROOK;
-		case 'Q':
-			return QUEEN;
-		default:
-			return KING;
-	}
+			case 'P':
+				return PAWN;
+			case 'N':
+				return KNIGHT;
+			case 'B':
+				return BISHOP;
+			case 'R':
+				return ROOK;
+			case 'Q':
+				return QUEEN;
+			default:
+				return KING;
+		}
 	}
 }

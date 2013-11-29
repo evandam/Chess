@@ -109,7 +109,7 @@ public class ServerAPI {
 	// movestring functions
 	public static byte getLastMovedPiece() {
 		if(lastmove.length() > 0)
-			return Piece.getType(lastmove.charAt(0));
+			return Piece.getNumericType(lastmove.charAt(0));
 		else 
 			return -1;
 	}

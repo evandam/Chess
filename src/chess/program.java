@@ -11,6 +11,12 @@ public class program {
 	 */
 	public static void main(String[] args) {
 		
+		/*
+		Piece p = new Piece(Piece.KING, Piece.BLACK);	// parameter passing testing, if we set
+		System.out.println(p.toString());
+		pointerTest(p);
+		System.out.println(p.toString()); */
+		
 		int gameId;
 		
 		// we will pass the game id as a command line parameter
@@ -46,6 +52,14 @@ public class program {
 		}
 		
 		// TODO - start game play
+	}
+	
+	
+	private static void pointerTest(Piece p) {
+		/*p = new Piece(p.getType(), p.getColor());	// does not change the original object
+		p.setType(Piece.QUEEN);*/
+		
+		//p.setType(Piece.QUEEN);					// changes the original object
 	}
 	
 	

@@ -153,7 +153,7 @@ public class ChessBoard {
 		
 		// update the teams array of pieces
 		byte[][] pieces = whitePieces;
-		if(startPiece.color == Piece.BLACK)
+		if(startPiece.getColor() == Piece.BLACK)
 			pieces = blackPieces;
 		for(byte[] pos : pieces) {
 			if(start[0] == pos[0] && start[1] == pos[1]) {
@@ -167,7 +167,7 @@ public class ChessBoard {
 		// piece is captured, remove it from the list
 		if(endPiece != null) {
 			byte[][] enemyPieces = blackPieces;
-			if(endPiece.color == Piece.BLACK) 
+			if(endPiece.getColor() == Piece.BLACK) 
 				enemyPieces = whitePieces;
 			// find the piece's element in the array
 			for(int i = 0; i < enemyPieces.length; i++) {
@@ -179,13 +179,13 @@ public class ChessBoard {
 		}
 		
 		// mark that the piece has moved - necessary for castling and en passant
-		startPiece.hasMoved = 1;
+		startPiece.setHasMoved((byte) 1);
 		
 		// check for special cases for pawns
-		if(startPiece.type == Piece.PAWN) {
+		if(startPiece.getType() == Piece.PAWN) {
 			// moved up 2 ranks on first move
 			if(Math.abs(start[0] - end[0]) > 1)
-				startPiece.hasMoved = 2;
+				startPiece.setHasMoved((byte) 2);
 			// en passant - remove the piece that was adjacent
 			// the pawn moved diagonally but didn't capture the piece in that square, must be en passant
 			else if(start[1] != end[1] && endPiece == null) {
@@ -202,11 +202,11 @@ public class ChessBoard {
 			}
 			// queening promotion - should this be dynamic to allow others?
 			else if(end[0] == 0 || end[0] == 7) {
-				startPiece.type = Piece.QUEEN;					
+				startPiece.setType(Piece.QUEEN);					
 			}
 		}
 		// check for castling - moved 2 files
-		else if(startPiece.type == Piece.KING) {
+		else if(startPiece.getType() == Piece.KING) {
 			// king side castle
 			if(start[1] == D && end[1] == B) {
 				// move the rook too
@@ -340,7 +340,7 @@ public class ChessBoard {
 		for(byte rank = 0; rank < 8; rank++) {
 			for(byte file = 0; file < 8; file++) {
 				if(board[rank][file] != null) {
-					if(board[rank][file].color == Piece.WHITE)
+					if(board[rank][file].getColor() == Piece.WHITE)
 						str += "W";
 					else
 						str += "B";

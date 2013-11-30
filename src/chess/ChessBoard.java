@@ -34,102 +34,120 @@ public class ChessBoard {
 	private byte ourColor;
 	
 	// [col, row] or [rank, file]
-	private Piece[][] board;
+	// board will contain indexes into the white and black pieces arrays
+	private byte[][] board;
 	
 	// keep track of where the white/black pieces are on the board...quicker to access
 	// max size is 16 pieces so a plain old array is best
-	public byte[][] whitePieces, blackPieces;
+	public Piece[] whitePieces, blackPieces;
 	// TODO - thinking of just keeping a count of number of each piece for each color for quick eval function calculations
 	
 	
-	// init all the pieces on the board
+	/**
+	 * init all the pieces on the board
+	 */
 	public ChessBoard() {
-		board = new Piece[8][8];
-		// hold the [rank, file] of each side's pieces
-		whitePieces = new byte[16][2];	// its more memory efficient to do [2][16]
-		blackPieces = new byte[16][2];	// store rank and file in one byte
-
-		// TODO - know which indexes refer to which pieces
+		/* Board array structure
+		 * Each entry in this array will contain 1 of 3 values:
+		 * 
+		 * 1) 0 for empty
+		 * 2) index into the white pieces array plus 1 (values ranging from 1 to 16 initially)
+		 * 3) index into the black pieces array plus 1 * -1 (values ranging from -1 to -16 initially)
+		 */
+		board = new byte[8][8];
 		
+		// hold the piece object for each side's pieces
+		// we can resize these arrays when a move captures a piece
+		whitePieces = new Piece[16];	// its more memory efficient to do [2][16]
+		blackPieces = new Piece[16];	// store rank and file in one byte
+		
+		/* Pieces array structure:
+		 * arranged from highest number of moves to least number of moves
+		 * --> here is where we want to have an effective ordering for move generation
+		 * 
+		 * 0)  queen
+		 * 1)  rook
+		 * 2)  rook
+		 * 3)  bishop
+		 * 4)  bishop
+		 * 5)  knight
+		 * 6)  knight
+		 * 7)  king
+		 * 8)  pawn
+		 * 9)  pawn
+		 * 10) pawn
+		 * 11) pawn
+		 * 12) pawn
+		 * 13) pawn
+		 * 14) pawn
+		 * 15) pawn
+		 */
+
 		// go through and set the pawns on each side
 		for(byte file = A; file <= H; file++) {
 			// both sides' pawns
-			board[R2][file] = new Piece(Piece.PAWN, Piece.WHITE);
-			board[R7][file] = new Piece(Piece.PAWN, Piece.BLACK);
+			board[R2][file] = (byte) (9 + file);
+			board[R7][file] = (byte) (-9 - file);
 			
-			whitePieces[PAWN + file][0] = R2;
-			whitePieces[PAWN + file][1] = file;
-			
-			blackPieces[PAWN + file][0] = R7;
-			blackPieces[PAWN + file][1] = file;
+			whitePieces[8 + file] = new Piece(R2, file, Piece.PAWN);
+			blackPieces[8 + file] = new Piece(R7, file, Piece.PAWN);
 		}
 		
 		// white pieces
-		board[R1][D] = new Piece(Piece.KING, Piece.WHITE);
-		whitePieces[KING][0] = R1;
-		whitePieces[KING][1] = D;
+		board[R1][E] = 1;
+		whitePieces[0] = new Piece(R1, E, Piece.QUEEN);
 		
-		board[R1][E] = new Piece(Piece.QUEEN, Piece.WHITE);
-		whitePieces[QUEEN][0] = R1;
-		whitePieces[QUEEN][1] = E;
+		board[R1][A] = 2;
+		whitePieces[1] = new Piece(R1, A, Piece.ROOK);
 		
-		board[R1][A] = new Piece(Piece.ROOK, Piece.WHITE);
-		whitePieces[ROOK][0] = R1;
-		whitePieces[ROOK][1] = A;
+		board[R1][H] = 3;
+		whitePieces[2] = new Piece(R1, H, Piece.ROOK);
 		
-		board[R1][H] = new Piece(Piece.ROOK, Piece.WHITE);
-		whitePieces[ROOK + 1][0] = R1;
-		whitePieces[ROOK + 1][1] = H;
+		board[R1][C] = 4;
+		whitePieces[3] = new Piece(R1, C, Piece.BISHOP);
 		
-		board[R1][C] = new Piece(Piece.BISHOP, Piece.WHITE);
-		whitePieces[BISHOP][0] = R1;
-		whitePieces[BISHOP][1] = C;
+		board[R1][F] = 5;
+		whitePieces[4] = new Piece(R1, F, Piece.BISHOP);
 		
-		board[R1][F] = new Piece(Piece.BISHOP, Piece.WHITE);
-		whitePieces[BISHOP + 1][0] = R1;
-		whitePieces[BISHOP + 1][1] = F;
+		board[R1][B] = 6;
+		whitePieces[5] = new Piece(R1, B, Piece.KNIGHT);
 		
-		board[R1][B] = new Piece(Piece.KNIGHT, Piece.WHITE);
-		whitePieces[KNIGHT][0] = R1;
-		whitePieces[KNIGHT][1] = B;
+		board[R1][G] = 7;
+		whitePieces[6] = new Piece(R1, G, Piece.KNIGHT);
 		
-		board[R1][G] = new Piece(Piece.KNIGHT, Piece.WHITE);
-		whitePieces[KNIGHT + 1][0] = R1;
-		whitePieces[KNIGHT + 1][1] = G;
+		board[R1][D] = 8;
+		whitePieces[7] = new Piece(R1, D, Piece.KING);
 		
 		
 		// black pieces
-		board[R8][D] = new Piece(Piece.KING, Piece.BLACK);
-		blackPieces[KING][0] = R8;
-		blackPieces[KING][1] = D;
+		board[R8][E] = -1;
+		blackPieces[0] = new Piece(R8, E, Piece.QUEEN);
 		
-		board[R8][E] = new Piece(Piece.QUEEN, Piece.BLACK);
-		blackPieces[QUEEN][0] = R8;
-		blackPieces[QUEEN][1] = E;
+		board[R8][A] = -2;
+		blackPieces[1] = new Piece(R8, A, Piece.ROOK);
 		
-		board[R8][A] = new Piece(Piece.ROOK, Piece.BLACK);
-		blackPieces[ROOK][0] = R8;
-		blackPieces[ROOK][1] = A;
+		board[R8][H] = -3;
+		blackPieces[2] = new Piece(R8, H, Piece.ROOK);
 		
-		board[R8][H] = new Piece(Piece.ROOK, Piece.BLACK);
-		blackPieces[ROOK + 1][0] = R8;
-		blackPieces[ROOK + 1][1] = H;
+		board[R8][C] = -4;
+		blackPieces[3] = new Piece(R8, C, Piece.BISHOP);
 		
-		board[R8][C] = new Piece(Piece.BISHOP, Piece.BLACK);
-		blackPieces[BISHOP][0] = R8;
-		blackPieces[BISHOP][1] = C;
-
-		board[R8][F] = new Piece(Piece.BISHOP, Piece.BLACK);
-		blackPieces[BISHOP + 1][0] = R8;
-		blackPieces[BISHOP + 1][1] = F;
+		board[R8][F] = -5;
+		blackPieces[4] = new Piece(R8, F, Piece.BISHOP);
 		
-		board[R8][B] = new Piece(Piece.KNIGHT, Piece.BLACK);
-		blackPieces[KNIGHT][0] = R8;
-		blackPieces[KNIGHT][1] = B;
+		board[R8][B] = -6;
+		blackPieces[5] = new Piece(R8, B, Piece.KNIGHT);
 		
-		board[R8][G] = new Piece(Piece.KNIGHT, Piece.BLACK);
-		blackPieces[KNIGHT + 1][0] = R8;
-		blackPieces[KNIGHT + 1][1] = G;
+		board[R8][G] = -7;
+		blackPieces[6] = new Piece(R8, G, Piece.KNIGHT);
+		
+		board[R8][D] = -8;
+		blackPieces[7] = new Piece(R8, D, Piece.KING);
+	}
+	
+	public ChessBoard(byte[][] b) {
+		// TODO - overloaded constructor for creating new chess board
+		// objects when we search to avoid cloning
 	}
 	
 	/**
@@ -142,41 +160,53 @@ public class ChessBoard {
 	}
 	
 	public Piece get(byte rank, byte file) {
-		return board[rank][file];
+		int idx = board[rank][file];
+		// check for no piece in that square
+		if(idx == 0)
+			return null;
+		// return either the white piece or the black piece
+		return idx > 0 ? whitePieces[idx - 1] : blackPieces[(idx*-1) - 1];
 	}
 	
 	// don't handle any fancy moves yet
 	// maybe return a new instance of the board?
-	public void move(byte[] start, byte[] end) {
+	// TODO - handle promotions better?
+	public void move(byte startRank, byte startFile, byte endRank, byte endFile) {
 		// check if opponent's piece was in that spot and update black + white piece positions
-		Piece startPiece = board[start[0]][start[1]];
 		
-		// update the teams array of pieces
-		byte[][] pieces = whitePieces;
-		if(startPiece.getColor() == Piece.BLACK)
-			pieces = blackPieces;
-		for(byte[] pos : pieces) {
-			if(start[0] == pos[0] && start[1] == pos[1]) {
-				pos[0] = end[0];
-				pos[1] = end[1];
-				break;
-			}
-		}
+		// get the index into either the white or black pieces array for the starting position
+		int startIdx = board[startRank][startFile];
+		// get the piece that is on the given spot
+		Piece startPiece = startIdx > 0 ? whitePieces[startIdx - 1] : blackPieces[(startIdx*-1) - 1];
+		// clear out the spot on the board since the piece is being moved from there
+		board[startRank][startFile] = 0;
 		
-		Piece endPiece = board[end[0]][end[1]];
-		// piece is captured, remove it from the list
+		// get the index into either the white or black pieces array or blank spot for the ending position
+		int endIdx = board[endRank][endFile];
+		// get the piece that is on the given spot
+		Piece endPiece = endIdx > 0 ? whitePieces[endIdx - 1] : blackPieces[(endIdx*-1) - 1];
+		
+		// if piece is captured, remove it from the list
 		if(endPiece != null) {
-			byte[][] enemyPieces = blackPieces;
-			if(endPiece.getColor() == Piece.BLACK) 
-				enemyPieces = whitePieces;
-			// find the piece's element in the array
-			for(int i = 0; i < enemyPieces.length; i++) {
-				if(enemyPieces[i][0] == end[0] && enemyPieces[i][1] == end[1]) {
-					enemyPieces[i] = null;
-					break;
-				}
+			endPiece = null;
+			board[endRank][endFile] = 0;
+			
+			// remove the entry in the white pieces array
+			if(endIdx > 0) {
+				// remove the piece from the pieces array
+				Piece[] newArr = new Piece[whitePieces.length - 1];
+				System.arraycopy(whitePieces, 0, newArr, 0, endIdx - 1);
+				System.arraycopy(whitePieces, endIdx, newArr, endIdx - 1, whitePieces.length - endIdx);
+			}
+			else {
+				// remove the piece from the pieces array
+				Piece[] newArr = new Piece[blackPieces.length - 1];
+				System.arraycopy(blackPieces, 0, newArr, 0, endIdx - 1);
+				System.arraycopy(blackPieces, endIdx, newArr, endIdx - 1, blackPieces.length - endIdx);
 			}
 		}
+		
+		// TODO - finish converting ...
 		
 		// mark that the piece has moved - necessary for castling and en passant
 		startPiece.setHasMoved((byte) 1);
@@ -224,7 +254,7 @@ public class ChessBoard {
 				pieces[ROOK][1] = E; 
 			}
 		}
-				
+		
 		board[end[0]][end[1]] = board[start[0]][start[1]];
 		board[start[0]][start[1]] = null;
 	}
@@ -261,6 +291,15 @@ public class ChessBoard {
 	
 	public int Utility() {
 		// TODO - actually write code to calculate this, have it calculate each time a move is made in searching maybe?
+		
+		// here is where we use ourColor to determine how we calculate the utility
+		
+		int blackKings, blackQueens, blackRooks, blackBishops, blackKnights, blackPawns,
+			whiteKings, whiteQueens, whiteRooks, whiteBishops, whiteKnights, whitePawns;
+		
+		for(int i = 0; i < this.whitePieces.length; i++) {
+			
+		}
 		
 		/* Evaluation function to use?
 		 

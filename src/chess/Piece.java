@@ -14,17 +14,46 @@ public class Piece {
 	public static final byte WHITE = 0;
 	public static final byte BLACK = 1;
 	
-	// TODO: merge all of these into one byte
+	private byte positionRank, positionFile;
 	private byte type;		// pawn, knight, etc
 	private byte color;		// white or black
 	private byte hasMoved;	// 0 for false, 1 for true, 2 for pawn moving 2 spaces on first turn
-	
-	// TODO add bool for if moved already or not for castling
 	
 	public Piece(byte type, byte color) {
 		this.type = type;
 		this.color = color;
 		this.hasMoved = 0;
+	}
+	
+	public Piece(byte rank, byte file, byte type) {
+		this.positionRank = rank;
+		this.positionFile = file;
+		this.type = type;
+		this.hasMoved = 0;
+	}
+	
+	public Piece(byte rank, byte file, byte type, byte color) {
+		this.positionRank = rank;
+		this.positionFile = file;
+		this.type = type;
+		this.color = color;
+		this.hasMoved = 0;
+	}
+	
+	public byte getRank() {
+		return this.positionRank;
+	}
+	
+	public void setRank(byte r) {
+		this.positionRank = r;
+	}
+	
+	public byte getFile() {
+		return this.positionFile;
+	}
+	
+	public void setFile(byte f) {
+		this.positionFile = f;
 	}
 	
 	public byte getType() {

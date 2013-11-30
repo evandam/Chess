@@ -5,7 +5,7 @@ import java.util.Map;
 
 /* Code base for project */
 public class program {
-
+	
 	/**
 	 * @param args
 	 */
@@ -73,8 +73,8 @@ public class program {
 		byte[] start = new byte[]{ChessBoard.R2, ChessBoard.B};
 		byte[] end = new byte[]{ChessBoard.R5, ChessBoard.B};
 		// move king to see what positions are open
-		board.move(start, end);
-		board.move(new byte[] {ChessBoard.R7, ChessBoard.C}, new byte[] {ChessBoard.R5, ChessBoard.C});
+		//board.move(start, end);
+		//board.move(new byte[] {ChessBoard.R7, ChessBoard.C}, new byte[] {ChessBoard.R5, ChessBoard.C});
 		
 //		System.out.println(board);
 		
@@ -86,7 +86,7 @@ public class program {
 		}
 				
 		// test en passant
-		board.move(end, new byte[]{2, 2});
+		//board.move(end, new byte[]{2, 2});
 //		System.out.println(board);
 		/*byte[] start = {Board.R1, Board.B};
 		byte[] end = {Board.R3, Board.C};

@@ -277,20 +277,64 @@ public class ChessBoard {
 	}
 	
 	
-	public int Utility() {
-		// TODO - actually write code to calculate this, have it calculate each time a move is made in searching maybe?
+	public double Utility() {
+		// TODO - need to calculate the number of legal moves for each side
+		//      - might be better to keep a running tally and only subtract from it when a capture takes place,
+		//      - would also be good to keep total number of moves available 
 		
-		// here is where we use ourColor to determine how we calculate the utility
+		int blackKings = 0, blackQueens = 0, blackRooks = 0, blackBishops = 0, blackKnights = 0, blackPawns = 0,
+			whiteKings = 0, whiteQueens = 0, whiteRooks = 0, whiteBishops = 0, whiteKnights = 0, whitePawns = 0;
 		
-		int blackKings, blackQueens, blackRooks, blackBishops, blackKnights, blackPawns,
-			whiteKings, whiteQueens, whiteRooks, whiteBishops, whiteKnights, whitePawns;
-		
+		// count the white pieces
 		for(int i = 0; i < this.whitePieces.length; i++) {
-			
+			switch(whitePieces[i].getType()) {
+				case Piece.KING:
+					whiteKings++;
+					break;
+				case Piece.QUEEN:
+					whiteQueens++;
+					break;
+				case Piece.ROOK:
+					whiteRooks++;
+					break;
+				case Piece.BISHOP:
+					whiteBishops++;
+					break;
+				case Piece.KNIGHT:
+					whiteKnights++;
+					break;
+				case Piece.PAWN:
+					whitePawns++;
+					break;
+			}
 		}
 		
-		/* Evaluation function to use?
-		 
+		// count the black pieces
+		for(int i = 0; i < this.blackPieces.length; i++) {
+			switch(blackPieces[i].getType()) {
+				case Piece.KING:
+					blackKings++;
+					break;
+				case Piece.QUEEN:
+					blackQueens++;
+					break;
+				case Piece.ROOK:
+					blackRooks++;
+					break;
+				case Piece.BISHOP:
+					blackBishops++;
+					break;
+				case Piece.KNIGHT:
+					blackKnights++;
+					break;
+				case Piece.PAWN:
+					blackPawns++;
+					break;
+			}
+		}
+		
+		/* Evaluation function
+		 * 
 			f(p) = 200(K-K')
 		       + 9(Q-Q')
 		       + 5(R-R')
@@ -302,10 +346,30 @@ public class ChessBoard {
 			KQRBNP = number of kings, queens, rooks, bishops, knights and pawns
 			D,S,I = doubled, blocked and isolated pawns
 			M = Mobility (the number of legal moves)
-			
 		 */
 		
-		return 0;
+		// here is where we use ourColor to determine how we calculate the utility
+		double util;
+		if(this.ourColor == Piece.WHITE) {
+			util = 200 * (whiteKings - blackKings) +
+					9 * (whiteQueens - blackQueens) +
+					5 * (whiteRooks - blackRooks) +
+					3 * (whiteBishops - blackBishops + whiteKnights - blackKnights) +
+					1 * (whitePawns - blackPawns);// +
+					/*-0.5 * () +
+					0.1 * ();*/
+		}
+		else {
+			util = 200 * (blackKings - whiteKings) +
+					9 * (blackQueens - whiteQueens) +
+					5 * (blackRooks - whiteRooks) +
+					3 * (blackBishops - whiteBishops + blackKnights - whiteKnights) +
+					1 * (blackPawns - whitePawns);// +
+					/*-0.5 * () +
+					0.1 * ();*/
+		}
+		
+		return util;
 	}
 	
 	
@@ -313,7 +377,7 @@ public class ChessBoard {
 	
 	
 	// convert the constant back to a character (a-h)
-	public static char getFile(byte i) {
+	/*public static char getFile(byte i) {
 		switch(i) {
 		case A:
 			return 'a';
@@ -332,7 +396,7 @@ public class ChessBoard {
 		default:
 			return 'h';
 		}
-	}
+	}*/
 	
 	// convert the char to a constant byte
 	public static byte getFile(char c) {
@@ -357,9 +421,9 @@ public class ChessBoard {
 	}
 	
 	// convert from constant (0-7) to standard repr. for chess (8-1)
-	/*public static byte getRank(byte i) {
-		return (byte) (8 - i);
-	}*/
+	public static byte getRank(byte i) {
+		return (byte) (i - 1);
+	}
 	
 	@Override
 	public String toString() {

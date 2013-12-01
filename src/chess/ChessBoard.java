@@ -89,60 +89,60 @@ public class ChessBoard {
 			board[R2][file] = (byte) (9 + file);
 			board[R7][file] = (byte) (-9 - file);
 			
-			whitePieces[8 + file] = new Piece(R2, file, Piece.PAWN);
-			blackPieces[8 + file] = new Piece(R7, file, Piece.PAWN);
+			whitePieces[8 + file] = new Piece(R2, file, Piece.PAWN, Piece.WHITE);
+			blackPieces[8 + file] = new Piece(R7, file, Piece.PAWN, Piece.BLACK);
 		}
 		
 		// white pieces
 		board[R1][E] = 1;
-		whitePieces[0] = new Piece(R1, E, Piece.QUEEN);
+		whitePieces[0] = new Piece(R1, E, Piece.QUEEN, Piece.WHITE);
 		
 		board[R1][A] = 2;
-		whitePieces[1] = new Piece(R1, A, Piece.ROOK);
+		whitePieces[1] = new Piece(R1, A, Piece.ROOK, Piece.WHITE);
 		
 		board[R1][H] = 3;
-		whitePieces[2] = new Piece(R1, H, Piece.ROOK);
+		whitePieces[2] = new Piece(R1, H, Piece.ROOK, Piece.WHITE);
 		
 		board[R1][C] = 4;
-		whitePieces[3] = new Piece(R1, C, Piece.BISHOP);
+		whitePieces[3] = new Piece(R1, C, Piece.BISHOP, Piece.WHITE);
 		
 		board[R1][F] = 5;
-		whitePieces[4] = new Piece(R1, F, Piece.BISHOP);
+		whitePieces[4] = new Piece(R1, F, Piece.BISHOP, Piece.WHITE);
 		
 		board[R1][B] = 6;
-		whitePieces[5] = new Piece(R1, B, Piece.KNIGHT);
+		whitePieces[5] = new Piece(R1, B, Piece.KNIGHT, Piece.WHITE);
 		
 		board[R1][G] = 7;
-		whitePieces[6] = new Piece(R1, G, Piece.KNIGHT);
+		whitePieces[6] = new Piece(R1, G, Piece.KNIGHT, Piece.WHITE);
 		
 		board[R1][D] = 8;
-		whitePieces[7] = new Piece(R1, D, Piece.KING);
+		whitePieces[7] = new Piece(R1, D, Piece.KING, Piece.WHITE);
 		
 		
 		// black pieces
 		board[R8][E] = -1;
-		blackPieces[0] = new Piece(R8, E, Piece.QUEEN);
+		blackPieces[0] = new Piece(R8, E, Piece.QUEEN, Piece.BLACK);
 		
 		board[R8][A] = -2;
-		blackPieces[1] = new Piece(R8, A, Piece.ROOK);
+		blackPieces[1] = new Piece(R8, A, Piece.ROOK, Piece.BLACK);
 		
 		board[R8][H] = -3;
-		blackPieces[2] = new Piece(R8, H, Piece.ROOK);
+		blackPieces[2] = new Piece(R8, H, Piece.ROOK, Piece.BLACK);
 		
 		board[R8][C] = -4;
-		blackPieces[3] = new Piece(R8, C, Piece.BISHOP);
+		blackPieces[3] = new Piece(R8, C, Piece.BISHOP, Piece.BLACK);
 		
 		board[R8][F] = -5;
-		blackPieces[4] = new Piece(R8, F, Piece.BISHOP);
+		blackPieces[4] = new Piece(R8, F, Piece.BISHOP, Piece.BLACK);
 		
 		board[R8][B] = -6;
-		blackPieces[5] = new Piece(R8, B, Piece.KNIGHT);
+		blackPieces[5] = new Piece(R8, B, Piece.KNIGHT, Piece.BLACK);
 		
 		board[R8][G] = -7;
-		blackPieces[6] = new Piece(R8, G, Piece.KNIGHT);
+		blackPieces[6] = new Piece(R8, G, Piece.KNIGHT, Piece.BLACK);
 		
 		board[R8][D] = -8;
-		blackPieces[7] = new Piece(R8, D, Piece.KING);
+		blackPieces[7] = new Piece(R8, D, Piece.KING, Piece.BLACK);
 	}
 	
 	public ChessBoard(byte[][] b) {
@@ -168,109 +168,101 @@ public class ChessBoard {
 		return idx > 0 ? whitePieces[idx - 1] : blackPieces[(idx*-1) - 1];
 	}
 	
+	/**
+	 * Use this method whenever a piece is captured and we need to remove it from
+	 * the whitePieces or blackPieces array, this method also clears the spot on the board.
+	 * 
+	 * @param rank - rank on the board of the piece being captured 
+	 * @param file - file on the board of the piece being captured
+	 */
+	private void capture(int rank, int file) {
+		int idx = board[rank][file];
+		
+		// remove the entry in the white pieces array
+		if(idx > 0) {
+			// remove the piece from the pieces array
+			Piece[] newArr = new Piece[whitePieces.length - 1];
+			System.arraycopy(whitePieces, 0, newArr, 0, idx - 1);
+			System.arraycopy(whitePieces, idx, newArr, idx - 1, whitePieces.length - idx);
+			this.whitePieces = newArr;
+		}
+		else {
+			// remove the piece from the pieces array
+			Piece[] newArr = new Piece[blackPieces.length - 1];
+			System.arraycopy(blackPieces, 0, newArr, 0, idx - 1);
+			System.arraycopy(blackPieces, idx, newArr, idx - 1, blackPieces.length - idx);
+			this.blackPieces = newArr;
+		}
+		// clear the space on the board where this piece used to be
+		this.board[rank][file] = 0;
+	}
+	
 	// don't handle any fancy moves yet
 	// maybe return a new instance of the board?
 	// TODO - handle promotions better?
 	public void move(byte startRank, byte startFile, byte endRank, byte endFile) {
-		// check if opponent's piece was in that spot and update black + white piece positions
-		
-		// get the index into either the white or black pieces array for the starting position
-		int startIdx = board[startRank][startFile];
-		// get the piece that is on the given spot
-		Piece startPiece = startIdx > 0 ? whitePieces[startIdx - 1] : blackPieces[(startIdx*-1) - 1];
-		// clear out the spot on the board since the piece is being moved from there
-		board[startRank][startFile] = 0;
-		
-		// get the index into either the white or black pieces array or blank spot for the ending position
-		int endIdx = board[endRank][endFile];
-		// get the piece that is on the given spot
-		Piece endPiece = endIdx > 0 ? whitePieces[endIdx - 1] : blackPieces[(endIdx*-1) - 1];
-		
-		// if piece is captured, remove it from the list
-		if(endPiece != null) {
-			endPiece = null;
-			board[endRank][endFile] = 0;
-			
-			// remove the entry in the white pieces array
-			if(endIdx > 0) {
-				// remove the piece from the pieces array
-				Piece[] newArr = new Piece[whitePieces.length - 1];
-				System.arraycopy(whitePieces, 0, newArr, 0, endIdx - 1);
-				System.arraycopy(whitePieces, endIdx, newArr, endIdx - 1, whitePieces.length - endIdx);
-			}
-			else {
-				// remove the piece from the pieces array
-				Piece[] newArr = new Piece[blackPieces.length - 1];
-				System.arraycopy(blackPieces, 0, newArr, 0, endIdx - 1);
-				System.arraycopy(blackPieces, endIdx, newArr, endIdx - 1, blackPieces.length - endIdx);
-			}
-		}
-		
-		// TODO - finish converting ...
+		// get the piece that is on the starting spot
+		Piece startPiece = this.get(startRank, startFile);
+		// get the piece that is on the ending spot
+		Piece endPiece = this.get(endRank, endFile);
 		
 		// mark that the piece has moved - necessary for castling and en passant
 		startPiece.setHasMoved((byte) 1);
 		
-		// check for special cases for pawns
+		// if piece is captured, remove it from the list
+		if(endPiece != null) {
+			this.capture(endRank, endFile);
+		}
+		
+		// check for special cases for pawns - en passant and promotions
 		if(startPiece.getType() == Piece.PAWN) {
-			// moved up 2 ranks on first move
-			if(Math.abs(start[0] - end[0]) > 1)
+			// if the pawn moved up 2 ranks on first move, set has moved appropriately
+			if(Math.abs(startRank - endRank) > 1)
 				startPiece.setHasMoved((byte) 2);
-			// en passant - remove the piece that was adjacent
-			// the pawn moved diagonally but didn't capture the piece in that square, must be en passant
-			else if(start[1] != end[1] && endPiece == null) {
-				endPiece = board[start[0]][end[1]];
-				board[start[0]][end[1]] = null;
-
-				// find the piece's element in the array and remove it
-				for(int i = 0; i < pieces.length; i++) {
-					if(pieces[i][0] == end[0] && pieces[i][1] == end[1]) {
-						pieces[i] = null;
-						break;
-					}
-				}
+			// en passant - the pawn moved diagonally but didn't capture the piece in that square
+			else if(startFile != endFile && endPiece == null) {
+				this.capture(startRank, endFile);
 			}
-			// queening promotion - should this be dynamic to allow others?
-			else if(end[0] == 0 || end[0] == 7) {
-				startPiece.setType(Piece.QUEEN);					
+			// TODO - need to handle other promotions if opponent decides to promote to something else
+			//		  possibly have an overloaded method with promotion type to just handle this one instance?
+			else if(endRank == ChessBoard.R1 || endRank == ChessBoard.R8) {
+				startPiece.setType(Piece.QUEEN);
 			}
 		}
 		// check for castling - moved 2 files
 		else if(startPiece.getType() == Piece.KING) {
-			// king side castle
-			if(start[1] == D && end[1] == B) {
+			// king side castling
+			if(startFile == D && endFile == B) {
 				// move the rook too
-				board[start[0]][C] = board[start[0]][A];
-				board[start[0]][A] = null;
-				// update the player's array
-				pieces[ROOK + 1][1] = C; 
+				this.board[startRank][C] = this.board[startRank][A];
+				this.board[startRank][A] = 0;
 			}
 			// queen side castle
-			else if(start[1] == D && end[1] == F) {
+			else if(startFile == D && endFile == F) {
 				// move the rook too
-				board[start[0]][E] = board[start[0]][H];
-				board[start[0]][H] = null;
-				// update the player's array
-				pieces[ROOK][1] = E; 
+				this.board[startRank][E] = this.board[startRank][H];
+				this.board[startRank][H] = 0;
 			}
 		}
 		
-		board[end[0]][end[1]] = board[start[0]][start[1]];
-		board[start[0]][start[1]] = null;
+		// finally update the board - move the piece from the starting spot to the ending spot
+		this.board[endRank][endFile] = this.board[startRank][startFile];
+		// clear out the starting spot since the piece is being moved from there
+		this.board[startRank][startFile] = 0;
 	}
 	
 	// add promotion to this too...
-	public String getMoveString(byte[] start, byte[] end) {
+	/*public String getMoveString(byte startRank, byte startFile, byte endRank, byte endFile) {
 		// i.e. Pd2d3, Nb1c3
-		String moveString = board[end[0]][end[1]].toString();		// piece type
+		String moveString = board[endRank][endFile].toString();		// piece type
 		moveString += getFile(start[1]) + "" + getRank(start[0]);	// beginning pos
 		moveString += getFile(end[1]) + "" + getRank(end[0]);		// end pos
 		return moveString;
-	}
+	}*/
 	
 	// check all possible enemy moves to see if they can attack the location
 	public boolean isUnderAttack(byte rank, byte file, byte color) {
-		byte[][] pieces = whitePieces;
+		Piece[] pieces = whitePieces;
 		if(color == Piece.WHITE) 
 			pieces = blackPieces;
 		Piece p;
@@ -369,9 +361,9 @@ public class ChessBoard {
 	}
 	
 	// convert from constant (0-7) to standard repr. for chess (8-1)
-	public static byte getRank(byte i) {
+	/*public static byte getRank(byte i) {
 		return (byte) (8 - i);
-	}
+	}*/
 	
 	@Override
 	public String toString() {

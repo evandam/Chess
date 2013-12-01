@@ -25,12 +25,12 @@ public class Piece {
 		this.hasMoved = 0;
 	}
 	
-	public Piece(byte rank, byte file, byte type) {
+	/*public Piece(byte rank, byte file, byte type) {
 		this.positionRank = rank;
 		this.positionFile = file;
 		this.type = type;
 		this.hasMoved = 0;
-	}
+	}*/
 	
 	public Piece(byte rank, byte file, byte type, byte color) {
 		this.positionRank = rank;
@@ -40,7 +40,7 @@ public class Piece {
 		this.hasMoved = 0;
 	}
 	
-	public byte getRank() {
+	/*public byte getRank() {
 		return this.positionRank;
 	}
 	
@@ -54,7 +54,7 @@ public class Piece {
 	
 	public void setFile(byte f) {
 		this.positionFile = f;
-	}
+	}*/
 	
 	public byte getType() {
 		return this.type;

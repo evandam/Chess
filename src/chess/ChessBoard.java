@@ -265,16 +265,12 @@ public class ChessBoard {
 		Piece[] pieces = whitePieces;
 		if(color == Piece.WHITE) 
 			pieces = blackPieces;
-		Piece p;
 		// go through each piece the enemy has and check if it can move into the square
-		for(byte[] pos : pieces) {
-			p = board[pos[0]][pos[1]];
-			if(p != null) {
-				for(byte[] attackLoc : p.getPossibleMoves(this, new byte[]{rank, file})) {
-					// the square can be attacked
-					if(rank == attackLoc[0] && file == attackLoc[1])
-						return true;
-				}
+		for(Piece pos : pieces) {
+			for(byte[] attackLoc : pos.getPossibleMoves(this, new byte[]{rank, file})) {
+				// the square can be attacked
+				if(rank == attackLoc[0] && file == attackLoc[1])
+					return true;
 			}
 		}
 		return false;

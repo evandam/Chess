@@ -364,14 +364,15 @@ public class ChessBoard {
 	@Override
 	public String toString() {
 		String str = "";
-		for(byte rank = 0; rank < 8; rank++) {
-			for(byte file = 0; file < 8; file++) {
-				if(board[rank][file] != null) {
-					if(board[rank][file].getColor() == Piece.WHITE)
+		for(byte rank = R1; rank < R8; rank++) {
+			for(byte file = A; file < H; file++) {
+				if(this.board[rank][file] != 0) {
+					Piece chessPiece = this.get(rank, file); 
+					if(chessPiece.getColor() == Piece.WHITE)
 						str += "W";
 					else
 						str += "B";
-					str += board[rank][file].toString() + " ";
+					str += chessPiece.toString() + " ";
 				}
 				else {
 					str += "---";

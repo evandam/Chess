@@ -48,7 +48,7 @@ public class SearchUtils {
 		ChessBoard newBoard;
 		for(Integer startPos : moves.keySet()) {
 			byte startFile = (byte) (startPos % 10);
-			byte startRank = (byte) (startPos - startFile % 100);
+			byte startRank = (byte) (startPos % 100 / 10);
 			for(byte[] endPos : moves.get(startPos)) {
 				newBoard = board.clone();
 				newBoard.move(startRank, startFile, endPos[0], endPos[1]);
@@ -83,7 +83,7 @@ public class SearchUtils {
 		ChessBoard newBoard;
 		for(Integer startPos : moves.keySet()) {
 			byte startFile = (byte) (startPos % 10);
-			byte startRank = (byte) (startPos - startFile % 100);
+			byte startRank = (byte) (startPos % 100 / 10);
 			for(byte[] endPos : moves.get(startPos)) {
 				newBoard = board.clone();
 				newBoard.move(startRank, startFile, endPos[0], endPos[1]);

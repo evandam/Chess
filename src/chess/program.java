@@ -78,12 +78,12 @@ public class program {
 		
 //		System.out.println(board);
 		
-		List<byte[]> moves = board.get(end[0], end[1]).getPossibleMoves(board, end);
+		//List<byte[]> moves = board.get(end[0], end[1]).getPossibleMoves(board, end);
 //		System.out.println("possible moves: ");
 		
-		for(byte[] newPos : moves) {
+		//for(byte[] newPos : moves) {
 //			System.out.println(newPos[0] + ", " + newPos[1]);
-		}
+		//}
 				
 		// test en passant
 		//board.move(end, new byte[]{2, 2});

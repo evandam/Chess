@@ -276,8 +276,13 @@ public class ChessBoard {
 		return false;
 	}
 	
+	// checkmate (one player doesn't have a king..pretty crude for now)
+	public boolean terminalTest() {
+		return (whitePieces[KING] == null || blackPieces[KING] == null);
+	}
 	
-	public double Utility() {
+	
+	public int Utility() {
 		// TODO - need to calculate the number of legal moves for each side
 		//      - might be better to keep a running tally and only subtract from it when a capture takes place,
 		//      - would also be good to keep total number of moves available 
@@ -349,7 +354,7 @@ public class ChessBoard {
 		 */
 		
 		// here is where we use ourColor to determine how we calculate the utility
-		double util;
+		int util;
 		if(this.ourColor == Piece.WHITE) {
 			util = 200 * (whiteKings - blackKings) +
 					9 * (whiteQueens - blackQueens) +

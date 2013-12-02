@@ -152,7 +152,7 @@ public class ServerAPI implements Runnable {
 			return null;
 	}
 	
-	public static byte[] getLastEndPos() {
+	public static byte[] getLastMoveEndPos() {
 		if(lastmove.length() > 4)
 			return new byte[] { ChessBoard.getRank(Byte.parseByte(lastmove.charAt(4) + "")), ChessBoard.getFile(lastmove.charAt(3)) };
 		else
@@ -186,7 +186,7 @@ public class ServerAPI implements Runnable {
 			// the move has been updated since the last poll
 			if(prevLastMoveNum != lastmovenumber) {
 				byte[] start = getLastMoveStartPos();
-				byte[] end = getLastEndPos();
+				byte[] end = getLastMoveEndPos();
 				board.move(start[0], start[1], end[0], end[1]);
 				// will probably need to do something to interrupt the current search?
 			}

@@ -48,7 +48,10 @@ public class program {
 		// for which we have to record in our internal representation and we know we are black
 		else if(ServerAPI.ready == true && ServerAPI.lastmove != null) {
 			ServerAPI.setOurColor(Piece.BLACK);
-			// TODO - record that move
+			// record that move
+			byte[] lastStartPos = ServerAPI.getLastMoveStartPos();
+			byte[] lastEndPos = ServerAPI.getLastMoveEndPos();
+			board.move(lastStartPos[0], lastStartPos[1], lastEndPos[0], lastEndPos[1]);
 		}
 		
 		// TODO - start game play

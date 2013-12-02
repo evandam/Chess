@@ -209,6 +209,10 @@ public class ServerAPI implements Runnable {
 		} 
 		return response;
 	}
+	
+	public static int getPollInterval() {
+		return pollInterval;
+	}
 
 	// Loop in a new thread to continuously poll the server looking for new moves
 	@Override

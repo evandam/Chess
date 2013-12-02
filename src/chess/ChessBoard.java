@@ -263,7 +263,15 @@ public class ChessBoard {
 		this.board[startRank][startFile] = 0;
 	}
 	
-	// add promotion to this too...
+	/**
+	 * Method to return a move string that the server can use.
+	 * 
+	 * @param startRank - starting rank of the piece
+	 * @param startFile - starting file of the piece
+	 * @param endRank - ending rank of the piece
+	 * @param endFile - ending file of the piece
+	 * @return string - string in the form of Nh1h6 or Pb7b8Q
+	 */
 	public String getMoveString(byte startRank, byte startFile, byte endRank, byte endFile) {
 		String str = this.get(startRank, startFile).toString();
 		String moveString = str + getFile(startFile) + getRank(startRank) + getFile(endFile) + getRank(endRank) + "";

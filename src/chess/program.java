@@ -30,7 +30,7 @@ public class program {
 		
 		ServerAPI.poll();
 		
-		boolean startSearch = true;
+		boolean startSearch = false;
 		
 		// if after polling, we have the ready and no moves have been made yet, then we know we are white
 		// since chess rules state that white always moves first
@@ -59,6 +59,20 @@ public class program {
 			ServerAPI.move(Piece.getCharType(move[4]) + move[0] + move[1] + move[2] + move[3] + "");
 		}
 		
+		while(!ServerAPI.gameover) {
+			ServerAPI.poll();
+			if(ServerAPI.ready) {
+				
+			}
+			else {
+				try {
+					Thread.sleep((long) ServerAPI.getPollInterval() * 1000);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
 		
 		// TODO - main game loop
 	}

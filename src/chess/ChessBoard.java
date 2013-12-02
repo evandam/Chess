@@ -244,18 +244,24 @@ public class ChessBoard {
 			// king side castling
 			if(startFile == D && endFile == B) {
 				// move the rook too
+				Piece rook = this.get(startRank, C);
+				rook.updatePosition(startRank, C);
 				this.board[startRank][C] = this.board[startRank][A];
 				this.board[startRank][A] = 0;
 			}
 			// queen side castle
 			else if(startFile == D && endFile == F) {
 				// move the rook too
+				Piece rook = this.get(startRank, C);
+				rook.updatePosition(startRank, E);
 				this.board[startRank][E] = this.board[startRank][H];
 				this.board[startRank][H] = 0;
 			}
 		}
 		
-		// finally update the board - move the piece from the starting spot to the ending spot
+		// move the piece from the starting spot to the ending spot
+		startPiece.updatePosition(endRank, endFile);
+		// finally update the board
 		this.board[endRank][endFile] = this.board[startRank][startFile];
 		// clear out the starting spot since the piece is being moved from there
 		this.board[startRank][startFile] = 0;

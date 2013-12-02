@@ -49,6 +49,17 @@ public class Piece {
 		this.file = f;
 	}
 	
+	/**
+	 * Updates the piece's position when a move is made on the board.
+	 * 
+	 * @param rank - new rank position
+	 * @param file - new file position
+	 */
+	public void updatePosition(byte rank, byte file) {
+		this.rank = rank;
+		this.file = file;
+	}
+	
 	public byte getType() {
 		return this.type;
 	}

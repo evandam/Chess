@@ -1,5 +1,9 @@
 package chess;
 
+import java.util.ArrayList;
+import java.util.SortedMap;
+import java.util.TreeMap;
+
 public class ChessBoard {
 	// convert files (a - h) to numerical values - these are the COLUMNS
 	public static final byte A = 0;
@@ -31,7 +35,7 @@ public class ChessBoard {
 	public static byte PAWN   = 8;
 	
 	// variable to hold which color we are, this matters because we need to be correctly oriented
-	private byte ourColor;
+	private byte ourColor, opponentColor;
 	
 	// [col, row] or [rank, file]
 	// board will contain indexes into the white and black pieces arrays
@@ -150,13 +154,32 @@ public class ChessBoard {
 		// objects when we search to avoid cloning
 	}
 	
+	public ChessBoard clone() {
+		byte[][] newBoard = this.board.clone();
+		return new ChessBoard(newBoard);
+	}
+	
 	/**
-	 * Sets which color we are which determines our perspective. 
+	 * Sets which color we are which determines our perspective and
+	 * records the opponents color as well.
 	 * 
 	 * @param color - the color we are for this game
 	 */
 	public void setOurColor(byte color) {
 		this.ourColor = color;
+		
+		if(color == Piece.WHITE)
+			this.opponentColor = Piece.BLACK;
+		else
+			this.opponentColor = Piece.WHITE;
+	}
+	
+	public byte getOurColor() {
+		return this.ourColor;
+	}
+	
+	public byte getOppontentColor() {
+		return this.opponentColor;
 	}
 	
 	public Piece get(byte rank, byte file) {
@@ -234,18 +257,24 @@ public class ChessBoard {
 			// king side castling
 			if(startFile == D && endFile == B) {
 				// move the rook too
+				Piece rook = this.get(startRank, C);
+				rook.updatePosition(startRank, C);
 				this.board[startRank][C] = this.board[startRank][A];
 				this.board[startRank][A] = 0;
 			}
 			// queen side castle
 			else if(startFile == D && endFile == F) {
 				// move the rook too
+				Piece rook = this.get(startRank, C);
+				rook.updatePosition(startRank, E);
 				this.board[startRank][E] = this.board[startRank][H];
 				this.board[startRank][H] = 0;
 			}
 		}
 		
-		// finally update the board - move the piece from the starting spot to the ending spot
+		// move the piece from the starting spot to the ending spot
+		startPiece.updatePosition(endRank, endFile);
+		// finally update the board
 		this.board[endRank][endFile] = this.board[startRank][startFile];
 		// clear out the starting spot since the piece is being moved from there
 		this.board[startRank][startFile] = 0;
@@ -267,9 +296,9 @@ public class ChessBoard {
 			pieces = blackPieces;
 		// go through each piece the enemy has and check if it can move into the square
 		for(Piece pos : pieces) {
-			for(byte[] attackLoc : pos.getPossibleMoves(this)) {
+			for(byte[] attackLocations : pos.getPossibleMoves(this)) {
 				// the square can be attacked
-				if(rank == attackLoc[0] && file == attackLoc[1])
+				if(rank == attackLocations[0] && file == attackLocations[1])
 					return true;
 			}
 		}
@@ -281,8 +310,60 @@ public class ChessBoard {
 		return (whitePieces[KING] == null || blackPieces[KING] == null);
 	}
 	
+	/**
+	 * Method to return the list of all legal moves for a given color,
+	 * used for move generation when searching.
+	 * 
+	 * @param color - color for the moves we want to calculate
+	 * @return SortedMap<Integer, ArrayList<byte[]>> - key/value pair of piece
+	 * 		   location as (rank*10+file) and a list of their moves 
+	 */
+	public SortedMap<Integer, ArrayList<byte[]>> getAllLegalMoves(byte color) {
+		// our list of legal moves will be a key/value list where the key is the rank*10 + file
+		// of the piece and the value is the list of moves that piece can perform in a byte[]
+		// that way we know what moves each piece can perform 
+		SortedMap<Integer, ArrayList<byte[]>> moves = new TreeMap<Integer, ArrayList<byte[]>>();
+		
+		if(color == Piece.WHITE) {
+			for(Piece p : whitePieces) {
+				int key = p.getRank() * 10 + p.getFile();
+				moves.put(key, p.getPossibleMoves(this));
+			}
+		}
+		else {
+			for(Piece p : blackPieces) {
+				int key = p.getRank() * 10 + p.getFile();
+				moves.put(key, p.getPossibleMoves(this));
+			}
+		}
+		
+		return moves;
+	}
 	
-	public int Utility() {
+	/**
+	 * Returns the number of legal moves for the given player, used for calculating the utility.
+	 * 
+	 * @param color - which color we want to count moves for
+	 * @return int - number of legal moves for the given color
+	 */
+	public int countLegalMoves(byte color) {
+		int count = 0;
+		
+		if(color == Piece.WHITE) {
+			for(Piece p : whitePieces) {
+				count += p.getPossibleMoves(this).size();
+			}
+		}
+		else {
+			for(Piece p : blackPieces) {
+				count += p.getPossibleMoves(this).size();
+			}
+		}
+		
+		return count;
+	}
+	
+	public double Utility() {
 		// TODO - need to calculate the number of legal moves for each side
 		//      - might be better to keep a running tally and only subtract from it when a capture takes place,
 		//      - would also be good to keep total number of moves available 
@@ -354,31 +435,28 @@ public class ChessBoard {
 		 */
 		
 		// here is where we use ourColor to determine how we calculate the utility
-		int util;
+		double util;
 		if(this.ourColor == Piece.WHITE) {
 			util = 200 * (whiteKings - blackKings) +
 					9 * (whiteQueens - blackQueens) +
 					5 * (whiteRooks - blackRooks) +
 					3 * (whiteBishops - blackBishops + whiteKnights - blackKnights) +
-					1 * (whitePawns - blackPawns);// +
-					/*-0.5 * () +
-					0.1 * ();*/
+					1 * (whitePawns - blackPawns) +
+					/*-0.5 * () +*/
+					0.1 * (this.countLegalMoves(this.ourColor) - this.countLegalMoves(this.opponentColor));
 		}
 		else {
 			util = 200 * (blackKings - whiteKings) +
 					9 * (blackQueens - whiteQueens) +
 					5 * (blackRooks - whiteRooks) +
 					3 * (blackBishops - whiteBishops + blackKnights - whiteKnights) +
-					1 * (blackPawns - whitePawns);// +
-					/*-0.5 * () +
-					0.1 * ();*/
+					1 * (blackPawns - whitePawns) +
+					/*-0.5 * () +*/
+					0.1 * (this.countLegalMoves(this.ourColor) - this.countLegalMoves(this.opponentColor));
 		}
 		
 		return util;
 	}
-	
-	
-	
 	
 	
 	// convert the constant back to a character (a-h)
@@ -433,8 +511,8 @@ public class ChessBoard {
 	@Override
 	public String toString() {
 		String str = "";
-		for(byte rank = R1; rank < R8; rank++) {
-			for(byte file = A; file < H; file++) {
+		for(byte rank = R1; rank <= R8; rank++) {
+			for(byte file = A; file <= H; file++) {
 				if(this.board[rank][file] != 0) {
 					Piece chessPiece = this.get(rank, file); 
 					if(chessPiece.getColor() == Piece.WHITE)

@@ -11,9 +11,14 @@ public class SearchUtils {
 	// have cutoff here which would be number of ply's?
 	private static int maxPly = 5;
 	
-	public static void AlphaBetaSearch(ChessBoard board) {
+	private static byte[] nextMove = new byte[4];
+	
+	public static byte[] AlphaBetaSearch(ChessBoard board) {
 		startSearchTime = new Date().getTime();
 		double v = MaxValue(board, Integer.MIN_VALUE, Integer.MAX_VALUE, 0);
+		
+		// {startRank, startFile, endRank, endFile}
+		return nextMove;
 		
 		// return move
 	}
@@ -49,6 +54,8 @@ public class SearchUtils {
 			for(byte[] endPos : moves.get(startPos)) {
 				newBoard = board.clone();
 				newBoard.move(startRank, startFile, endPos[0], endPos[1]);
+				nextMove[0] = startRank; nextMove[1] = startFile;
+				nextMove[2] = endPos[0]; nextMove[3] = endPos[1];
 				v = Math.max(v, MinValue(newBoard, alpha, beta, currentPly));
 				if(v >= beta)
 					return v;

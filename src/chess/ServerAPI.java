@@ -5,10 +5,10 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.HashMap;
+/*import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import java.util.regex.Pattern;*/
 
 /**
  * A utility class for server calls
@@ -134,12 +134,12 @@ public class ServerAPI implements Runnable {
 		}
 	}
 	
-	public static Map<String, String> move(String moveString) {
+	public static boolean move(String moveString) {
 		String url = root + "move/" + gameId + "/" + teamNumber + "/" + teamSecret + "/" + moveString;
 		try {
 			String response = readURL(url);
 			System.out.println(response);
-			Map<String, String> map = new HashMap<String, String>();
+			/*Map<String, String> map = new HashMap<String, String>();
 			// Regex to get the vars out of JSON
 			String pat = "\\{\"message\": \"(\\.*?)\", \"result\": (\\w+)\\}";
 			Pattern r = Pattern.compile(pat);
@@ -151,11 +151,25 @@ public class ServerAPI implements Runnable {
 			}
 			else {
 				System.out.println("I'm bad at regexes");
+			}*/
+			
+			String[] components = response.substring(1, response.length() - 1).replace("\"", "").replace(" ", "").split(",");
+			
+			for(String val : components) {
+				String[] pair = val.split(":");
+				//if(pair[0].equals("message"))
+				//	message = pair[1];
+				if(pair[0].equals("result"))
+					return pair[1].equals("true");
+				else if(pair[0].equals("gameover"))		// TODO - need to kill the search somehow?
+					gameover = pair[1].equals("true");
+				else if(pair[0].equals("winner"))
+					winner = Integer.parseInt(pair[1]);
 			}
 		} catch(IOException e) {
 			System.out.println("Maybe a bad team number/secret combo?");
 		}
-		return null;
+		return false;
 	}
 	
 	// movestring functions

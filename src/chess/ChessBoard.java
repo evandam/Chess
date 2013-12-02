@@ -1,5 +1,9 @@
 package chess;
 
+import java.util.ArrayList;
+import java.util.SortedMap;
+import java.util.TreeMap;
+
 public class ChessBoard {
 	// convert files (a - h) to numerical values - these are the COLUMNS
 	public static final byte A = 0;
@@ -267,15 +271,30 @@ public class ChessBoard {
 			pieces = blackPieces;
 		// go through each piece the enemy has and check if it can move into the square
 		for(Piece pos : pieces) {
-			for(byte[] attackLoc : pos.getPossibleMoves(this, new byte[]{rank, file})) {
+			for(byte[] attackLocations : pos.getPossibleMoves(this)) {
 				// the square can be attacked
-				if(rank == attackLoc[0] && file == attackLoc[1])
+				if(rank == attackLocations[0] && file == attackLocations[1])
 					return true;
 			}
 		}
 		return false;
 	}
 	
+	public SortedMap getAllLegalMoves(byte color) {
+		TreeMap<Integer, ArrayList<byte[]>> moves = new TreeMap<Integer, ArrayList<byte[]>>();
+		
+		if(color == Piece.WHITE) {
+			for(Piece p : whitePieces) {
+				int key = p.getRank() * 10 + p.getFile();
+				moves.put(key, p.getPossibleMoves(this));
+			}
+		}
+		else {
+			
+		}
+		
+		return null;
+	}
 	
 	public double Utility() {
 		// TODO - need to calculate the number of legal moves for each side

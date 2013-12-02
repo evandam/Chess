@@ -1,22 +1,17 @@
 package chess;
 
-import java.util.List;
-import java.util.Map;
+/*import java.util.List;
+import java.util.Map;*/
 
 /* Code base for project */
 public class program {
 	
 	/**
-	 * @param args
+	 * Main entry point for the program, will contain the main game loop. 
+	 * 
+	 * @param args - team ID
 	 */
 	public static void main(String[] args) {
-		
-		/*
-		Piece p = new Piece(Piece.KING, Piece.BLACK);	// parameter passing testing, if we set
-		System.out.println(p.toString());
-		pointerTest(p);
-		System.out.println(p.toString()); */
-		
 		int gameId;
 		
 		// we will pass the game id as a command line parameter
@@ -69,14 +64,6 @@ public class program {
 	}
 	
 	
-	private static void pointerTest(Piece p) {
-		/*p = new Piece(p.getType(), p.getColor());	// does not change the original object
-		p.setType(Piece.QUEEN);*/
-		
-		//p.setType(Piece.QUEEN);					// changes the original object
-	}
-	
-	
 	private void TestStuff() {
 		//ServerAPI.setTeam1();
 		ServerAPI.poll();
@@ -116,12 +103,12 @@ public class program {
 		//ServerAPI.setTeam1();
 		
 		String moveString = "Pe5d6";
-		Map<String, String> moveData = ServerAPI.move(moveString);
+		/*Map<String, String> moveData = ServerAPI.move(moveString);
 		if(moveData != null) {
 			for(String key : moveData.keySet()) {
 				System.out.println(key + ": " + moveData.get(key));
 			}
-		}
+		}*/
 	}
 
 }

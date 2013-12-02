@@ -92,7 +92,7 @@ public class SearchUtils {
 					return v;
 				beta = Math.min(beta, v);
 			}
-		}		
+		}
 		return v;
 	}
 }

@@ -33,9 +33,16 @@ public class Piece implements Cloneable {
 		this.hasMoved = 0;
 	}
 	
-	@Override
-	protected Piece clone() {
+	private Piece clonePiece() {
 		return new Piece(this.rank, this.file, this.type, this.color);
+	}
+	
+	protected static Piece[] cloneArray(Piece[] p) {
+		Piece[] newArray = new Piece[p.length];
+		for(int i = 0; i < p.length; i++) {
+			newArray[i] = p[i].clonePiece();
+		}
+		return newArray;
 	}
 	
 	public byte getRank() {

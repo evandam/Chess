@@ -151,8 +151,8 @@ public class ChessBoard {
 	
 	private ChessBoard(byte[][] b, Piece[] white, Piece[] black, boolean noKing) {
 		this.board = b.clone();
-		this.whitePieces = white.clone();
-		this.blackPieces = black.clone();
+		this.whitePieces = Piece.cloneArray(white);
+		this.blackPieces = Piece.cloneArray(black);
 		this.kingCaptured = noKing;
 	}
 	

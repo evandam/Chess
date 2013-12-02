@@ -208,7 +208,7 @@ public class ChessBoard {
 		Piece endPiece = this.get(endRank, endFile);
 		
 		// check for capturing a king
-		if(endPiece.getType() == Piece.KING)
+		if(endPiece != null && endPiece.getType() == Piece.KING)
 			this.kingCaptured = true;
 		
 		// mark that the piece has moved - necessary for castling and en passant

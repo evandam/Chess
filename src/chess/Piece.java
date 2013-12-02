@@ -1,9 +1,8 @@
 package chess;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Piece implements Cloneable, Serializable {
+public class Piece implements Cloneable {
 	// constants to reference the type of piece
 	public static final byte PAWN = 0;
 	public static final byte KNIGHT = 1;

@@ -95,13 +95,4 @@ public class SearchUtils {
 		}		
 		return v;
 	}
-	
-	
-	private static double Max(double num1, double num2) {
-		return num1 > num2 ? num1 : num2;
-	}
-	
-	private static double Min(double num1, double num2) {
-		return num1 < num2 ? num1 : num2;
-	}
 }

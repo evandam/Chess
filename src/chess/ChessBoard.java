@@ -35,7 +35,7 @@ public class ChessBoard {
 	public static byte PAWN   = 8;
 	
 	// variable to hold which color we are, this matters because we need to be correctly oriented
-	private byte ourColor, opponentColor;
+	private boolean kingCaptured = false;
 	
 	// [col, row] or [rank, file]
 	// board will contain indexes into the white and black pieces arrays
@@ -149,37 +149,15 @@ public class ChessBoard {
 		blackPieces[7] = new Piece(R8, D, Piece.KING, Piece.BLACK);
 	}
 	
-	public ChessBoard(byte[][] b) {
-		// TODO - overloaded constructor for creating new chess board
-		// objects when we search to avoid cloning
+	private ChessBoard(byte[][] b, Piece[] white, Piece[] black, boolean noKing) {
+		this.board = b.clone();
+		this.whitePieces = white.clone();
+		this.blackPieces = black.clone();
+		this.kingCaptured = noKing;
 	}
 	
-	public ChessBoard clone() {
-		byte[][] newBoard = this.board.clone();
-		return new ChessBoard(newBoard);
-	}
-	
-	/**
-	 * Sets which color we are which determines our perspective and
-	 * records the opponents color as well.
-	 * 
-	 * @param color - the color we are for this game
-	 */
-	public void setOurColor(byte color) {
-		this.ourColor = color;
-		
-		if(color == Piece.WHITE)
-			this.opponentColor = Piece.BLACK;
-		else
-			this.opponentColor = Piece.WHITE;
-	}
-	
-	public byte getOurColor() {
-		return this.ourColor;
-	}
-	
-	public byte getOppontentColor() {
-		return this.opponentColor;
+	protected ChessBoard clone() {
+		return new ChessBoard(this.board, this.whitePieces, this.blackPieces, this.kingCaptured);
 	}
 	
 	public Piece get(byte rank, byte file) {
@@ -229,6 +207,10 @@ public class ChessBoard {
 		// get the piece that is on the ending spot
 		Piece endPiece = this.get(endRank, endFile);
 		
+		// check for capturing a king
+		if(endPiece.getType() == Piece.KING)
+			this.kingCaptured = true;
+		
 		// mark that the piece has moved - necessary for castling and en passant
 		startPiece.setHasMoved((byte) 1);
 		
@@ -240,8 +222,9 @@ public class ChessBoard {
 		// check for special cases for pawns - en passant and promotions
 		if(startPiece.getType() == Piece.PAWN) {
 			// if the pawn moved up 2 ranks on first move, set has moved appropriately
-			if(Math.abs(startRank - endRank) > 1)
+			if(Math.abs(startRank - endRank) > 1) {
 				startPiece.setHasMoved((byte) 2);
+			}
 			// en passant - the pawn moved diagonally but didn't capture the piece in that square
 			else if(startFile != endFile && endPiece == null) {
 				this.capture(startRank, endFile);
@@ -292,7 +275,7 @@ public class ChessBoard {
 	// check all possible enemy moves to see if they can attack the location
 	public boolean isUnderAttack(byte rank, byte file, byte color) {
 		Piece[] pieces = whitePieces;
-		if(color == Piece.WHITE) 
+		if(color == Piece.WHITE)
 			pieces = blackPieces;
 		// go through each piece the enemy has and check if it can move into the square
 		for(Piece pos : pieces) {
@@ -307,7 +290,9 @@ public class ChessBoard {
 	
 	// checkmate (one player doesn't have a king..pretty crude for now)
 	public boolean terminalTest() {
-		return (whitePieces[KING] == null || blackPieces[KING] == null);
+		// don't know that is where the king's piece is since the array shrinks as pieces are captured
+		//return (whitePieces[KING] == null || blackPieces[KING] == null);
+		return this.kingCaptured;
 	}
 	
 	/**
@@ -436,14 +421,14 @@ public class ChessBoard {
 		
 		// here is where we use ourColor to determine how we calculate the utility
 		double util;
-		if(this.ourColor == Piece.WHITE) {
+		if(ServerAPI.getOurColor() == Piece.WHITE) {
 			util = 200 * (whiteKings - blackKings) +
 					9 * (whiteQueens - blackQueens) +
 					5 * (whiteRooks - blackRooks) +
 					3 * (whiteBishops - blackBishops + whiteKnights - blackKnights) +
 					1 * (whitePawns - blackPawns) +
 					/*-0.5 * () +*/
-					0.1 * (this.countLegalMoves(this.ourColor) - this.countLegalMoves(this.opponentColor));
+					0.1 * (this.countLegalMoves(ServerAPI.getOurColor()) - this.countLegalMoves(ServerAPI.getOppontentColor()));
 		}
 		else {
 			util = 200 * (blackKings - whiteKings) +
@@ -452,7 +437,7 @@ public class ChessBoard {
 					3 * (blackBishops - whiteBishops + blackKnights - whiteKnights) +
 					1 * (blackPawns - whitePawns) +
 					/*-0.5 * () +*/
-					0.1 * (this.countLegalMoves(this.ourColor) - this.countLegalMoves(this.opponentColor));
+					0.1 * (this.countLegalMoves(ServerAPI.getOurColor()) - this.countLegalMoves(ServerAPI.getOppontentColor()));
 		}
 		
 		return util;

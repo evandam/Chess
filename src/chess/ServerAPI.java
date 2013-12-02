@@ -23,6 +23,9 @@ public class ServerAPI implements Runnable {
 	
 	private static int pollInterval = 1; 
 	
+	private static byte ourColor;
+	private static byte opponentColor;
+	
 	// data from polling
 	public static boolean ready;
 	public static float secondsleft;
@@ -45,6 +48,29 @@ public class ServerAPI implements Runnable {
 	public static void setOurTeamDetails(int num, String secret) {
 		teamNumber = num;
 		teamSecret = secret;
+	}
+	
+	/**
+	 * Sets which color we are which determines our perspective and
+	 * records the opponents color as well.
+	 * 
+	 * @param color - the color we are for this game
+	 */
+	public static void setOurColor(byte color) {
+		ourColor = color;
+		
+		if(color == Piece.WHITE)
+			opponentColor = Piece.BLACK;
+		else
+			opponentColor = Piece.WHITE;
+	}
+	
+	public static byte getOurColor() {
+		return ourColor;
+	}
+	
+	public static byte getOppontentColor() {
+		return opponentColor;
 	}
 	
 	/**

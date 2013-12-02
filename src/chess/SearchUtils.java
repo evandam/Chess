@@ -19,8 +19,6 @@ public class SearchUtils {
 		
 		// {startRank, startFile, endRank, endFile}
 		return nextMove;
-		
-		// return move
 	}
 	
 	public static boolean cutoffTest(ChessBoard board) {
@@ -46,7 +44,7 @@ public class SearchUtils {
 		//		return v;
 		//	alpha = Max(alpha, v);
 			
-		Map<Integer, ArrayList<byte[]>> moves = board.getAllLegalMoves(board.getOurColor());
+		Map<Integer, ArrayList<byte[]>> moves = board.getAllLegalMoves(ServerAPI.getOurColor());
 		ChessBoard newBoard;
 		for(Integer startPos : moves.keySet()) {
 			byte startFile = (byte) (startPos % 10);
@@ -81,7 +79,7 @@ public class SearchUtils {
 		//		return v;
 		//	alpha = Min(beta, v);
 			
-		Map<Integer, ArrayList<byte[]>> moves = board.getAllLegalMoves(board.getOppontentColor());
+		Map<Integer, ArrayList<byte[]>> moves = board.getAllLegalMoves(ServerAPI.getOppontentColor());
 		ChessBoard newBoard;
 		for(Integer startPos : moves.keySet()) {
 			byte startFile = (byte) (startPos % 10);

@@ -38,16 +38,16 @@ public class program {
 		// if after polling, we have the ready and no moves have been made yet, then we know we are white
 		// since chess rules state that white always moves first
 		if(ServerAPI.ready == true && ServerAPI.lastmovenumber == 0 && ServerAPI.lastmove == null) {
-			board.setOurColor(Piece.WHITE);
+			ServerAPI.setOurColor(Piece.WHITE);
 		}
 		// otherwise we know we are waiting for the first move which means that we are black
 		else if(ServerAPI.ready == false && ServerAPI.lastmovenumber == 0) {
-			board.setOurColor(Piece.BLACK);
+			ServerAPI.setOurColor(Piece.BLACK);
 		}
 		// if we have the ready and there is a last move, then the other team has already submitted a move
 		// for which we have to record in our internal representation and we know we are black
 		else if(ServerAPI.ready == true && ServerAPI.lastmove != null) {
-			board.setOurColor(Piece.BLACK);
+			ServerAPI.setOurColor(Piece.BLACK);
 			// TODO - record that move
 		}
 		

@@ -1,8 +1,9 @@
 package chess;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
-public class Piece {
+public class Piece implements Cloneable, Serializable {
 	// constants to reference the type of piece
 	public static final byte PAWN = 0;
 	public static final byte KNIGHT = 1;
@@ -31,6 +32,11 @@ public class Piece {
 		this.type = type;
 		this.color = color;
 		this.hasMoved = 0;
+	}
+	
+	@Override
+	protected Piece clone() {
+		return new Piece(this.rank, this.file, this.type, this.color);
 	}
 	
 	public byte getRank() {

@@ -15,7 +15,7 @@ import java.util.regex.Pattern;
  * @author Evan
  *
  */
-public class ServerAPI {
+public class ServerAPI implements Runnable {
 	public static int gameId;						// need to set this when game is started 
 	private static int teamNumber = 1;				// temporary
 	private static String teamSecret = "32c68cae";	// temporary
@@ -29,6 +29,11 @@ public class ServerAPI {
 	public static int lastmovenumber;
 	public static String lastmove = "Pd7d5";	// default to test en passant
 	
+	private ChessBoard board;
+	
+	public ServerAPI(ChessBoard board) {
+		this.board = board;
+	}
 	
 	/**
 	 * Method to set our team number and secret once it is given to us,
@@ -142,5 +147,29 @@ public class ServerAPI {
 			e.printStackTrace();
 		} 
 		return response;
+	}
+
+	// Loop in a new thread to continuously poll the server looking for new moves
+	@Override
+	public void run() {
+		// TODO Auto-generated method stub
+		poll();
+		while(ready) {
+			int prevLastMoveNum = lastmovenumber;
+			poll();
+			// the move has been updated since the last poll
+			if(prevLastMoveNum != lastmovenumber) {
+				byte[] start = getLastMoveStartPos();
+				byte[] end = getLastEndPos();
+				board.move(start[0], start[1], end[0], end[1]);
+				// will probably need to do something to interrupt the current search?
+			}
+			try {
+				Thread.sleep((long) pollInterval * 1000);
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
 	}
 }

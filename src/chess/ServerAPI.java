@@ -28,6 +28,8 @@ public class ServerAPI implements Runnable {
 	
 	// data from polling
 	public static boolean ready;
+	public static boolean gameover = false;
+	public static int winner;
 	public static float secondsleft;
 	public static int lastmovenumber;
 	public static String lastmove = "Pd7d5";	// default to test en passant
@@ -96,7 +98,7 @@ public class ServerAPI implements Runnable {
 			String url = root + "poll/" + gameId + "/" + teamNumber + "/" + teamSecret;
 			String response = readURL(url);
 			// easy enough to just use regexes to get the values from json
-			String pat = "\\{\"ready\": (\\w+), \"secondsleft\": ([\\d\\.]+), \"lastmovenumber\": (\\d+)(, \"lastmove\": \"(\\.*?)\")?\\}";
+			/*String pat = "\\{\"ready\": (\\w+), \"secondsleft\": ([\\d\\.]+), \"lastmovenumber\": (\\d+)(, \"lastmove\": \"(\\.*?)\")?\\}";
 			Pattern r = Pattern.compile(pat);
 			Matcher m = r.matcher(response);
 			if(m.find()) {
@@ -107,7 +109,26 @@ public class ServerAPI implements Runnable {
 			}
 			else {
 				System.out.println("I'm bad at regexes");
+			}*/
+			
+			String[] components = response.substring(1, response.length() - 1).replace("\"", "").replace(" ", "").split(",");
+			
+			for(String val : components) {
+				String[] pair = val.split(":");
+				if(pair[0].equals("ready"))
+					ready = pair[1].equals("true");
+				else if(pair[0].equals("secondsleft"))
+					secondsleft = Float.parseFloat(pair[1]);
+				else if(pair[0].equals("lastmovenumber"))
+					lastmovenumber = Integer.parseInt(pair[1]);
+				else if(pair[0].equals("lastmove"))
+					lastmove = pair[1];
+				else if(pair[0] == "gameover")
+					gameover = pair[1].equals("true");
+				else if(pair[0] == "winner")
+					winner = Integer.parseInt(pair[1]);
 			}
+			
 		} catch(IOException e) {
 			System.out.println("Maybe a bad team number/secret combo?");
 		}

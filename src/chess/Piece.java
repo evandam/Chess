@@ -330,7 +330,7 @@ public class Piece implements Cloneable {
 		}
 		rank = (byte) (rankPos + 1);
 		file = (byte) (filePos - 2);
-		if(rank >= 0 && file < 8) {
+		if(rank >= 0 && rank < 8 && file >= 0 && file < 8) {
 			p = board.get(rank, file);
 			if(p == null || p.color != this.color)
 				moves.add(new byte[] {rank, file});
@@ -359,7 +359,7 @@ public class Piece implements Cloneable {
 		}
 		rank = (byte) (rankPos + 2);
 		file = (byte) (filePos - 1);
-		if(rank >= 0 && file < 8) {
+		if(rank >= 0 && rank < 8 && file < 8) {
 			p = board.get(rank, file);
 			if(p == null || p.color != this.color)
 				moves.add(new byte[] {rank, file});
@@ -483,5 +483,30 @@ public class Piece implements Cloneable {
 			default:
 				return KING;
 		}
+	}
+	
+	public static char getCharType(byte b) {
+		char str = ' ';
+		switch(b) {
+			case PAWN:
+				str = 'P';
+				break;
+			case KNIGHT:
+				str = 'N';
+				break;
+			case BISHOP:
+				str = 'B';
+				break;
+			case ROOK:
+				str = 'R';
+				break;
+			case QUEEN:
+				str = 'Q';
+				break;
+			default:
+				str = 'K';
+				break;
+		}
+		return str;
 	}
 }

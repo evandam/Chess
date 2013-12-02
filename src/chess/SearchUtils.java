@@ -11,13 +11,13 @@ public class SearchUtils {
 	// have cutoff here which would be number of ply's?
 	private static int maxPly = 5;
 	
-	private static byte[] nextMove = new byte[4];
+	private static byte[] nextMove = new byte[5];
 	
 	public static byte[] AlphaBetaSearch(ChessBoard board) {
 		startSearchTime = new Date().getTime();
 		double v = MaxValue(board, Integer.MIN_VALUE, Integer.MAX_VALUE, 0);
 		
-		// {startRank, startFile, endRank, endFile}
+		// {startRank, startFile, endRank, endFile}		TODO - need a way of knowing which piece this is
 		return nextMove;
 	}
 	
@@ -43,7 +43,7 @@ public class SearchUtils {
 		//	if(v > beta)
 		//		return v;
 		//	alpha = Max(alpha, v);
-			
+		
 		Map<Integer, ArrayList<byte[]>> moves = board.getAllLegalMoves(ServerAPI.getOurColor());
 		ChessBoard newBoard;
 		for(Integer startPos : moves.keySet()) {
@@ -54,6 +54,8 @@ public class SearchUtils {
 				newBoard.move(startRank, startFile, endPos[0], endPos[1]);
 				nextMove[0] = startRank; nextMove[1] = startFile;
 				nextMove[2] = endPos[0]; nextMove[3] = endPos[1];
+				Piece p = board.get(startRank, startFile);
+				nextMove[4] = p != null ? p.getType() : -1;
 				v = Math.max(v, MinValue(newBoard, alpha, beta, currentPly));
 				if(v >= beta)
 					return v;
@@ -78,7 +80,7 @@ public class SearchUtils {
 		//	if(v < alpha)
 		//		return v;
 		//	alpha = Min(beta, v);
-			
+		
 		Map<Integer, ArrayList<byte[]>> moves = board.getAllLegalMoves(ServerAPI.getOppontentColor());
 		ChessBoard newBoard;
 		for(Integer startPos : moves.keySet()) {

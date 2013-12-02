@@ -24,7 +24,7 @@ public class program {
 			return;
 		}
 		else {
-			gameId = Integer.parseInt(args[1]);
+			gameId = Integer.parseInt(args[0]);
 		}
 		
 		ChessBoard board = new ChessBoard();
@@ -35,10 +35,13 @@ public class program {
 		
 		ServerAPI.poll();
 		
+		boolean startSearch = true;
+		
 		// if after polling, we have the ready and no moves have been made yet, then we know we are white
 		// since chess rules state that white always moves first
 		if(ServerAPI.ready == true && ServerAPI.lastmovenumber == 0 && ServerAPI.lastmove == null) {
 			ServerAPI.setOurColor(Piece.WHITE);
+			startSearch = true;
 		}
 		// otherwise we know we are waiting for the first move which means that we are black
 		else if(ServerAPI.ready == false && ServerAPI.lastmovenumber == 0) {
@@ -52,9 +55,17 @@ public class program {
 			byte[] lastStartPos = ServerAPI.getLastMoveStartPos();
 			byte[] lastEndPos = ServerAPI.getLastMoveEndPos();
 			board.move(lastStartPos[0], lastStartPos[1], lastEndPos[0], lastEndPos[1]);
+			startSearch = true;
 		}
 		
-		// TODO - start game play
+		if(startSearch) {
+			byte[] move = SearchUtils.AlphaBetaSearch(board);
+			board.move(move[0], move[1], move[2], move[3]);
+			ServerAPI.move(Piece.getCharType(move[4]) + move[0] + move[1] + move[2] + move[3] + "");
+		}
+		
+		
+		// TODO - main game loop
 	}
 	
 	

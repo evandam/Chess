@@ -264,13 +264,14 @@ public class ChessBoard {
 	}
 	
 	// add promotion to this too...
-	/*public String getMoveString(byte startRank, byte startFile, byte endRank, byte endFile) {
-		// i.e. Pd2d3, Nb1c3
-		String moveString = board[endRank][endFile].toString();		// piece type
-		moveString += getFile(start[1]) + "" + getRank(start[0]);	// beginning pos
-		moveString += getFile(end[1]) + "" + getRank(end[0]);		// end pos
+	public String getMoveString(byte startRank, byte startFile, byte endRank, byte endFile) {
+		String str = this.get(startRank, startFile).toString();
+		String moveString = str + getFile(startFile) + getRank(startRank) + getFile(endFile) + getRank(endRank) + "";
+		// add extra char for queening
+		if(str.equals("P") && (endRank == ChessBoard.R1 || endRank == ChessBoard.R8))
+			str += "Q";
 		return moveString;
-	}*/
+	}
 	
 	// check all possible enemy moves to see if they can attack the location
 	public boolean isUnderAttack(byte rank, byte file, byte color) {
@@ -444,8 +445,13 @@ public class ChessBoard {
 	}
 	
 	
-	// convert the constant back to a character (a-h)
-	/*public static char getFile(byte i) {
+	/**
+	 * Convert the constant back to a character (a-h)
+	 * 
+	 * @param i - constant byte value
+	 * @return char equivalent
+	 */
+	public static char getFile(byte i) {
 		switch(i) {
 		case A:
 			return 'a';
@@ -464,9 +470,14 @@ public class ChessBoard {
 		default:
 			return 'h';
 		}
-	}*/
+	}
 	
-	// convert the char to a constant byte
+	/**
+	 * Convert the char to a constant byte.
+	 *  
+	 * @param c - char to be translated
+	 * @return byte representation
+	 */
 	public static byte getFile(char c) {
 		switch(c) {
 		case 'a':
@@ -488,7 +499,12 @@ public class ChessBoard {
 		}
 	}
 	
-	// convert from constant (0-7) to standard repr. for chess (8-1)
+	/**
+	 * Convert from constant (0-7) to standard repr. for chess (1-8)
+	 * 
+	 * @param i - byte value
+	 * @return byte - chess board representation
+	 */
 	public static byte getRank(byte i) {
 		return (byte) (i - 1);
 	}

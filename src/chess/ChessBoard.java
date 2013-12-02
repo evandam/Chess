@@ -35,7 +35,7 @@ public class ChessBoard {
 	public static byte PAWN   = 8;
 	
 	// variable to hold which color we are, this matters because we need to be correctly oriented
-	private byte ourColor;
+	private byte ourColor, opponentColor;
 	
 	// [col, row] or [rank, file]
 	// board will contain indexes into the white and black pieces arrays
@@ -155,12 +155,18 @@ public class ChessBoard {
 	}
 	
 	/**
-	 * Sets which color we are which determines our perspective. 
+	 * Sets which color we are which determines our perspective and
+	 * records the opponents color as well.
 	 * 
 	 * @param color - the color we are for this game
 	 */
 	public void setOurColor(byte color) {
 		this.ourColor = color;
+		
+		if(color == Piece.WHITE)
+			this.opponentColor = Piece.BLACK;
+		else
+			this.opponentColor = Piece.WHITE;
 	}
 	
 	public Piece get(byte rank, byte file) {
@@ -280,8 +286,19 @@ public class ChessBoard {
 		return false;
 	}
 	
-	public SortedMap getAllLegalMoves(byte color) {
-		TreeMap<Integer, ArrayList<byte[]>> moves = new TreeMap<Integer, ArrayList<byte[]>>();
+	/**
+	 * Method to return the list of all legal moves for a given color,
+	 * used for move generation when searching.
+	 * 
+	 * @param color - color for the moves we want to calculate
+	 * @return SortedMap<Integer, ArrayList<byte[]>> - key/value pair of piece
+	 * 		   location as (rank*10+file) and a list of their moves 
+	 */
+	public SortedMap<Integer, ArrayList<byte[]>> getAllLegalMoves(byte color) {
+		// our list of legal moves will be a key/value list where the key is the rank*10 + file
+		// of the piece and the value is the list of moves that piece can perform in a byte[]
+		// that way we know what moves each piece can perform 
+		SortedMap<Integer, ArrayList<byte[]>> moves = new TreeMap<Integer, ArrayList<byte[]>>();
 		
 		if(color == Piece.WHITE) {
 			for(Piece p : whitePieces) {
@@ -290,10 +307,36 @@ public class ChessBoard {
 			}
 		}
 		else {
-			
+			for(Piece p : blackPieces) {
+				int key = p.getRank() * 10 + p.getFile();
+				moves.put(key, p.getPossibleMoves(this));
+			}
 		}
 		
-		return null;
+		return moves;
+	}
+	
+	/**
+	 * Returns the number of legal moves for the given player, used for calculating the utility.
+	 * 
+	 * @param color - which color we want to count moves for
+	 * @return int - number of legal moves for the given color
+	 */
+	public int countLegalMoves(byte color) {
+		int count = 0;
+		
+		if(color == Piece.WHITE) {
+			for(Piece p : whitePieces) {
+				count += p.getPossibleMoves(this).size();
+			}
+		}
+		else {
+			for(Piece p : blackPieces) {
+				count += p.getPossibleMoves(this).size();
+			}
+		}
+		
+		return count;
 	}
 	
 	public double Utility() {
@@ -374,18 +417,18 @@ public class ChessBoard {
 					9 * (whiteQueens - blackQueens) +
 					5 * (whiteRooks - blackRooks) +
 					3 * (whiteBishops - blackBishops + whiteKnights - blackKnights) +
-					1 * (whitePawns - blackPawns);// +
-					/*-0.5 * () +
-					0.1 * ();*/
+					1 * (whitePawns - blackPawns) +
+					/*-0.5 * () +*/
+					0.1 * (this.countLegalMoves(this.ourColor) - this.countLegalMoves(this.opponentColor));
 		}
 		else {
 			util = 200 * (blackKings - whiteKings) +
 					9 * (blackQueens - whiteQueens) +
 					5 * (blackRooks - whiteRooks) +
 					3 * (blackBishops - whiteBishops + blackKnights - whiteKnights) +
-					1 * (blackPawns - whitePawns);// +
-					/*-0.5 * () +
-					0.1 * ();*/
+					1 * (blackPawns - whitePawns) +
+					/*-0.5 * () +*/
+					0.1 * (this.countLegalMoves(this.ourColor) - this.countLegalMoves(this.opponentColor));
 		}
 		
 		return util;

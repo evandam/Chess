@@ -222,6 +222,8 @@ public class ChessBoard {
 			this.whitePieces = newArr;
 		}
 		else {
+			// need to account for negative indexes
+			idx *= - 1;
 			// remove the piece from the pieces array
 			Piece[] newArr = new Piece[blackPieces.length - 1];
 			System.arraycopy(blackPieces, 0, newArr, 0, idx - 1);

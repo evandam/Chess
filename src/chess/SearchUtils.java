@@ -55,7 +55,7 @@ public class SearchUtils {
 				newBoard.move(startRank, startFile, endPos[0], endPos[1]);
 				nextMove[0] = startRank; nextMove[1] = startFile;
 				nextMove[2] = endPos[0]; nextMove[3] = endPos[1];
-				Piece p = board.get(endPos[0], endPos[1]);
+				Piece p = newBoard.get(endPos[0], endPos[1]);
 				nextMove[4] = p != null ? p.getType() : -1;
 				v = Math.max(v, MinValue(newBoard, alpha, beta, currentPly));
 				if(v >= beta)

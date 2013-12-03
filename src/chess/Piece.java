@@ -11,8 +11,8 @@ public class Piece implements Cloneable {
 	public static final byte QUEEN = 4;
 	public static final byte KING = 5;
 	
-	public static final byte WHITE = 0;
-	public static final byte BLACK = 1;
+	public static final byte WHITE = 1;
+	public static final byte BLACK = -1;
 	
 	private byte rank, file;
 	private byte type;		// pawn, knight, etc
@@ -33,8 +33,16 @@ public class Piece implements Cloneable {
 		this.hasMoved = 0;
 	}
 	
+	private Piece(byte rank, byte file, byte type, byte color, byte moved) {
+		this.rank = rank;
+		this.file = file;
+		this.type = type;
+		this.color = color;
+		this.hasMoved = moved;
+	}
+	
 	private Piece clonePiece() {
-		return new Piece(this.rank, this.file, this.type, this.color);
+		return new Piece(this.rank, this.file, this.type, this.color, this.hasMoved);
 	}
 	
 	protected static Piece[] cloneArray(Piece[] p) {
@@ -359,7 +367,7 @@ public class Piece implements Cloneable {
 		}
 		rank = (byte) (rankPos + 2);
 		file = (byte) (filePos - 1);
-		if(rank >= 0 && rank < 8 && file < 8) {
+		if(rank >= 0 && rank < 8 && file >= 0 && file < 8) {
 			p = board.get(rank, file);
 			if(p == null || p.color != this.color)
 				moves.add(new byte[] {rank, file});
@@ -372,11 +380,11 @@ public class Piece implements Cloneable {
 	private ArrayList<byte[]> getPawnMoves(ChessBoard board) {
 		ArrayList<byte[]> moves = new ArrayList<byte[]>();
 		// white moves up (towards 0) and black moves down(towards 7)
-		byte forward = 1;
-		byte limit = 8;
+		byte forward = BLACK;
+		byte limit = ChessBoard.R1 - 1;
 		if(this.color == WHITE) {		// switch rank
-			forward = -1;
-			limit = -1;
+			forward = WHITE;
+			limit = ChessBoard.R8 + 1;
 		}
 		byte rankPos = this.rank, filePos = this.file;
 		Piece p;
@@ -404,7 +412,9 @@ public class Piece implements Cloneable {
 		if(this.color == WHITE) {
 			if(rankPos == ChessBoard.R2){
 				p = board.get((byte) (ChessBoard.R4), filePos);
-				if(p == null)
+				Piece p2 = board.get((byte) (ChessBoard.R3), filePos);
+				// have to check two spaces up and space directly in front
+				if(p == null && p2 == null)
 					moves.add(new byte[]{ChessBoard.R4, filePos});
 			}
 			// en passant
@@ -422,7 +432,9 @@ public class Piece implements Cloneable {
 		else {
 			if(rankPos == ChessBoard.R7){
 				p = board.get((byte) (ChessBoard.R5), filePos);
-				if(p == null)
+				Piece p2 = board.get((byte) (ChessBoard.R3), filePos);
+				// have to check two spaces up and space directly in front
+				if(p == null && p2 == null)
 					moves.add(new byte[]{ChessBoard.R5, filePos});
 			}
 			// en passant
@@ -436,7 +448,7 @@ public class Piece implements Cloneable {
 					}
 				}
 			}
-		}			
+		}
 		
 		return moves;
 	}

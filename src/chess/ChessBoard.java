@@ -165,12 +165,40 @@ public class ChessBoard {
 	}
 	
 	public Piece get(byte rank, byte file) {
-		int idx = board[rank][file];
+		int idx = this.board[rank][file];
 		// check for no piece in that square
 		if(idx == 0)
 			return null;
 		// return either the white piece or the black piece
 		return idx > 0 ? whitePieces[idx - 1] : blackPieces[(idx*-1) - 1];
+	}
+	
+	/**
+	 * Method to determine if the spot on the board is occupied or not.  Useful when
+	 * we simply need to check for the presence of a piece on a spot and don't care
+	 * about what color it may be. 
+	 * 
+	 * @param rank - rank of spot we are checking
+	 * @param file - file of spot we are checking
+	 * @return bool - true if a piece is on [rank, file], false otherwise
+	 */
+	public boolean isSpotOccupied(byte rank, byte file) {
+		return this.board[rank][file] == 0;
+	}
+	
+	/**
+	 * Method to determine if the spot on the board is occupied with a given color piece.
+	 * This is useful when generating a list of all the possible move for a given piece,
+	 * allowing us to quickly do a lookup on the board as opposed to having to get the piece
+	 * and checking if it is null and what color it is.
+	 * 
+	 * @param rank - rank of spot we are checking
+	 * @param file - file of spot we are checking
+	 * @param color - color test
+	 * @return bool - true if a piece with given color is on [rank, file], false otherwise
+	 */
+	public boolean isSpotOccupiedWithColor(byte rank, byte file, byte color) {
+		return this.board[rank][file] < 0 && color < 0 || this.board[rank][file] > 0 && color > 0;
 	}
 	
 	/**
@@ -181,7 +209,7 @@ public class ChessBoard {
 	 * @param file - file on the board of the piece being captured
 	 */
 	private void capture(int rank, int file) {
-		int idx = board[rank][file];
+		int idx = this.board[rank][file];
 		
 		// remove the entry in the white pieces array
 		if(idx > 0) {
@@ -265,6 +293,8 @@ public class ChessBoard {
 		this.board[endRank][endFile] = this.board[startRank][startFile];
 		// clear out the starting spot since the piece is being moved from there
 		this.board[startRank][startFile] = 0;
+		
+		System.out.println(this.toString());
 	}
 	
 	/**
@@ -325,13 +355,17 @@ public class ChessBoard {
 		if(color == Piece.WHITE) {
 			for(Piece p : whitePieces) {
 				int key = p.getRank() * 10 + p.getFile();
-				moves.put(key, p.getPossibleMoves(this));
+				ArrayList<byte[]> possibleMoves = p.getPossibleMoves(this);
+				if(possibleMoves != null && possibleMoves.size() != 0)
+					moves.put(key, possibleMoves);
 			}
 		}
 		else {
 			for(Piece p : blackPieces) {
 				int key = p.getRank() * 10 + p.getFile();
-				moves.put(key, p.getPossibleMoves(this));
+				ArrayList<byte[]> possibleMoves = p.getPossibleMoves(this);
+				if(possibleMoves != null && possibleMoves.size() != 0)
+					moves.put(key, possibleMoves);
 			}
 		}
 		

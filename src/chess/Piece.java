@@ -411,10 +411,10 @@ public class Piece implements Cloneable {
 		// move two spaces on first turn
 		if(this.color == WHITE) {
 			if(rankPos == ChessBoard.R2){
-				p = board.get((byte) (ChessBoard.R4), filePos);
+				p = board.get(ChessBoard.R4, filePos);
 				Piece p2 = board.get((byte) (ChessBoard.R3), filePos);
 				// have to check two spaces up and space directly in front
-				if(p == null && p2 == null)
+				if(p == null && p2 == null)		// TODO here is where we can use the new get methods in ChessBoard
 					moves.add(new byte[]{ChessBoard.R4, filePos});
 			}
 			// en passant
@@ -431,10 +431,10 @@ public class Piece implements Cloneable {
 		}
 		else {
 			if(rankPos == ChessBoard.R7){
-				p = board.get((byte) (ChessBoard.R5), filePos);
+				p = board.get(ChessBoard.R5, filePos);
 				Piece p2 = board.get((byte) (ChessBoard.R3), filePos);
 				// have to check two spaces up and space directly in front
-				if(p == null && p2 == null)
+				if(p == null && p2 == null)		// TODO here is where we can use the new get methods in ChessBoard
 					moves.add(new byte[]{ChessBoard.R5, filePos});
 			}
 			// en passant

@@ -210,26 +210,33 @@ public class ChessBoard {
 	 * @param rank - rank on the board of the piece being captured 
 	 * @param file - file on the board of the piece being captured
 	 */
-	private void capture(int rank, int file) {
+	private void capture(byte rank, byte file) {
 		int idx = this.board[rank][file];
 		
 		// remove the entry in the white pieces array
 		if(idx > 0) {
+			this.whitePieces[idx - 1] = null;
 			// remove the piece from the pieces array
-			Piece[] newArr = new Piece[whitePieces.length - 1];
-			System.arraycopy(whitePieces, 0, newArr, 0, idx - 1);
-			System.arraycopy(whitePieces, idx, newArr, idx - 1, whitePieces.length - idx);
-			this.whitePieces = newArr;
+			//Piece[] newArr = new Piece[whitePieces.length - 1];
+			// if we remove it from the array then we have to update all the indexes on the board
+			// we may want to do this later if it would save us more time but not now
+			//System.arraycopy(whitePieces, 0, newArr, 0, idx - 1);
+			//System.arraycopy(whitePieces, idx, newArr, idx - 1, whitePieces.length - idx);
+			//this.whitePieces = newArr;
 		}
 		else {
 			// need to account for negative indexes
 			idx *= - 1;
+			this.blackPieces[idx - 1] = null;
 			// remove the piece from the pieces array
-			Piece[] newArr = new Piece[blackPieces.length - 1];
-			System.arraycopy(blackPieces, 0, newArr, 0, idx - 1);
-			System.arraycopy(blackPieces, idx, newArr, idx - 1, blackPieces.length - idx);
-			this.blackPieces = newArr;
+			//Piece[] newArr = new Piece[blackPieces.length - 1];
+			// if we remove it from the array then we have to update all the indexes on the board
+			// we may want to do this later if it would save us more time but not now
+			//System.arraycopy(blackPieces, 0, newArr, 0, idx - 1);
+			//System.arraycopy(blackPieces, idx, newArr, idx - 1, blackPieces.length - idx);
+			//this.blackPieces = newArr;
 		}
+		
 		// clear the space on the board where this piece used to be
 		this.board[rank][file] = 0;
 	}
@@ -409,6 +416,8 @@ public class ChessBoard {
 		
 		// count the white pieces
 		for(int i = 0; i < this.whitePieces.length; i++) {
+			if(whitePieces[i] == null)
+				continue;
 			switch(whitePieces[i].getType()) {
 				case Piece.KING:
 					whiteKings++;
@@ -433,6 +442,8 @@ public class ChessBoard {
 		
 		// count the black pieces
 		for(int i = 0; i < this.blackPieces.length; i++) {
+			if(blackPieces[i] == null)
+				continue;
 			switch(blackPieces[i].getType()) {
 				case Piece.KING:
 					blackKings++;
@@ -565,7 +576,7 @@ public class ChessBoard {
 		for(byte rank = R8; rank >= R1; rank--) {
 			for(byte file = A; file <= H; file++) {
 				if(this.board[rank][file] != 0) {
-					Piece chessPiece = this.get(rank, file); 
+					Piece chessPiece = this.get(rank, file);
 					if(chessPiece.getColor() == Piece.WHITE)
 						str += "W";
 					else

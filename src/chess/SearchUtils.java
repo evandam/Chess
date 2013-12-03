@@ -9,7 +9,7 @@ public class SearchUtils {
 	public static long startSearchTime = 0;
 	
 	// have cutoff here which would be number of ply's?
-	private static int maxPly = 5;
+	private static int maxPly = 4;
 	
 	private static byte[] nextMove = new byte[5];
 	

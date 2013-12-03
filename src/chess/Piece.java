@@ -48,7 +48,7 @@ public class Piece implements Cloneable {
 	protected static Piece[] cloneArray(Piece[] p) {
 		Piece[] newArray = new Piece[p.length];
 		for(int i = 0; i < p.length; i++) {
-			newArray[i] = p[i].clonePiece();
+			newArray[i] = p[i] == null ? null : p[i].clonePiece();
 		}
 		return newArray;
 	}

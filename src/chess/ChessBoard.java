@@ -333,6 +333,8 @@ public class ChessBoard {
 			pieces = blackPieces;
 		// go through each piece the enemy has and check if it can move into the square
 		for(Piece pos : pieces) {
+			if(pos == null)
+				continue;
 			for(byte[] attackLocations : pos.getPossibleMoves(this)) {
 				// the square can be attacked
 				if(rank == attackLocations[0] && file == attackLocations[1])
@@ -365,6 +367,8 @@ public class ChessBoard {
 		
 		if(color == Piece.WHITE) {
 			for(Piece p : whitePieces) {
+				if(p == null)
+					continue;
 				int key = p.getRank() * 10 + p.getFile();
 				ArrayList<byte[]> possibleMoves = p.getPossibleMoves(this);
 				if(possibleMoves != null && possibleMoves.size() != 0)
@@ -373,6 +377,8 @@ public class ChessBoard {
 		}
 		else {
 			for(Piece p : blackPieces) {
+				if(p == null)
+					continue;
 				int key = p.getRank() * 10 + p.getFile();
 				ArrayList<byte[]> possibleMoves = p.getPossibleMoves(this);
 				if(possibleMoves != null && possibleMoves.size() != 0)
@@ -394,11 +400,15 @@ public class ChessBoard {
 		
 		if(color == Piece.WHITE) {
 			for(Piece p : whitePieces) {
+				if(p == null)
+					continue;
 				count += p.getPossibleMoves(this).size();
 			}
 		}
 		else {
 			for(Piece p : blackPieces) {
+				if(p == null)
+					continue;
 				count += p.getPossibleMoves(this).size();
 			}
 		}

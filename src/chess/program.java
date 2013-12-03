@@ -1,5 +1,8 @@
 package chess;
 
+import java.util.Date;
+
+
 /*import java.util.List;
 import java.util.Map;*/
 
@@ -54,9 +57,13 @@ public class program {
 		}
 		
 		if(startSearch) {
+			Date start = new Date();
 			byte[] move = SearchUtils.AlphaBetaSearch(board);
-			board.move(move[0], move[1], move[2], move[3]);
-			ServerAPI.move(Piece.getCharType(move[4]) + move[0] + move[1] + move[2] + move[3] + "");
+			Date end = new Date();
+			System.out.println("Done: duration: " + (end.getTime() - start.getTime()) / 1000.0 + " seconds");
+			return;
+			//board.move(move[0], move[1], move[2], move[3]);
+			//ServerAPI.move(Piece.getCharType(move[4]) + move[0] + move[1] + move[2] + move[3] + "");
 		}
 		
 		while(!ServerAPI.gameover) {

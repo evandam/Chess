@@ -33,7 +33,7 @@ public class SearchUtils {
 		// if terminal / cutoff reached
 		//if(cutoffTest(board))
 		//	return board.Utility();
-		if(currentPly > maxPly)
+		if(currentPly >= maxPly)
 			return board.Utility();
 		currentPly++;
 		
@@ -71,7 +71,7 @@ public class SearchUtils {
 		// return board.Utility();
 		//if(cutoffTest(board))
 		//	return board.Utility();
-		if(currentPly > maxPly)
+		if(currentPly >= maxPly)
 			return board.Utility();
 		currentPly++;
 		

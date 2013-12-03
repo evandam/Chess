@@ -520,7 +520,7 @@ public class ChessBoard {
 	@Override
 	public String toString() {
 		String str = "";
-		for(byte rank = R1; rank <= R8; rank++) {
+		for(byte rank = R8; rank >= R1; rank--) {
 			for(byte file = A; file <= H; file++) {
 				if(this.board[rank][file] != 0) {
 					Piece chessPiece = this.get(rank, file); 

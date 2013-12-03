@@ -31,9 +31,10 @@ public class SearchUtils {
 
 	public static double MaxValue(ChessBoard board, double alpha, double beta, int currentPly) {
 		// if terminal / cutoff reached
-		if(cutoffTest(board))
+		//if(cutoffTest(board))
+		//	return board.Utility();
+		if(currentPly > maxPly)
 			return board.Utility();
-		
 		currentPly++;
 		
 		double v = Double.MIN_VALUE;
@@ -54,7 +55,7 @@ public class SearchUtils {
 				newBoard.move(startRank, startFile, endPos[0], endPos[1]);
 				nextMove[0] = startRank; nextMove[1] = startFile;
 				nextMove[2] = endPos[0]; nextMove[3] = endPos[1];
-				Piece p = board.get(startRank, startFile);
+				Piece p = board.get(endPos[0], endPos[1]);
 				nextMove[4] = p != null ? p.getType() : -1;
 				v = Math.max(v, MinValue(newBoard, alpha, beta, currentPly));
 				if(v >= beta)
@@ -68,9 +69,10 @@ public class SearchUtils {
 	public static double MinValue(ChessBoard board, double alpha, double beta, int currentPly) {
 		// if terminal / cutoff reached
 		// return board.Utility();
-		if(cutoffTest(board))
+		//if(cutoffTest(board))
+		//	return board.Utility();
+		if(currentPly > maxPly)
 			return board.Utility();
-		
 		currentPly++;
 		
 		double v = Double.MAX_VALUE;

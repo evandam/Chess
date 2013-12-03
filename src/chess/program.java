@@ -30,7 +30,7 @@ public class program {
 		
 		ServerAPI.poll();
 		
-		boolean startSearch = false;
+		boolean startSearch = true;
 		
 		// if after polling, we have the ready and no moves have been made yet, then we know we are white
 		// since chess rules state that white always moves first

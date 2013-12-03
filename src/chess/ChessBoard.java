@@ -150,7 +150,11 @@ public class ChessBoard {
 	}
 	
 	private ChessBoard(byte[][] b, Piece[] white, Piece[] black, boolean noKing) {
-		this.board = b.clone();
+		byte[][] newBoard = new byte[b.length][];
+		for(int i = 0; i < b.length; i++) {
+			newBoard[i] = b[i].clone();
+		}
+		this.board = newBoard;
 		this.whitePieces = Piece.cloneArray(white);
 		this.blackPieces = Piece.cloneArray(black);
 		this.kingCaptured = noKing;

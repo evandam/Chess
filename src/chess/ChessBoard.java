@@ -198,6 +198,8 @@ public class ChessBoard {
 	 * @return bool - true if a piece with given color is on [rank, file], false otherwise
 	 */
 	public boolean isSpotOccupiedWithColor(byte rank, byte file, byte color) {
+		// this works because Piece.WHITE is positive just like the white piece indexes in board[][] and
+		// Piece.BLACK is negative just like the black piece indexes in board[][]
 		return this.board[rank][file] < 0 && color < 0 || this.board[rank][file] > 0 && color > 0;
 	}
 	

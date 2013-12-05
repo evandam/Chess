@@ -283,7 +283,7 @@ public class ChessBoard {
 			// king side castling
 			if(startFile == D && endFile == B) {
 				// move the rook too
-				Piece rook = this.get(startRank, C);
+				Piece rook = this.get(startRank, A);
 				rook.updatePosition(startRank, C);
 				this.board[startRank][C] = this.board[startRank][A];
 				this.board[startRank][A] = 0;
@@ -291,7 +291,7 @@ public class ChessBoard {
 			// queen side castle
 			else if(startFile == D && endFile == F) {
 				// move the rook too
-				Piece rook = this.get(startRank, C);
+				Piece rook = this.get(startRank, H);
 				rook.updatePosition(startRank, E);
 				this.board[startRank][E] = this.board[startRank][H];
 				this.board[startRank][H] = 0;
@@ -576,8 +576,12 @@ public class ChessBoard {
 	 * @param i - byte value
 	 * @return byte - chess board representation
 	 */
-	public static byte getRank(byte i) {
+	public static byte getDisplayRank(byte i) {
 		return (byte) (i + 1);
+	}
+	
+	public static byte getRank(byte i) {
+		return (byte) (i - 1);
 	}
 	
 	@Override

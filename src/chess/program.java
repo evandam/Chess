@@ -33,7 +33,7 @@ public class program {
 		
 		ServerAPI.poll();
 		
-		boolean startSearch = true;
+		boolean startSearch = false;
 		
 		// if after polling, we have the ready and no moves have been made yet, then we know we are white
 		// since chess rules state that white always moves first
@@ -56,22 +56,30 @@ public class program {
 			startSearch = true;
 		}
 		
-		if(startSearch) {
+		/*if(startSearch) {
 			Date start = new Date();
 			byte[] move = SearchUtils.AlphaBetaSearch(board);
 			Date end = new Date();
 			System.out.println("Done: duration: " + (end.getTime() - start.getTime()) / 1000.0 + " seconds");
-			System.out.println(Piece.getCharType(move[4]) + "" + ChessBoard.getRank(move[0]) + "" +
-					ChessBoard.getFile(move[1]) + "" + ChessBoard.getRank(move[2]) + "" + ChessBoard.getFile(move[3]));
+			System.out.println(Piece.getCharType(move[4]) + "" + ChessBoard.getDisplayRank(move[0]) + "" +
+					ChessBoard.getFile(move[1]) + "" + ChessBoard.getDisplayRank(move[2]) + "" + ChessBoard.getFile(move[3]));
 			return;
 			//board.move(move[0], move[1], move[2], move[3]);
-			//ServerAPI.move(Piece.getCharType(move[4]) + move[0] + move[1] + move[2] + move[3] + "");
-		}
+			//ServerAPI.move(Piece.getCharType(move[4]) + "" + ChessBoard.getRank(move[0]) + "" +
+			//	ChessBoard.getFile(move[1]) + "" + ChessBoard.getRank(move[2]) + "" + ChessBoard.getFile(move[3]));
+		}*/
 		
 		while(!ServerAPI.gameover) {
 			ServerAPI.poll();
 			if(ServerAPI.ready) {
-				
+				Date start = new Date();
+				byte[] move = SearchUtils.AlphaBetaSearch(board);
+				Date end = new Date();
+				System.out.println("Done: duration: " + (end.getTime() - start.getTime()) / 1000.0 + " seconds");
+				String moveStr = Piece.getCharType(move[4]) + "" + ChessBoard.getFile(move[1]) + "" +
+						ChessBoard.getDisplayRank(move[0]) + "" + ChessBoard.getFile(move[3]) + "" + ChessBoard.getDisplayRank(move[2]);
+				System.out.println(moveStr);
+				ServerAPI.move(moveStr);
 			}
 			else {
 				try {

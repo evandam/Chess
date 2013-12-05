@@ -587,18 +587,24 @@ public class ChessBoard {
 	@Override
 	public String toString() {
 		String str = "";
-		for(byte rank = R8; rank >= R1; rank--) {
+		for(byte rank = R8; rank >= R1 - 1; rank--) {
 			for(byte file = A; file <= H; file++) {
-				if(this.board[rank][file] != 0) {
+				if(file == A && rank >= R1)
+					str += rank + "|";
+				else if(rank == R1 - 1 && file == A)
+					str += " |";
+				else if(rank == R1 - 1)
+					str += file + " |";
+				else if(this.board[rank][file] != 0) {
 					Piece chessPiece = this.get(rank, file);
 					if(chessPiece.getColor() == Piece.WHITE)
 						str += "W";
 					else
 						str += "B";
-					str += chessPiece.toString() + " ";
+					str += chessPiece.toString() + "|";
 				}
 				else {
-					str += "---";
+					str += "--|";
 				}
 			}
 			str += "\n";

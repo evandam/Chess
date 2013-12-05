@@ -58,7 +58,7 @@ public class program {
 				System.out.println(moveStr);
 			}
 			else {
-				try { s = bufferRead.readLine(); } catch (IOException e1) { return; }
+				try { System.out.print("Enter move: "); s = bufferRead.readLine(); } catch (IOException e1) { return; }
 				byte startRank, startFile, endRank, endFile;
 				startRank = (byte) (Byte.parseByte(s.charAt(2) + "") - 1);
 				startFile = ChessBoard.getFile(s.charAt(1));

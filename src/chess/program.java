@@ -1,10 +1,10 @@
 package chess;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.Date;
 
-
-/*import java.util.List;
-import java.util.Map;*/
 
 /* Code base for project */
 public class program {
@@ -27,19 +27,64 @@ public class program {
 		
 		ChessBoard board = new ChessBoard();
 		
+		
+		/* ----------------------------- Interactive game play offline ---------------------------------- */
+		BufferedReader bufferRead = new BufferedReader(new InputStreamReader(System.in));
+	    String s = "";
+		
+		boolean startSearch = false;
+		ServerAPI.setOurColor(Piece.WHITE);
+		
+		if(!startSearch) {
+			ServerAPI.setOurColor(Piece.BLACK);
+			//try { s = bufferRead.readLine(); } catch (IOException e1) { return; }
+			//startSearch = true;
+		}
+		
+		while(!s.equals("q") || s.equals("Q")) {
+			
+			if(startSearch) {
+				startSearch = false;
+				
+				Date start = new Date();
+				byte[] move = SearchUtils.AlphaBetaSearch(board);
+				
+				// need to actually record the move in the running board representation
+				board.move(move[0], move[1], move[2], move[3]);
+				Date end = new Date();
+				System.out.println("Done: duration: " + (end.getTime() - start.getTime()) / 1000.0 + " seconds");
+				String moveStr = Piece.getCharType(move[4]) + "" + ChessBoard.getFile(move[1]) + "" +
+						ChessBoard.getDisplayRank(move[0]) + "" + ChessBoard.getFile(move[3]) + "" + ChessBoard.getDisplayRank(move[2]);
+				System.out.println(moveStr);
+			}
+			else {
+				try { s = bufferRead.readLine(); } catch (IOException e1) { return; }
+				byte startRank, startFile, endRank, endFile;
+				startRank = (byte) (Byte.parseByte(s.charAt(2) + "") - 1);
+				startFile = ChessBoard.getFile(s.charAt(1));
+				endRank = (byte) (Byte.parseByte(s.charAt(4) + "") - 1);
+				endFile = ChessBoard.getFile(s.charAt(3));
+				board.move(startRank, startFile, endRank, endFile);
+				startSearch = true;
+			}
+			System.out.println(board.toString());
+		}
+		/* ---------------------------------------------------------------------------------------------- */
+		
+		
+		
+		
+		
 		//ServerAPI.setOurTeamDetails(007, "bond");		// hard code our team details here
 		ServerAPI.setGameId(gameId);
 		ServerAPI.setPollInterval(1);
 		
 		ServerAPI.poll();
 		
-		//boolean startSearch = false;
-		
 		// if after polling, we have the ready and no moves have been made yet, then we know we are white
 		// since chess rules state that white always moves first
 		if(ServerAPI.ready == true && ServerAPI.lastmovenumber == 0 && ServerAPI.lastmove == null) {
 			ServerAPI.setOurColor(Piece.WHITE);
-			//startSearch = true;
 		}
 		// otherwise we know we are waiting for the first move which means that we are black
 		else if(ServerAPI.ready == false && ServerAPI.lastmovenumber == 0) {
@@ -50,30 +95,17 @@ public class program {
 		else if(ServerAPI.ready == true && ServerAPI.lastmove != null) {
 			ServerAPI.setOurColor(Piece.BLACK);
 			// record that move - TODO - cleaner way of doing this?
-			byte[] lastStartPos = ServerAPI.getLastMoveStartPos();
-			byte[] lastEndPos = ServerAPI.getLastMoveEndPos();
-			board.move((byte)(lastStartPos[0]-1), lastStartPos[1], (byte)(lastEndPos[0]-1), lastEndPos[1]);
-			//startSearch = true;
+			byte[] lastMove = ServerAPI.getLastMove();
+			board.move(lastMove[0], lastMove[1], lastMove[2], lastMove[3]);
 		}
 		
-		/*if(startSearch) {
-			Date start = new Date();
-			byte[] move = SearchUtils.AlphaBetaSearch(board);
-			Date end = new Date();
-			System.out.println("Done: duration: " + (end.getTime() - start.getTime()) / 1000.0 + " seconds");
-			System.out.println(Piece.getCharType(move[4]) + "" + ChessBoard.getDisplayRank(move[0]) + "" +
-					ChessBoard.getFile(move[1]) + "" + ChessBoard.getDisplayRank(move[2]) + "" + ChessBoard.getFile(move[3]));
-			return;
-			//board.move(move[0], move[1], move[2], move[3]);
-			//ServerAPI.move(Piece.getCharType(move[4]) + "" + ChessBoard.getRank(move[0]) + "" +
-			//	ChessBoard.getFile(move[1]) + "" + ChessBoard.getRank(move[2]) + "" + ChessBoard.getFile(move[3]));
-		}*/
-		
+		// start the game
 		while(!ServerAPI.gameover) {
 			ServerAPI.poll();
 			if(ServerAPI.ready) {
 				Date start = new Date();
 				byte[] move = SearchUtils.AlphaBetaSearch(board);
+				
 				// need to actually record the move in the running board representation
 				board.move(move[0], move[1], move[2], move[3]);
 				Date end = new Date();
@@ -81,6 +113,8 @@ public class program {
 				String moveStr = Piece.getCharType(move[4]) + "" + ChessBoard.getFile(move[1]) + "" +
 						ChessBoard.getDisplayRank(move[0]) + "" + ChessBoard.getFile(move[3]) + "" + ChessBoard.getDisplayRank(move[2]);
 				System.out.println(moveStr);
+				
+				// send the move to the server
 				if(!ServerAPI.move(moveStr)) {
 					System.out.println(ServerAPI.message);
 					return;
@@ -91,61 +125,10 @@ public class program {
 					//System.out.println("Waiting for opponent...");
 					Thread.sleep((long) ServerAPI.getPollInterval() * 1000);
 				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					System.out.println(e);
 				}
 			}
-		}
-		
-		// TODO - main game loop
+		} // end while game is not over
 	}
 	
-	
-	private void TestStuff() {
-		//ServerAPI.setTeam1();
-		ServerAPI.poll();
-		
-		ChessBoard board = new ChessBoard();
-		
-		// moves for white bishop
-		byte[] start = new byte[]{ChessBoard.R2, ChessBoard.B};
-		byte[] end = new byte[]{ChessBoard.R5, ChessBoard.B};
-		// move king to see what positions are open
-		//board.move(start, end);
-		//board.move(new byte[] {ChessBoard.R7, ChessBoard.C}, new byte[] {ChessBoard.R5, ChessBoard.C});
-		
-//		System.out.println(board);
-		
-		//List<byte[]> moves = board.get(end[0], end[1]).getPossibleMoves(board, end);
-//		System.out.println("possible moves: ");
-		
-		//for(byte[] newPos : moves) {
-//			System.out.println(newPos[0] + ", " + newPos[1]);
-		//}
-				
-		// test en passant
-		//board.move(end, new byte[]{2, 2});
-//		System.out.println(board);
-		/*byte[] start = {Board.R1, Board.B};
-		byte[] end = {Board.R3, Board.C};
-		System.out.println(board.move(start, end));
-		System.out.println(board);*/
-		
-		
-		// set this up at
-		// http://www.bencarle.com/chess/startgame
-		ServerAPI.gameId = 352;
-		
-		// test moving
-		//ServerAPI.setTeam1();
-		
-		String moveString = "Pe5d6";
-		/*Map<String, String> moveData = ServerAPI.move(moveString);
-		if(moveData != null) {
-			for(String key : moveData.keySet()) {
-				System.out.println(key + ": " + moveData.get(key));
-			}
-		}*/
-	}
-
 }

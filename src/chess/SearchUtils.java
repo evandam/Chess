@@ -4,12 +4,17 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Map;
 
+/**
+ * Class to handle all search functions and return moves.
+ * 
+ * @author Bryan
+ */
 public class SearchUtils {
 	// use this for in the cutoff test (limit 5 seconds per search?)
 	public static long startSearchTime = 0;
 	
 	// have cutoff here which would be number of ply's?
-	private static int maxPly = 4;
+	private static int maxPly = 5;
 	
 	//private static byte[] nextMove = new byte[5];
 	

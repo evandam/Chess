@@ -12,8 +12,8 @@ import java.util.regex.Pattern;*/
 
 /**
  * A utility class for server calls
+ * 
  * @author Evan
- *
  */
 public class ServerAPI {//implements Runnable {
 	public static int gameId;						// need to set this when game is started 
@@ -181,13 +181,35 @@ public class ServerAPI {//implements Runnable {
 			return -1;
 	}
 	
-	public static byte[] getLastMoveStartPos() {
-		if(lastmove.length() > 2)
-			return new byte[] { ChessBoard.getDisplayRank(Byte.parseByte(lastmove.charAt(2) + "")),
-				ChessBoard.getFile(lastmove.charAt(1))  };
+	/**
+	 * Gets the last move received from the server in the form of [rank, file]
+	 * where 0 <= rank <= 7 and 0 <= file <= 7 
+	 * 
+	 * @return [rank, file] of last move from server
+	 */
+	public static byte[] getLastMove() {
+		if(lastmove.length() > 4) {
+			byte rank = Byte.parseByte(lastmove.charAt(2) + ""),
+				 rankEnd = Byte.parseByte(lastmove.charAt(4) + "");
+			return new byte[] { ChessBoard.getDisplayRank((byte) (rank - 1)),
+					ChessBoard.getFile(lastmove.charAt(1)),
+					ChessBoard.getDisplayRank((byte) (rankEnd - 1)),
+					ChessBoard.getFile(lastmove.charAt(3))};
+		}
 		else
 			return null;
 	}
+	
+	/*public static byte[] getLastMoveStartPos() {
+		if(lastmove.length() > 2) {
+			byte rank = Byte.parseByte(lastmove.charAt(2) + "");
+				 //file;
+			return new byte[] { ChessBoard.getDisplayRank((byte) (rank - 1)),
+				ChessBoard.getFile(lastmove.charAt(1))};
+		}
+		else
+			return null;
+	}*/
 	
 	public static byte[] getLastMoveEndPos() {
 		if(lastmove.length() > 4)

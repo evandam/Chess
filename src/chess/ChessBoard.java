@@ -99,7 +99,7 @@ public class ChessBoard {
 		
 		// white pieces
 		board[R1][E] = 1;
-		whitePieces[0] = new Piece(R1, E, Piece.QUEEN, Piece.WHITE);
+		whitePieces[0] = new Piece(R1, D, Piece.QUEEN, Piece.WHITE);
 		
 		board[R1][A] = 2;
 		whitePieces[1] = new Piece(R1, A, Piece.ROOK, Piece.WHITE);
@@ -120,12 +120,12 @@ public class ChessBoard {
 		whitePieces[6] = new Piece(R1, G, Piece.KNIGHT, Piece.WHITE);
 		
 		board[R1][D] = 8;
-		whitePieces[7] = new Piece(R1, D, Piece.KING, Piece.WHITE);
+		whitePieces[7] = new Piece(R1, E, Piece.KING, Piece.WHITE);
 		
 		
 		// black pieces
 		board[R8][E] = -1;
-		blackPieces[0] = new Piece(R8, E, Piece.QUEEN, Piece.BLACK);
+		blackPieces[0] = new Piece(R8, D, Piece.QUEEN, Piece.BLACK);
 		
 		board[R8][A] = -2;
 		blackPieces[1] = new Piece(R8, A, Piece.ROOK, Piece.BLACK);
@@ -146,7 +146,7 @@ public class ChessBoard {
 		blackPieces[6] = new Piece(R8, G, Piece.KNIGHT, Piece.BLACK);
 		
 		board[R8][D] = -8;
-		blackPieces[7] = new Piece(R8, D, Piece.KING, Piece.BLACK);
+		blackPieces[7] = new Piece(R8, E, Piece.KING, Piece.BLACK);
 	}
 	
 	private ChessBoard(byte[][] b, Piece[] white, Piece[] black, boolean noKing) {

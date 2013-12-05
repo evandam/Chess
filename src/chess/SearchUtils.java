@@ -61,6 +61,7 @@ public class SearchUtils {
 			byte startRank = (byte) (startPos % 100 / 10);
 			for(byte[] endPos : moves.get(startPos)) {
 				newBoard = board.clone();
+				System.out.println("ply: " + currentPly);
 				newBoard.move(startRank, startFile, endPos[0], endPos[1]);
 				
 				lastMove[0] = nextMove[0] = startRank;
@@ -71,8 +72,10 @@ public class SearchUtils {
 				lastMove[4] = nextMove[4] = p != null ? p.getType() : -1;
 				
 				v = Math.max(v, MinValue(newBoard, alpha, beta, currentPly).getLeft());
-				if(v >= beta)
+				if(v >= beta) {
+					System.out.println("CUTOFF");
 					return new Tuple<Double, byte[]>(v, nextMove);
+				}
 				alpha = Math.max(alpha, v);
 			}
 		}
@@ -103,6 +106,7 @@ public class SearchUtils {
 			byte startRank = (byte) (startPos % 100 / 10);
 			for(byte[] endPos : moves.get(startPos)) {
 				newBoard = board.clone();
+				System.out.println("ply: " + currentPly);
 				newBoard.move(startRank, startFile, endPos[0], endPos[1]);
 				
 				lastMove[0] = startRank;
@@ -113,8 +117,10 @@ public class SearchUtils {
 				lastMove[4] = nextMove[4] = p != null ? p.getType() : -1;
 				
 				v = Math.min(v, MaxValue(newBoard, alpha, beta, currentPly).getLeft());
-				if(v <= alpha)
+				if(v <= alpha) {
+					System.out.println("CUTOFF");
 					return new Tuple<Double, byte[]>(v, nextMove);
+				}
 				beta = Math.min(beta, v);
 			}
 		}

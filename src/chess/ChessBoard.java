@@ -27,12 +27,12 @@ public class ChessBoard {
 	
 	// indexes in white/blackPieces arrays for each piece
 	// to access the 2nd piece, add 1 to the starting index (ie ROOK + 1)
-	public static byte KING   = 0;
+	/*public static byte KING   = 0;
 	public static byte QUEEN  = 1;
 	public static byte ROOK   = 2;
 	public static byte BISHOP = 4;
 	public static byte KNIGHT = 6;
-	public static byte PAWN   = 8;
+	public static byte PAWN   = 8;*/
 	
 	// variable to hold which color we are, this matters because we need to be correctly oriented
 	private boolean kingCaptured = false;
@@ -98,7 +98,7 @@ public class ChessBoard {
 		}
 		
 		// white pieces
-		board[R1][E] = 1;
+		board[R1][D] = 1;
 		whitePieces[0] = new Piece(R1, D, Piece.QUEEN, Piece.WHITE);
 		
 		board[R1][A] = 2;
@@ -119,12 +119,12 @@ public class ChessBoard {
 		board[R1][G] = 7;
 		whitePieces[6] = new Piece(R1, G, Piece.KNIGHT, Piece.WHITE);
 		
-		board[R1][D] = 8;
+		board[R1][E] = 8;
 		whitePieces[7] = new Piece(R1, E, Piece.KING, Piece.WHITE);
 		
 		
 		// black pieces
-		board[R8][E] = -1;
+		board[R8][D] = -1;
 		blackPieces[0] = new Piece(R8, D, Piece.QUEEN, Piece.BLACK);
 		
 		board[R8][A] = -2;
@@ -145,7 +145,7 @@ public class ChessBoard {
 		board[R8][G] = -7;
 		blackPieces[6] = new Piece(R8, G, Piece.KNIGHT, Piece.BLACK);
 		
-		board[R8][D] = -8;
+		board[R8][E] = -8;
 		blackPieces[7] = new Piece(R8, E, Piece.KING, Piece.BLACK);
 	}
 	
@@ -320,7 +320,7 @@ public class ChessBoard {
 		// clear out the starting spot since the piece is being moved from there
 		this.board[startRank][startFile] = 0;
 		
-		System.out.println(startPiece.getColor() + getMoveString(startRank, startFile, endRank, endFile, startPiece.getType()));
+		System.out.println(startPiece.getColor() + " " + getMoveString(startRank, startFile, endRank, endFile, startPiece.getType()));
 		System.out.println(this.toString());
 	}
 	

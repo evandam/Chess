@@ -305,7 +305,7 @@ public class ChessBoard {
 		// clear out the starting spot since the piece is being moved from there
 		this.board[startRank][startFile] = 0;
 		
-		System.out.println(this.toString());
+		//System.out.println(this.toString());
 	}
 	
 	/**
@@ -317,14 +317,14 @@ public class ChessBoard {
 	 * @param endFile - ending file of the piece
 	 * @return string - string in the form of Nh1h6 or Pb7b8Q
 	 */
-	public String getMoveString(byte startRank, byte startFile, byte endRank, byte endFile) {
+	/*public String getMoveString(byte startRank, byte startFile, byte endRank, byte endFile) {
 		String str = this.get(startRank, startFile).toString();
 		String moveString = str + getFile(startFile) + getRank(startRank) + getFile(endFile) + getRank(endRank) + "";
 		// add extra char for queening
 		if(str.equals("P") && (endRank == ChessBoard.R1 || endRank == ChessBoard.R8))
 			str += "Q";
 		return moveString;
-	}
+	}*/
 	
 	// check all possible enemy moves to see if they can attack the location
 	public boolean isUnderAttack(byte rank, byte file, byte color) {
@@ -580,9 +580,9 @@ public class ChessBoard {
 		return (byte) (i + 1);
 	}
 	
-	public static byte getRank(byte i) {
+	/*public static byte getRank(byte i) {
 		return (byte) (i - 1);
-	}
+	}*/
 	
 	@Override
 	public String toString() {

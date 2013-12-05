@@ -15,7 +15,7 @@ import java.util.regex.Pattern;*/
  * @author Evan
  *
  */
-public class ServerAPI implements Runnable {
+public class ServerAPI {//implements Runnable {
 	public static int gameId;						// need to set this when game is started 
 	private static int teamNumber = 1;				// temporary
 	private static String teamSecret = "32c68cae";	// temporary
@@ -33,6 +33,7 @@ public class ServerAPI implements Runnable {
 	public static float secondsleft;
 	public static int lastmovenumber;
 	public static String lastmove = "Pd7d5";	// default to test en passant
+	public static String message;
 	
 	private ChessBoard board;
 	
@@ -123,9 +124,9 @@ public class ServerAPI implements Runnable {
 					lastmovenumber = Integer.parseInt(pair[1]);
 				else if(pair[0].equals("lastmove"))
 					lastmove = pair[1];
-				else if(pair[0] == "gameover")
+				else if(pair[0].equals("gameover"))
 					gameover = pair[1].equals("true");
-				else if(pair[0] == "winner")
+				else if(pair[0].equals("winner"))
 					winner = Integer.parseInt(pair[1]);
 			}
 			
@@ -157,8 +158,8 @@ public class ServerAPI implements Runnable {
 			
 			for(String val : components) {
 				String[] pair = val.split(":");
-				//if(pair[0].equals("message"))
-				//	message = pair[1];
+				if(pair[0].equals("message"))
+					message = pair[1];
 				if(pair[0].equals("result"))
 					return pair[1].equals("true");
 				else if(pair[0].equals("gameover"))		// TODO - need to kill the search somehow?
@@ -182,14 +183,16 @@ public class ServerAPI implements Runnable {
 	
 	public static byte[] getLastMoveStartPos() {
 		if(lastmove.length() > 2)
-			return new byte[] { ChessBoard.getRank(Byte.parseByte(lastmove.charAt(2) + "")), ChessBoard.getFile(lastmove.charAt(1))  };
+			return new byte[] { ChessBoard.getDisplayRank(Byte.parseByte(lastmove.charAt(2) + "")),
+				ChessBoard.getFile(lastmove.charAt(1))  };
 		else
 			return null;
 	}
 	
 	public static byte[] getLastMoveEndPos() {
 		if(lastmove.length() > 4)
-			return new byte[] { ChessBoard.getRank(Byte.parseByte(lastmove.charAt(4) + "")), ChessBoard.getFile(lastmove.charAt(3)) };
+			return new byte[] { ChessBoard.getDisplayRank(Byte.parseByte(lastmove.charAt(4) + "")),
+				ChessBoard.getFile(lastmove.charAt(3)) };
 		else
 			return null;
 	}
@@ -215,7 +218,7 @@ public class ServerAPI implements Runnable {
 	}
 
 	// Loop in a new thread to continuously poll the server looking for new moves
-	@Override
+	/*@Override
 	public void run() {
 		// TODO Auto-generated method stub
 		poll();
@@ -236,5 +239,5 @@ public class ServerAPI implements Runnable {
 				e.printStackTrace();
 			}
 		}
-	}
+	}*/
 }

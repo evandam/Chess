@@ -33,13 +33,13 @@ public class program {
 		
 		ServerAPI.poll();
 		
-		boolean startSearch = false;
+		//boolean startSearch = false;
 		
 		// if after polling, we have the ready and no moves have been made yet, then we know we are white
 		// since chess rules state that white always moves first
 		if(ServerAPI.ready == true && ServerAPI.lastmovenumber == 0 && ServerAPI.lastmove == null) {
 			ServerAPI.setOurColor(Piece.WHITE);
-			startSearch = true;
+			//startSearch = true;
 		}
 		// otherwise we know we are waiting for the first move which means that we are black
 		else if(ServerAPI.ready == false && ServerAPI.lastmovenumber == 0) {
@@ -52,8 +52,8 @@ public class program {
 			// record that move - TODO - cleaner way of doing this?
 			byte[] lastStartPos = ServerAPI.getLastMoveStartPos();
 			byte[] lastEndPos = ServerAPI.getLastMoveEndPos();
-			board.move(lastStartPos[0], lastStartPos[1], lastEndPos[0], lastEndPos[1]);
-			startSearch = true;
+			board.move((byte)(lastStartPos[0]-1), lastStartPos[1], (byte)(lastEndPos[0]-1), lastEndPos[1]);
+			//startSearch = true;
 		}
 		
 		/*if(startSearch) {
@@ -79,7 +79,10 @@ public class program {
 				String moveStr = Piece.getCharType(move[4]) + "" + ChessBoard.getFile(move[1]) + "" +
 						ChessBoard.getDisplayRank(move[0]) + "" + ChessBoard.getFile(move[3]) + "" + ChessBoard.getDisplayRank(move[2]);
 				System.out.println(moveStr);
-				ServerAPI.move(moveStr);
+				if(!ServerAPI.move(moveStr)) {
+					System.out.println(ServerAPI.message);
+					return;
+				}
 			}
 			else {
 				try {

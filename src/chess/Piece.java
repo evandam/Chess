@@ -131,7 +131,8 @@ public class Piece implements Cloneable {
 	 * A king can move into any adjacent square
 	 * 
 	 * @param board - chess board we are searching
-	 * @return list of moves that this king piece can move to
+	 * @return list of moves that this king piece can move to as [rank, file]
+	 * 		   where rank and file = [0,7]
 	 */
 	private ArrayList<byte[]> getKingMoves(ChessBoard board) {
 		ArrayList<byte[]> moves = new ArrayList<byte[]>();
@@ -184,7 +185,8 @@ public class Piece implements Cloneable {
 	 * A queen can move like a rook or a bishop (horizontal, vertical, diagonal).
 	 * 
 	 * @param board - chess board we are searching
-	 * @return list of moves that this queen piece can move to
+	 * @return list of moves that this queen piece can move to as [rank, file]
+	 * 		   where rank and file = [0,7]
 	 */
 	private ArrayList<byte[]> getQueenMoves(ChessBoard board) {
 		ArrayList<byte[]> moves = getRookMoves(board);
@@ -196,7 +198,8 @@ public class Piece implements Cloneable {
 	 * A rook can move any number of spaces horizontally or vertically.
 	 * 
 	 * @param board - chess board we are searching
-	 * @return list of moves that this rook piece can move to
+	 * @return list of moves that this rook piece can move to as [rank, file]
+	 * 		   where rank and file = [0,7]
 	 */
 	private ArrayList<byte[]> getRookMoves(ChessBoard board) {
 		ArrayList<byte[]> moves = new ArrayList<byte[]>();
@@ -264,7 +267,8 @@ public class Piece implements Cloneable {
 	 * A bishop can move any number of spaces along a diagonal.
 	 * 
 	 * @param board - chess board we are searching
-	 * @return list of moves that this bishop piece can move to
+	 * @return list of moves that this bishop piece can move to as [rank, file]
+	 * 		   where rank and file = [0,7]
 	 */
 	private ArrayList<byte[]> getBishopMoves(ChessBoard board) {
 		ArrayList<byte[]> moves = new ArrayList<byte[]>();
@@ -345,7 +349,8 @@ public class Piece implements Cloneable {
 	 * Can move in an L shape.
 	 * 
 	 * @param board - chess board we are searching
-	 * @return list of moves that this knight piece can move to
+	 * @return list of moves that this knight piece can move to as [rank, file]
+	 * 		   where rank and file = [0,7]
 	 */
 	private ArrayList<byte[]> getKnightMoves(ChessBoard board) {
 		ArrayList<byte[]> moves = new ArrayList<byte[]>();
@@ -433,7 +438,8 @@ public class Piece implements Cloneable {
 	 * Can move one space ahead, 2 if in starting position, or capture diagonally.
 	 * 
 	 * @param board - chess board we are searching
-	 * @return list of moves that this pawn piece can move to
+	 * @return list of moves that this pawn piece can move to as [rank, file]
+	 * 		   where rank and file = [0,7]
 	 */
 	private ArrayList<byte[]> getPawnMoves(ChessBoard board) {
 		ArrayList<byte[]> moves = new ArrayList<byte[]>();
@@ -513,30 +519,30 @@ public class Piece implements Cloneable {
 	// char for the piece type - {P, N, B, R, Q, K}
 	@Override
 	public String toString() {
-		String str = "";
 		switch(type) {
 			case PAWN:
-				str += "P";
-				break;
+				return "P";
 			case KNIGHT:
-				str += "N";
-				break;
+				return "N";
 			case BISHOP:
-				str += "B";
-				break;
+				return "B";
 			case ROOK:
-				str += "R";
-				break;
+				return "R";
 			case QUEEN:
-				str += "Q";
-				break;
+				return "Q";
 			default:
-				str += "K";
-				break;
+				return "K";
 		}
-		return str;
 	}
 	
+	/**
+	 * Translates the piece type from a character {P, N, B, R, Q, K}
+	 * to its numeric, byte representation.  Used when we parse a move
+	 * string and need to determine the internal piece type representation.
+	 * 
+	 * @param c char - character representation of the piece
+	 * @return byte representation of the piece
+	 */
 	public static byte getNumericType(char c) {
 		switch(c) {
 			case 'P':
@@ -555,27 +561,20 @@ public class Piece implements Cloneable {
 	}
 	
 	public static char getCharType(byte b) {
-		char str = ' ';
 		switch(b) {
 			case PAWN:
-				str = 'P';
-				break;
+				return 'P';
 			case KNIGHT:
-				str = 'N';
-				break;
+				return 'N';
 			case BISHOP:
-				str = 'B';
-				break;
+				return 'B';
 			case ROOK:
-				str = 'R';
-				break;
+				return 'R';
 			case QUEEN:
-				str = 'Q';
-				break;
+				return 'Q';
 			default:
-				str = 'K';
-				break;
+				return 'K';
 		}
-		return str;
 	}
+	
 }

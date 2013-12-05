@@ -5,13 +5,9 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.MalformedURLException;
 import java.net.URL;
-/*import java.util.HashMap;
-import java.util.Map;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;*/
 
 /**
- * A utility class for server calls
+ * A utility class for server calls.
  * 
  * @author Evan
  */
@@ -32,15 +28,14 @@ public class ServerAPI {//implements Runnable {
 	public static int winner;
 	public static float secondsleft;
 	public static int lastmovenumber;
-	public static String lastmove = "Pd7d5";	// default to test en passant
+	public static String lastMoveString = "Pd7d5";	// default to test en passant
 	public static String message;
 	
-	//private ChessBoard board;
-	
-	//public ServerAPI(ChessBoard board) {
-	//	this.board = board;
-	//}
-	
+	public static byte lastMovedPiece;
+	public static byte[] lastStartingMove;
+	public static byte[] lastEndingMove;
+	public static byte[] lastMoveBytes;
+
 	/**
 	 * Method to set our team number and secret once it is given to us,
 	 * otherwise it defaults to the given team 1.
@@ -98,20 +93,7 @@ public class ServerAPI {//implements Runnable {
 		try {
 			String url = root + "poll/" + gameId + "/" + teamNumber + "/" + teamSecret;
 			String response = readURL(url);
-			// easy enough to just use regexes to get the values from json
-			/*String pat = "\\{\"ready\": (\\w+), \"secondsleft\": ([\\d\\.]+), \"lastmovenumber\": (\\d+)(, \"lastmove\": \"(\\.*?)\")?\\}";
-			Pattern r = Pattern.compile(pat);
-			Matcher m = r.matcher(response);
-			if(m.find()) {
-				ready = m.group(1).equals("true");
-				secondsleft = Float.parseFloat(m.group(2));		// TODO - when its game over we get the following returned to us
-				lastmovenumber = Integer.parseInt(m.group(3));	// {"secondsleft": -47.027484, "lastmovenumber": 2, "lastmove": "Pa7a6", "winner": 1, "gameover": true, "ready": false}
-				lastmove = m.group(5);
-			}
-			else {
-				System.out.println("I'm bad at regexes");
-			}*/
-			
+
 			String[] components = response.substring(1, response.length() - 1).replace("\"", "").replace(" ", "").split(",");
 			
 			for(String val : components) {
@@ -122,8 +104,19 @@ public class ServerAPI {//implements Runnable {
 					secondsleft = Float.parseFloat(pair[1]);
 				else if(pair[0].equals("lastmovenumber"))
 					lastmovenumber = Integer.parseInt(pair[1]);
-				else if(pair[0].equals("lastmove"))
-					lastmove = pair[1];
+				else if(pair[0].equals("lastmove")) {
+					lastMoveString = pair[1];
+					lastMovedPiece = Piece.getNumericType(lastMoveString.charAt(0));
+					lastStartingMove = new byte[] { 
+							ChessBoard.getFile(lastMoveString.charAt(1)),
+							ChessBoard.getRankFromDisplay(lastMoveString.charAt(2))
+					};
+					lastEndingMove = new byte[] { 
+							ChessBoard.getFile(lastMoveString.charAt(3)),
+							ChessBoard.getRankFromDisplay(lastMoveString.charAt(4))
+					};
+					lastMoveBytes = new byte[] { lastStartingMove[0], lastStartingMove[1], lastEndingMove[2], lastEndingMove[1] };
+				}
 				else if(pair[0].equals("gameover"))
 					gameover = pair[1].equals("true");
 				else if(pair[0].equals("winner"))
@@ -131,7 +124,8 @@ public class ServerAPI {//implements Runnable {
 			}
 			
 		} catch(IOException e) {
-			System.out.println("Maybe a bad team number/secret combo?");
+			System.out.println(e);
+			//System.out.println("Maybe a bad team number/secret combo?");
 		}
 	}
 	
@@ -140,20 +134,7 @@ public class ServerAPI {//implements Runnable {
 		try {
 			String response = readURL(url);
 			System.out.println(response);
-			/*Map<String, String> map = new HashMap<String, String>();
-			// Regex to get the vars out of JSON
-			String pat = "\\{\"message\": \"(\\.*?)\", \"result\": (\\w+)\\}";
-			Pattern r = Pattern.compile(pat);
-			Matcher m = r.matcher(response);
-			if(m.find()) {
-				map.put("message", m.group(1));	// TODO - have to check for when the game is over which will be returned after a move
-				map.put("result", m.group(2));	// so instead of {"message": "", "result": true}
-				return map;						// we get a {"gameover": true, "winner": 1} if it is the end of the game
-			}
-			else {
-				System.out.println("I'm bad at regexes");
-			}*/
-			
+
 			String[] components = response.substring(1, response.length() - 1).replace("\"", "").replace(" ", "").split(",");
 			
 			for(String val : components) {
@@ -168,18 +149,19 @@ public class ServerAPI {//implements Runnable {
 					winner = Integer.parseInt(pair[1]);
 			}
 		} catch(IOException e) {
-			System.out.println("Maybe a bad team number/secret combo?");
+			System.out.println(e);
+			//System.out.println("Maybe a bad team number/secret combo?");
 		}
 		return false;
 	}
 	
 	// movestring functions
-	public static byte getLastMovedPiece() {
+	/*public static byte getLastMovedPiece() {
 		if(lastmove.length() > 0)
 			return Piece.getNumericType(lastmove.charAt(0));
 		else 
 			return -1;
-	}
+	}*/
 	
 	/**
 	 * Gets the last move received from the server in the form of [rank, file]
@@ -187,18 +169,18 @@ public class ServerAPI {//implements Runnable {
 	 * 
 	 * @return [rank, file] of last move from server
 	 */
-	public static byte[] getLastMove() {
-		if(lastmove.length() > 4) {
-			byte rank = Byte.parseByte(lastmove.charAt(2) + ""),
-				 rankEnd = Byte.parseByte(lastmove.charAt(4) + "");
+	/*public static byte[] getLastMove() {
+		if(lastMoveString.length() > 4) {
+			byte rank = Byte.parseByte(lastMoveString.charAt(2) + ""),
+				 rankEnd = Byte.parseByte(lastMoveString.charAt(4) + "");
 			return new byte[] { ChessBoard.getDisplayRank((byte) (rank - 1)),
-					ChessBoard.getFile(lastmove.charAt(1)),
+					ChessBoard.getFile(lastMoveString.charAt(1)),
 					ChessBoard.getDisplayRank((byte) (rankEnd - 1)),
-					ChessBoard.getFile(lastmove.charAt(3))};
+					ChessBoard.getFile(lastMoveString.charAt(3))};
 		}
 		else
 			return null;
-	}
+	}*/
 	
 	/*public static byte[] getLastMoveStartPos() {
 		if(lastmove.length() > 2) {
@@ -209,7 +191,7 @@ public class ServerAPI {//implements Runnable {
 		}
 		else
 			return null;
-	}*/
+	}
 	
 	public static byte[] getLastMoveEndPos() {
 		if(lastmove.length() > 4)
@@ -217,7 +199,7 @@ public class ServerAPI {//implements Runnable {
 				ChessBoard.getFile(lastmove.charAt(3)) };
 		else
 			return null;
-	}
+	}*/
 	
 	private static String readURL(String url) throws IOException {
 		String response = "";

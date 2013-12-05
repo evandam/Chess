@@ -83,7 +83,7 @@ public class program {
 		
 		// if after polling, we have the ready and no moves have been made yet, then we know we are white
 		// since chess rules state that white always moves first
-		if(ServerAPI.ready == true && ServerAPI.lastmovenumber == 0 && ServerAPI.lastmove == null) {
+		if(ServerAPI.ready == true && ServerAPI.lastmovenumber == 0 && ServerAPI.lastMoveString == null) {
 			ServerAPI.setOurColor(Piece.WHITE);
 		}
 		// otherwise we know we are waiting for the first move which means that we are black
@@ -92,10 +92,10 @@ public class program {
 		}
 		// if we have the ready and there is a last move, then the other team has already submitted a move
 		// for which we have to record in our internal representation and we know we are black
-		else if(ServerAPI.ready == true && ServerAPI.lastmove != null) {
+		else if(ServerAPI.ready == true && ServerAPI.lastMoveString != null) {
 			ServerAPI.setOurColor(Piece.BLACK);
 			// record that move - TODO - cleaner way of doing this?
-			byte[] lastMove = ServerAPI.getLastMove();
+			byte[] lastMove = ServerAPI.lastMoveBytes;
 			board.move(lastMove[0], lastMove[1], lastMove[2], lastMove[3]);
 		}
 		

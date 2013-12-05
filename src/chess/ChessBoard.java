@@ -595,9 +595,44 @@ public class ChessBoard {
 		return (byte) (i + 1);
 	}
 	
-	/*public static byte getRank(byte i) {
-		return (byte) (i - 1);
-	}*/
+	/**
+	 * Converts the standard representation (server 1-8) to constant
+	 * or internal rep (0-7) 
+	 * 
+	 * @param i - byte value
+	 * @return byte - internal representation
+	 */
+	public static byte getRankFromDisplay(byte i) {
+		return (byte) (i + 1);
+	}
+	
+	/**
+	 * Converts the standard representation (server 1-8) to constant
+	 * or internal rep (0-7) 
+	 * 
+	 * @param i - byte value
+	 * @return byte - internal representation
+	 */
+	public static byte getRankFromDisplay(char c) {
+		switch(c) {
+		case '1':
+			return R1;
+		case '2':
+			return R2;
+		case '3':
+			return R3;
+		case '4':
+			return R4;
+		case '5':
+			return R5;
+		case '6':
+			return R6;
+		case '7':
+			return R7;
+		default:
+			return R8;
+		}
+	}
 	
 	@Override
 	public String toString() {

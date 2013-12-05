@@ -127,126 +127,152 @@ public class Piece implements Cloneable {
 		}
 	}
 
-	// A king can move into any adjacent square
-	// look into castling?
+	/**
+	 * A king can move into any adjacent square
+	 * 
+	 * @param board - chess board we are searching
+	 * @return list of moves that this king piece can move to
+	 */
 	private ArrayList<byte[]> getKingMoves(ChessBoard board) {
 		ArrayList<byte[]> moves = new ArrayList<byte[]>();
-		//Piece p;
-		byte rankPos = this.rank,
-			 filePos = this.file;
-		
-		for(byte rank = (byte) (rankPos - 1); rank <= rankPos + 1; rank++) {
-			for(byte file = (byte) (filePos - 1); file <= filePos + 1; file++) {
+
+		for(byte rank = (byte) (this.rank - 1); rank <= this.rank + 1; rank++) {
+			for(byte file = (byte) (this.file - 1); file <= this.file + 1; file++) {
 				// make sure it's on the board
 				if(rank >= ChessBoard.R1 && rank <= ChessBoard.R8 && file >= ChessBoard.A && file <= ChessBoard.H) {
 					//p = board.get(rank, file);
 					// can move into an empty space or take out an opponent
-					if(board.isSpotEmptyOrCapturable(rank, filePos, this.color))
+					if(board.isSpotEmptyOrCapturable(rank, this.file, this.color))
 						moves.add(new byte[]{rank, file});
 				}
 			}
 		}
-		// castling
-		// king must not have moved yet
+		// castling - king must not have moved yet
 		if(this.hasMoved == 0) {
 			// check for king-side castling
-			Piece p = board.get(rankPos, ChessBoard.A);
+			Piece p = board.get(this.rank, ChessBoard.A);
 			// rook must not have been moved already
 			if(p != null && p.type == ROOK && p.hasMoved == 0) {
 				// all spaces in between must be open
-				if(board.isSpotEmpty(rankPos, ChessBoard.B) && board.isSpotEmpty(rankPos, ChessBoard.C)) {
+				if(board.isSpotEmpty(this.rank, ChessBoard.B) && board.isSpotEmpty(this.rank, ChessBoard.C)) {
 					// the spaces in between must not be under attack
-					if(!board.isUnderAttack(rankPos, ChessBoard.C, this.color) && !board.isUnderAttack(rankPos, ChessBoard.B, this.color))
-						moves.add(new byte[]{rankPos, ChessBoard.B});
+					if(!board.isUnderAttack(this.rank, ChessBoard.C, this.color)
+							&& !board.isUnderAttack(this.rank, ChessBoard.B, this.color)) {
+						moves.add(new byte[]{this.rank, ChessBoard.B});
+					}
 				}
 			}
 			
 			// queen-side castling
-			p = board.get(rankPos, ChessBoard.H);
+			p = board.get(this.rank, ChessBoard.H);
 			// rook must not have been moved already
 			if(p != null && p.type == ROOK && p.hasMoved == 0) {
 				// all spaces in between must be open
-				if(board.isSpotEmpty(rankPos, ChessBoard.E) && board.isSpotEmpty(rankPos, ChessBoard.F)) {
+				if(board.isSpotEmpty(this.rank, ChessBoard.E) && board.isSpotEmpty(this.rank, ChessBoard.F)) {
 					// the spaces in between must not be under attack
-					if(!board.isUnderAttack(rankPos, ChessBoard.E, this.color) && !board.isUnderAttack(rankPos, ChessBoard.F, this.color))
-						moves.add(new byte[]{rankPos, ChessBoard.F});
+					if(!board.isUnderAttack(this.rank, ChessBoard.E, this.color) &&
+							!board.isUnderAttack(this.rank, ChessBoard.F, this.color)) {
+						moves.add(new byte[]{this.rank, ChessBoard.F});
+					}
 				}
 			}
 		}
 		return moves;	// TODO - how do we know to move the knight??
 	}
 
-	// A queen can move like a rook or a bishop (horizontal, vertical, diagonal)
+	/**
+	 * A queen can move like a rook or a bishop (horizontal, vertical, diagonal).
+	 * 
+	 * @param board - chess board we are searching
+	 * @return list of moves that this queen piece can move to
+	 */
 	private ArrayList<byte[]> getQueenMoves(ChessBoard board) {
 		ArrayList<byte[]> moves = getRookMoves(board);
 		moves.addAll(getBishopMoves(board));
 		return moves;
 	}
 
-	// A rook can move any number of spaces horizontally or vertically
+	/**
+	 * A rook can move any number of spaces horizontally or vertically.
+	 * 
+	 * @param board - chess board we are searching
+	 * @return list of moves that this rook piece can move to
+	 */
 	private ArrayList<byte[]> getRookMoves(ChessBoard board) {
 		ArrayList<byte[]> moves = new ArrayList<byte[]>();
 		Piece p;
-		byte rankPos = this.rank, filePos = this.file;
+		
 		// get moves along same file going down
-		for(byte r = (byte) (rankPos - 1); r >= 0; r--) {
-			p = board.get(r, filePos);
-			if(p == null) 
-				moves.add(new byte[] {r, filePos});
+		for(byte r = (byte) (this.rank - 1); r >= ChessBoard.R1; r--) {
+			p = board.get(r, this.file);
+			// check if its empty spot
+			if(p == null)
+				moves.add(new byte[] {r, this.file});
+			// check if we can capture this piece then break
 			else if(p.color != this.color) {
-				moves.add(new byte[] {r, filePos});
+				moves.add(new byte[] {r, this.file});
 				break;
 			}
+			// otherwise we hit our own piece, break
 			else
 				break;
 		}
+		
 		// get moves along same file going up
-		for(byte r = (byte) (rankPos + 1); r < 8; r++) {
-			p = board.get(r, filePos);
-			if(p == null) 
-				moves.add(new byte[] {r, filePos});
+		for(byte r = (byte) (this.rank + 1); r <= ChessBoard.R8; r++) {
+			p = board.get(r, this.file);
+			if(p == null)
+				moves.add(new byte[] {r, this.file});
 			else if(p.color != this.color) {
-				moves.add(new byte[] {r, filePos});
+				moves.add(new byte[] {r, this.file});
 				break;
 			}
 			else
 				break;
 		}
+		
 		// get moves along same rank going left
-		for(byte f = (byte) (filePos - 1); f >= 0; f--) {
-			p = board.get(rankPos, f);
-			if(p == null) 
-				moves.add(new byte[] {rankPos, f});
+		for(byte f = (byte) (this.file - 1); f >= ChessBoard.A; f--) {
+			p = board.get(this.rank, f);
+			if(p == null)
+				moves.add(new byte[] {this.rank, f});
 			else if(p.color != this.color) {
-				moves.add(new byte[] {rankPos, f});
+				moves.add(new byte[] {this.rank, f});
 				break;
 			}
 			else
 				break;
 		}
+		
 		// get moves along same file going right
-		for(byte f = (byte) (filePos + 1); f < 8; f++) {
-			p = board.get(rankPos, f);
-			if(p == null) 
-				moves.add(new byte[] {rankPos, f});
+		for(byte f = (byte) (this.file + 1); f <= ChessBoard.H; f++) {
+			p = board.get(this.rank, f);
+			if(p == null)
+				moves.add(new byte[] {this.rank, f});
 			else if(p.color != this.color) {
-				moves.add(new byte[] {rankPos, f});
+				moves.add(new byte[] {this.rank, f});
 				break;
 			}
 			else
 				break;
 		}
+		
 		return moves;
 	}
-
-	// A bishop can move any number of spaces along a diagonal
+	
+	/**
+	 * A bishop can move any number of spaces along a diagonal.
+	 * 
+	 * @param board - chess board we are searching
+	 * @return list of moves that this bishop piece can move to
+	 */
 	private ArrayList<byte[]> getBishopMoves(ChessBoard board) {
 		ArrayList<byte[]> moves = new ArrayList<byte[]>();
 		Piece p;
-		byte rankPos = this.rank, filePos = this.file;
-		// top-left diagonal
-		byte rank = (byte) (rankPos - 1);
-		byte file = (byte) (filePos - 1);
+		
+		// bottom-left diagonal
+		byte rank = (byte) (this.rank - 1);
+		byte file = (byte) (this.file - 1);
 		while(rank >= 0 && file >= 0) {
 			p = board.get(rank, file);
 			if(p == null)
@@ -260,9 +286,10 @@ public class Piece implements Cloneable {
 			rank--;
 			file--;
 		}
-		// bottom-right diagonal
-		rank = (byte) (rankPos + 1);
-		file = (byte) (filePos + 1);
+		
+		// top-right diagonal
+		rank = (byte) (this.rank + 1);
+		file = (byte) (this.file + 1);
 		while(rank < 8 && file < 8) {
 			p = board.get(rank, file);
 			if(p == null)
@@ -276,9 +303,10 @@ public class Piece implements Cloneable {
 			rank++;
 			file++;
 		}
-		// top-right diagonal
-		rank = (byte) (rankPos - 1);
-		file = (byte) (filePos + 1);
+		
+		// bottom-right diagonal
+		rank = (byte) (this.rank - 1);
+		file = (byte) (this.file + 1);
 		while(rank >= 0 && file < 8) {
 			p = board.get(rank, file);
 			if(p == null)
@@ -292,9 +320,10 @@ public class Piece implements Cloneable {
 			rank--;
 			file++;
 		}
-		// bottom-left diagonal
-		rank = (byte) (rankPos + 1);
-		file = (byte) (filePos - 1);
+		
+		// top-left diagonal
+		rank = (byte) (this.rank + 1);
+		file = (byte) (this.file - 1);
 		while(rank < 8 && file >= 0) {
 			p = board.get(rank, file);
 			if(p == null)
@@ -308,144 +337,170 @@ public class Piece implements Cloneable {
 			rank++;
 			file--;
 		}
+		
 		return moves;
 	}
-
-	// An "L" shape, need to hardcode each move I think
+	
+	/**
+	 * Can move in an L shape.
+	 * 
+	 * @param board - chess board we are searching
+	 * @return list of moves that this knight piece can move to
+	 */
 	private ArrayList<byte[]> getKnightMoves(ChessBoard board) {
 		ArrayList<byte[]> moves = new ArrayList<byte[]>();
+		
 		// 1x2 moves
-		byte rankPos = this.rank, filePos = this.file;
-		byte rank = (byte) (rankPos - 1);
-		byte file = (byte) (filePos - 2);
+		// down one, left two
+		byte rank = (byte) (this.rank - 1);
+		byte file = (byte) (this.file - 2);
 		Piece p;
 		if(rank >= 0 && file >= 0) {
 			p = board.get(rank, file);
 			if(p == null || p.color != this.color)
 				moves.add(new byte[] {rank, file});
 		}
-		rank = (byte) (rankPos + 1);
-		file = (byte) (filePos + 2);
+		
+		// up one, right two
+		rank = (byte) (this.rank + 1);
+		file = (byte) (this.file + 2);
 		if(rank < 8 && file < 8) {
 			p = board.get(rank, file);
 			if(p == null || p.color != this.color)
 				moves.add(new byte[] {rank, file});
 		}
-		rank = (byte) (rankPos - 1);
-		file = (byte) (filePos + 2);
+		
+		// down one, right two
+		rank = (byte) (this.rank - 1);
+		file = (byte) (this.file + 2);
 		if(rank >= 0 && file < 8) {
 			p = board.get(rank, file);
 			if(p == null || p.color != this.color)
 				moves.add(new byte[] {rank, file});
 		}
-		rank = (byte) (rankPos + 1);
-		file = (byte) (filePos - 2);
+		
+		// up one, left two
+		rank = (byte) (this.rank + 1);
+		file = (byte) (this.file - 2);
 		if(rank >= 0 && rank < 8 && file >= 0 && file < 8) {
 			p = board.get(rank, file);
 			if(p == null || p.color != this.color)
 				moves.add(new byte[] {rank, file});
-		}		
+		}
+		
+		
 		// 2x1 moves
-		rank = (byte) (rankPos - 2);
-		file = (byte) (filePos - 1);
+		// down two, left one
+		rank = (byte) (this.rank - 2);
+		file = (byte) (this.file - 1);
 		if(rank >= 0 && file >= 0) {
 			p = board.get(rank, file);
 			if(p == null || p.color != this.color)
 				moves.add(new byte[] {rank, file});
 		}
-		rank = (byte) (rankPos + 2);
-		file = (byte) (filePos + 1);
+		
+		// up two, right one
+		rank = (byte) (this.rank + 2);
+		file = (byte) (this.file + 1);
 		if(rank < 8 && file < 8) {
 			p = board.get(rank, file);
 			if(p == null || p.color != this.color)
 				moves.add(new byte[] {rank, file});
 		}
-		rank = (byte) (rankPos - 2);
-		file = (byte) (filePos + 1);
+		
+		// down two, right one
+		rank = (byte) (this.rank - 2);
+		file = (byte) (this.file + 1);
 		if(rank >= 0 && file < 8) {
 			p = board.get(rank, file);
 			if(p == null || p.color != this.color)
 				moves.add(new byte[] {rank, file});
 		}
-		rank = (byte) (rankPos + 2);
-		file = (byte) (filePos - 1);
+		
+		// up two, left one
+		rank = (byte) (this.rank + 2);
+		file = (byte) (this.file - 1);
 		if(rank >= 0 && rank < 8 && file >= 0 && file < 8) {
 			p = board.get(rank, file);
 			if(p == null || p.color != this.color)
 				moves.add(new byte[] {rank, file});
-		}		
+		}
+		
 		return moves;
 	}
-
-	// can move one space ahead, 2 if in starting position
-	// captures diagonally - figure out en passant captures
+	
+	/**
+	 * Can move one space ahead, 2 if in starting position, or capture diagonally.
+	 * 
+	 * @param board - chess board we are searching
+	 * @return list of moves that this pawn piece can move to
+	 */
 	private ArrayList<byte[]> getPawnMoves(ChessBoard board) {
 		ArrayList<byte[]> moves = new ArrayList<byte[]>();
-		// white moves up (towards 0) and black moves down(towards 7)
+		
+		// white moves up (towards 7) and black moves down (towards 0) - remember black is -1 and white is +1
 		byte forward = BLACK;
 		byte limit = ChessBoard.R1 - 1;
-		if(this.color == WHITE) {		// switch rank
+		
+		// switch rank
+		if(this.color == WHITE) {
 			forward = WHITE;
 			limit = ChessBoard.R8 + 1;
 		}
-		byte rankPos = this.rank, filePos = this.file;
-		Piece p;
-		// check for attacking moves - diagonal					// TODO check if in row for en passant and check last move
-		if(rankPos + forward != limit && filePos - 1 >= 0) {
-			p = board.get((byte) (rankPos + forward), (byte) (filePos - 1));
-
-			if(p != null && p.color != p.color) {
-				moves.add(new byte[] {(byte) (rankPos + forward), (byte) (filePos - 1)});
+		
+		// check for attacking moves - left diagonal
+		if(this.rank + forward != limit && this.file - 1 >= ChessBoard.A) {
+			
+			if(board.isSpotEmptyOrCapturable((byte) (this.rank + forward), (byte)(this.file - 1), this.color)) {
+				moves.add(new byte[] {(byte) (this.rank + forward), (byte) (this.file - 1)});
 			}
 		}
-		if(rankPos + forward != limit && filePos + 1 < 8) {
-			p = board.get((byte) (rankPos + forward), (byte) (filePos + 1));
-			if(p != null && p.color != p.color) {
-				moves.add(new byte[] {(byte) (rankPos + forward), (byte) (filePos + 1)});
+		// check for attacking moves - right diagonal
+		if(this.rank + forward != limit && this.file + 1 <= ChessBoard.H) {
+			
+			if(board.isSpotEmptyOrCapturable((byte) (this.rank + forward), (byte) (this.file + 1), this.color)) {
+				moves.add(new byte[] {(byte) (this.rank + forward), (byte) (this.file + 1)});
 			}
 		}
+		
 		// move forward
-		if(rankPos + forward != limit) {
-			p = board.get((byte) (rankPos + forward), filePos);
-			if(p == null)
-				moves.add(new byte[] {(byte) (rankPos + forward), filePos});
+		if(this.rank + forward != limit && board.isSpotEmpty((byte) (this.rank + forward), this.file)) {
+			moves.add(new byte[] {(byte) (this.rank + forward), this.file});
 		}
-		// move two spaces on first turn
+		
 		if(this.color == WHITE) {
-			if(rankPos == ChessBoard.R2){
-				p = board.get(ChessBoard.R4, filePos);
-				Piece p2 = board.get((byte) (ChessBoard.R3), filePos);
+			// move two spaces on first turn
+			if(this.rank == ChessBoard.R2){
 				// have to check two spaces up and space directly in front
-				if(p == null && p2 == null)		// TODO here is where we can use the new get methods in ChessBoard
-					moves.add(new byte[]{ChessBoard.R4, filePos});
+				if(board.isSpotEmpty(ChessBoard.R3, this.file) && board.isSpotEmpty(ChessBoard.R4, this.file))
+					moves.add(new byte[] {ChessBoard.R4, this.file});
 			}
 			// en passant
-			else if(rankPos == ChessBoard.R5 && ServerAPI.getLastMovedPiece() == PAWN) {
+			else if(this.rank == ChessBoard.R5 && ServerAPI.getLastMovedPiece() == PAWN) {
 				byte[] lastmove = ServerAPI.getLastMoveEndPos();
 				if(lastmove != null) {
-					p = board.get(lastmove[0], lastmove[1]);
-					// last move was a pawn advancing 2 spaces
-					if(p != null && p.hasMoved > 1) {
+					Piece p = board.get(lastmove[0], lastmove[1]);
+					// last move was a pawn advancing 2 spaces in the file to the left of right of this piece
+					if(p != null && p.hasMoved > 1 && (p.getFile() == this.file + 1 || p.getFile() == this.file - 1)) {
 						moves.add(new byte[]{ChessBoard.R6, lastmove[1]});
 					}
 				}
 			}
 		}
+		// this.color == BLACK
 		else {
-			if(rankPos == ChessBoard.R7){
-				p = board.get(ChessBoard.R5, filePos);
-				Piece p2 = board.get((byte) (ChessBoard.R3), filePos);
+			if(this.rank == ChessBoard.R7){
 				// have to check two spaces up and space directly in front
-				if(p == null && p2 == null)		// TODO here is where we can use the new get methods in ChessBoard
-					moves.add(new byte[]{ChessBoard.R5, filePos});
+				if(board.isSpotEmpty(ChessBoard.R6, this.file) && board.isSpotEmpty(ChessBoard.R5, this.file))
+					moves.add(new byte[]{ChessBoard.R5, this.file});
 			}
 			// en passant
-			else if(rankPos == ChessBoard.R4 && ServerAPI.getLastMovedPiece() == PAWN) {
+			else if(this.rank == ChessBoard.R4 && ServerAPI.getLastMovedPiece() == PAWN) {
 				byte[] lastmove = ServerAPI.getLastMoveEndPos();
 				if(lastmove != null) {
-					p = board.get(lastmove[0], lastmove[1]);
-					// last move was a pawn advancing 2 spaces
-					if(p != null && p.hasMoved > 1) {
+					Piece p = board.get(lastmove[0], lastmove[1]);
+					// last move was a pawn advancing 2 spaces in the file to the left of right of this piece
+					if(p != null && p.hasMoved > 1 && (p.getFile() == this.file + 1 || p.getFile() == this.file - 1)) {
 						moves.add(new byte[]{ChessBoard.R3, lastmove[1]});
 					}
 				}

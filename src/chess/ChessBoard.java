@@ -187,20 +187,21 @@ public class ChessBoard {
 	}
 	
 	/**
-	 * Method to determine if the spot on the board is occupied with a given color piece.
+	 * Method to determine if the spot on the board is capturable, i.e. has a piece of different color.
 	 * This is useful when generating a list of all the possible move for a given piece,
 	 * allowing us to quickly do a lookup on the board as opposed to having to get the piece
 	 * and checking if it is null and what color it is.
 	 * 
 	 * @param rank - rank of spot we are checking
 	 * @param file - file of spot we are checking
-	 * @param color - color test
+	 * @param ourColor - color test
 	 * @return bool - true if a piece with given color is on [rank, file], false otherwise
 	 */
-	public boolean isSpotOccupiedWithColor(byte rank, byte file, byte color) {
+	public boolean isSpotCapturable(byte rank, byte file, byte ourColor) {
 		// this works because Piece.WHITE is positive just like the white piece indexes in board[][] and
 		// Piece.BLACK is negative just like the black piece indexes in board[][]
-		return this.board[rank][file] < 0 && color < 0 || (this.board[rank][file] > 0 && color > 0);
+		return this.board[rank][file] < 0 && ourColor < 0 || (this.board[rank][file] > 0 && ourColor < 0) ||
+				(this.board[rank][file] < 0 && ourColor > 0);
 	}
 	
 	/**

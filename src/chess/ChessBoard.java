@@ -320,7 +320,7 @@ public class ChessBoard {
 		// clear out the starting spot since the piece is being moved from there
 		this.board[startRank][startFile] = 0;
 		
-		System.out.println(startPiece.getColor() + " " + getMoveString(startRank, startFile, endRank, endFile, startPiece.getType()));
+		//System.out.println(startPiece.getColor() + " " + getMoveString(startRank, startFile, endRank, endFile, startPiece.getType()));
 		System.out.println(this.toString());
 	}
 	
@@ -441,7 +441,9 @@ public class ChessBoard {
 		//      - would also be good to keep total number of moves available 
 		
 		int blackKings = 0, blackQueens = 0, blackRooks = 0, blackBishops = 0, blackKnights = 0, blackPawns = 0,
-			whiteKings = 0, whiteQueens = 0, whiteRooks = 0, whiteBishops = 0, whiteKnights = 0, whitePawns = 0;
+			whiteKings = 0, whiteQueens = 0, whiteRooks = 0, whiteBishops = 0, whiteKnights = 0, whitePawns = 0,
+			ourLegalMoves =  this.countLegalMoves(ServerAPI.getOurColor()),
+			opponentLegalMoves = this.countLegalMoves(ServerAPI.getOppontentColor());
 		
 		// count the white pieces
 		for(int i = 0; i < this.whitePieces.length; i++) {
@@ -519,7 +521,7 @@ public class ChessBoard {
 					3 * (whiteBishops - blackBishops + whiteKnights - blackKnights) +
 					1 * (whitePawns - blackPawns) +
 					/*-0.5 * () +*/
-					0.1 * (this.countLegalMoves(ServerAPI.getOurColor()) - this.countLegalMoves(ServerAPI.getOppontentColor()));
+					0.1 * (ourLegalMoves - opponentLegalMoves);
 		}
 		else {
 			util = 200 * (blackKings - whiteKings) +
@@ -528,7 +530,7 @@ public class ChessBoard {
 					3 * (blackBishops - whiteBishops + blackKnights - whiteKnights) +
 					1 * (blackPawns - whitePawns) +
 					/*-0.5 * () +*/
-					0.1 * (this.countLegalMoves(ServerAPI.getOurColor()) - this.countLegalMoves(ServerAPI.getOppontentColor()));
+					0.1 * (ourLegalMoves - opponentLegalMoves);
 		}
 		
 		return util;

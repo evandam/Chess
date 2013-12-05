@@ -29,13 +29,13 @@ public class program {
 		
 		
 		/* ----------------------------- Interactive game play offline ---------------------------------- */
-		ServerAPI.setOurColor(Piece.WHITE);
+		/*ServerAPI.setOurColor(Piece.WHITE);
 		board.move(ChessBoard.R2, ChessBoard.C, ChessBoard.R4, ChessBoard.C);
 		board.move(ChessBoard.R7, ChessBoard.A, ChessBoard.R6, ChessBoard.A);
 		board.move(ChessBoard.R1, ChessBoard.D, ChessBoard.R3, ChessBoard.B);
 		board.move(ChessBoard.R6, ChessBoard.A, ChessBoard.R5, ChessBoard.A);
 		//board.move(ChessBoard.R1, ChessBoard.C, ChessBoard.R1, ChessBoard.D);
-		board.getAllLegalMoves(Piece.WHITE);
+		board.getAllLegalMoves(Piece.WHITE);*/
 		
 		BufferedReader bufferRead = new BufferedReader(new InputStreamReader(System.in));
 	    String s = "";
@@ -77,7 +77,7 @@ public class program {
 				ServerAPI.setLastMoveString(s);
 				startSearch = true;
 			}
-			//System.out.println(board.toString());
+			System.out.println(board.toString());
 		}
 		/* ---------------------------------------------------------------------------------------------- */
 		

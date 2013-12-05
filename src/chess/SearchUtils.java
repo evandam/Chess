@@ -14,7 +14,7 @@ public class SearchUtils {
 	public static long startSearchTime = 0;
 	
 	// have cutoff here which would be number of ply's?
-	private static int maxPly = 4;
+	private static int maxPly = 2;
 	
 	//private static byte[] nextMove = new byte[5];
 	public static byte[] lastMove = new byte[5];
@@ -61,7 +61,7 @@ public class SearchUtils {
 			byte startRank = (byte) (startPos % 100 / 10);
 			for(byte[] endPos : moves.get(startPos)) {
 				newBoard = board.clone();
-				System.out.println("ply: " + currentPly);
+				System.out.println("ply: " + currentPly + " alpha: " + alpha + " beta: " + beta);
 				newBoard.move(startRank, startFile, endPos[0], endPos[1]);
 				
 				lastMove[0] = nextMove[0] = startRank;
@@ -106,7 +106,7 @@ public class SearchUtils {
 			byte startRank = (byte) (startPos % 100 / 10);
 			for(byte[] endPos : moves.get(startPos)) {
 				newBoard = board.clone();
-				System.out.println("ply: " + currentPly);
+				System.out.println("ply: " + currentPly + " alpha: " + alpha + " beta: " + beta);
 				newBoard.move(startRank, startFile, endPos[0], endPos[1]);
 				
 				lastMove[0] = startRank;

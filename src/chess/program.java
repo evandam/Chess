@@ -74,6 +74,8 @@ public class program {
 			if(ServerAPI.ready) {
 				Date start = new Date();
 				byte[] move = SearchUtils.AlphaBetaSearch(board);
+				// need to actually record the move in the running board representation
+				board.move(move[0], move[1], move[2], move[3]);
 				Date end = new Date();
 				System.out.println("Done: duration: " + (end.getTime() - start.getTime()) / 1000.0 + " seconds");
 				String moveStr = Piece.getCharType(move[4]) + "" + ChessBoard.getFile(move[1]) + "" +
@@ -86,6 +88,7 @@ public class program {
 			}
 			else {
 				try {
+					//System.out.println("Waiting for opponent...");
 					Thread.sleep((long) ServerAPI.getPollInterval() * 1000);
 				} catch (InterruptedException e) {
 					// TODO Auto-generated catch block

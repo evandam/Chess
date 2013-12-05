@@ -35,11 +35,11 @@ public class ServerAPI {//implements Runnable {
 	public static String lastmove = "Pd7d5";	// default to test en passant
 	public static String message;
 	
-	private ChessBoard board;
+	//private ChessBoard board;
 	
-	public ServerAPI(ChessBoard board) {
-		this.board = board;
-	}
+	//public ServerAPI(ChessBoard board) {
+	//	this.board = board;
+	//}
 	
 	/**
 	 * Method to set our team number and secret once it is given to us,
@@ -159,7 +159,7 @@ public class ServerAPI {//implements Runnable {
 			for(String val : components) {
 				String[] pair = val.split(":");
 				if(pair[0].equals("message"))
-					message = pair[1];
+					message = pair.length > 1 ? pair[1] : "";
 				if(pair[0].equals("result"))
 					return pair[1].equals("true");
 				else if(pair[0].equals("gameover"))		// TODO - need to kill the search somehow?

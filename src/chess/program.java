@@ -53,18 +53,20 @@ public class program {
 				board.move(move[0], move[1], move[2], move[3]);
 				Date end = new Date();
 				System.out.println("Done: duration: " + (end.getTime() - start.getTime()) / 1000.0 + " seconds");
-				String moveStr = Piece.getCharType(move[4]) + "" + ChessBoard.getFile(move[1]) + "" +
-						ChessBoard.getDisplayRank(move[0]) + "" + ChessBoard.getFile(move[3]) + "" + ChessBoard.getDisplayRank(move[2]);
+				String moveStr = ChessBoard.getMoveString(move[0], move[1], move[2], move[3], move[4]);
 				System.out.println(moveStr);
+				ServerAPI.setLastMoveString(moveStr);
 			}
 			else {
 				try { System.out.print("Enter move: "); s = bufferRead.readLine(); } catch (IOException e1) { return; }
+				
 				byte startRank, startFile, endRank, endFile;
 				startRank = (byte) (Byte.parseByte(s.charAt(2) + "") - 1);
 				startFile = ChessBoard.getFile(s.charAt(1));
 				endRank = (byte) (Byte.parseByte(s.charAt(4) + "") - 1);
 				endFile = ChessBoard.getFile(s.charAt(3));
 				board.move(startRank, startFile, endRank, endFile);
+				ServerAPI.setLastMoveString(s);
 				startSearch = true;
 			}
 			//System.out.println(board.toString());
@@ -110,8 +112,7 @@ public class program {
 				board.move(move[0], move[1], move[2], move[3]);
 				Date end = new Date();
 				System.out.println("Done: duration: " + (end.getTime() - start.getTime()) / 1000.0 + " seconds");
-				String moveStr = Piece.getCharType(move[4]) + "" + ChessBoard.getFile(move[1]) + "" +
-						ChessBoard.getDisplayRank(move[0]) + "" + ChessBoard.getFile(move[3]) + "" + ChessBoard.getDisplayRank(move[2]);
+				String moveStr = ChessBoard.getMoveString(move[0], move[1], move[2], move[3], move[4]);
 				System.out.println(moveStr);
 				
 				// send the move to the server

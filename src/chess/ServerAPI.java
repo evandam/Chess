@@ -28,12 +28,21 @@ public class ServerAPI {//implements Runnable {
 	public static int winner;
 	public static float secondsleft;
 	public static int lastmovenumber;
-	public static String lastMoveString = "Pd7d5";	// default to test en passant
+	public static String lastMoveString = "";
 	public static String message;
 	
 	public static byte lastMovedPiece;
+	/**
+	 * [rank, file]
+	 */
 	public static byte[] lastStartingMove;
+	/**
+	 * [rank, file]
+	 */
 	public static byte[] lastEndingMove;
+	/**
+	 * [startRank, startFile, endRank, endFile]
+	 */
 	public static byte[] lastMoveBytes;
 
 	/**
@@ -108,14 +117,14 @@ public class ServerAPI {//implements Runnable {
 					lastMoveString = pair[1];
 					lastMovedPiece = Piece.getNumericType(lastMoveString.charAt(0));
 					lastStartingMove = new byte[] { 
-							ChessBoard.getFile(lastMoveString.charAt(1)),
-							ChessBoard.getRankFromDisplay(lastMoveString.charAt(2))
+							ChessBoard.getRankFromDisplay(lastMoveString.charAt(2)),
+							ChessBoard.getFile(lastMoveString.charAt(1))
 					};
 					lastEndingMove = new byte[] { 
-							ChessBoard.getFile(lastMoveString.charAt(3)),
-							ChessBoard.getRankFromDisplay(lastMoveString.charAt(4))
+							ChessBoard.getRankFromDisplay(lastMoveString.charAt(4)),
+							ChessBoard.getFile(lastMoveString.charAt(3))
 					};
-					lastMoveBytes = new byte[] { lastStartingMove[0], lastStartingMove[1], lastEndingMove[2], lastEndingMove[1] };
+					lastMoveBytes = new byte[] { lastStartingMove[0], lastStartingMove[1], lastEndingMove[0], lastEndingMove[1] };
 				}
 				else if(pair[0].equals("gameover"))
 					gameover = pair[1].equals("true");
@@ -127,6 +136,25 @@ public class ServerAPI {//implements Runnable {
 			System.out.println(e);
 			//System.out.println("Maybe a bad team number/secret combo?");
 		}
+	}
+	
+	/**
+	 * Purely for offline use as when we play offline there is no polling so we
+	 * need a way to update the last move values since move generation relies on this.
+	 * 
+	 * @param s string - move string to parse
+	 */
+	public static void setLastMoveString(String s) {
+		lastMoveString = s;
+		lastStartingMove = new byte[] { 
+				ChessBoard.getRankFromDisplay(s.charAt(2)),
+				ChessBoard.getFile(s.charAt(1))
+		};
+		lastEndingMove = new byte[] { 
+				ChessBoard.getRankFromDisplay(s.charAt(4)),
+				ChessBoard.getFile(s.charAt(3))
+		};
+		lastMoveBytes = new byte[] { lastStartingMove[0], lastStartingMove[1], lastEndingMove[0], lastEndingMove[1] };
 	}
 	
 	public static boolean move(String moveString) {

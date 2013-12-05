@@ -330,16 +330,18 @@ public class ChessBoard {
 	 * @param startFile - starting file of the piece
 	 * @param endRank - ending rank of the piece
 	 * @param endFile - ending file of the piece
+	 * @param piece - type of piece we are moving
 	 * @return string - string in the form of Nh1h6 or Pb7b8Q
 	 */
-	/*public String getMoveString(byte startRank, byte startFile, byte endRank, byte endFile) {
-		String str = this.get(startRank, startFile).toString();
-		String moveString = str + getFile(startFile) + getRank(startRank) + getFile(endFile) + getRank(endRank) + "";
+	public static String getMoveString(byte startRank, byte startFile, byte endRank, byte endFile, byte piece) {
+		String moveString = Piece.getCharType(piece) + "" + getFile(startFile) + "" +
+				getDisplayRank(startRank) + "" + getFile(endFile) + "" + getDisplayRank(endRank);
+		
 		// add extra char for queening
-		if(str.equals("P") && (endRank == ChessBoard.R1 || endRank == ChessBoard.R8))
-			str += "Q";
+		if(piece == Piece.PAWN && (endRank == ChessBoard.R1 || endRank == ChessBoard.R8))
+			moveString += "Q";
 		return moveString;
-	}*/
+	}
 	
 	// check all possible enemy moves to see if they can attack the location
 	public boolean isUnderAttack(byte rank, byte file, byte color) {
@@ -372,7 +374,8 @@ public class ChessBoard {
 	 * 
 	 * @param color - color for the moves we want to calculate
 	 * @return SortedMap<Integer, ArrayList<byte[]>> - key/value pair of piece
-	 * 		   location as (rank*10+file) and a list of their moves 
+	 * 		   location as (rank*10+file) and a list of their moves [rank, file, ...]
+	 * 		   where rank and file = [0,7] 
 	 */
 	public SortedMap<Integer, ArrayList<byte[]>> getAllLegalMoves(byte color) {
 		// our list of legal moves will be a key/value list where the key is the rank*10 + file

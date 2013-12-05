@@ -475,8 +475,8 @@ public class Piece implements Cloneable {
 				if(board.isSpotEmpty(ChessBoard.R3, this.file) && board.isSpotEmpty(ChessBoard.R4, this.file))
 					moves.add(new byte[] {ChessBoard.R4, this.file});
 			}
-			// en passant
-			else if(this.rank == ChessBoard.R5 && ServerAPI.lastMovedPiece == PAWN) {
+			// en passant, make sure the last moved piece was a pawn and is on the same rank - a requirement of en passant
+			else if(this.rank == ChessBoard.R5 && this.rank == ServerAPI.lastEndingMove[0] && ServerAPI.lastMovedPiece == PAWN) {
 				byte[] lastmove = ServerAPI.lastEndingMove;
 				if(lastmove != null) {
 					Piece p = board.get(lastmove[0], lastmove[1]);
@@ -494,8 +494,8 @@ public class Piece implements Cloneable {
 				if(board.isSpotEmpty(ChessBoard.R6, this.file) && board.isSpotEmpty(ChessBoard.R5, this.file))
 					moves.add(new byte[]{ChessBoard.R5, this.file});
 			}
-			// en passant
-			else if(this.rank == ChessBoard.R4 && ServerAPI.lastMovedPiece == PAWN) {
+			// en passant, make sure the last moved piece was a pawn and is on the same rank - a requirement of en passant
+			else if(this.rank == ChessBoard.R4 && this.rank == ServerAPI.lastEndingMove[0] && ServerAPI.lastMovedPiece == PAWN) {
 				byte[] lastmove = ServerAPI.lastEndingMove;
 				if(lastmove != null) {
 					Piece p = board.get(lastmove[0], lastmove[1]);

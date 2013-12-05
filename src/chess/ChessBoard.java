@@ -589,10 +589,22 @@ public class ChessBoard {
 		String str = "";
 		for(byte rank = R8; rank >= R1 - 1; rank--) {
 			for(byte file = A; file <= H; file++) {
-				if(file == A && rank >= R1)
+				if(file == A && rank >= R1) {
 					str += rank + "|";
+					if(this.board[rank][file] != 0) {
+						Piece chessPiece = this.get(rank, file);
+						if(chessPiece.getColor() == Piece.WHITE)
+							str += "W";
+						else
+							str += "B";
+						str += chessPiece.toString() + "|";
+					}
+					else {
+						str += "--|";
+					}
+				}
 				else if(rank == R1 - 1 && file == A)
-					str += " |";
+					str += " |0 |";
 				else if(rank == R1 - 1)
 					str += file + " |";
 				else if(this.board[rank][file] != 0) {

@@ -100,9 +100,9 @@ public class program {
 		}
 		
 		// start the game
-		while(!ServerAPI.gameover) {
+		while(ServerAPI.gameover) {
 			ServerAPI.poll();
-			if(ServerAPI.ready) {
+			if(!ServerAPI.ready) {
 				Date start = new Date();
 				byte[] move = SearchUtils.AlphaBetaSearch(board);
 				

@@ -194,14 +194,14 @@ public class ChessBoard {
 	 * 
 	 * @param rank - rank of spot we are checking
 	 * @param file - file of spot we are checking
-	 * @param ourColor - color test
+	 * @param ourColor - our color
 	 * @return bool - true if a piece with given color is on [rank, file], false otherwise
 	 */
 	public boolean isSpotCapturable(byte rank, byte file, byte ourColor) {
 		// this works because Piece.WHITE is positive just like the white piece indexes in board[][] and
 		// Piece.BLACK is negative just like the black piece indexes in board[][]
-		return this.board[rank][file] < 0 && ourColor < 0 || (this.board[rank][file] > 0 && ourColor < 0) ||
-				(this.board[rank][file] < 0 && ourColor > 0);
+		return this.board[rank][file] == 0 ? false : (this.board[rank][file] > 0 && ourColor < 0 ||
+				this.board[rank][file] < 0 && ourColor > 0);
 	}
 	
 	/**
@@ -320,6 +320,7 @@ public class ChessBoard {
 		// clear out the starting spot since the piece is being moved from there
 		this.board[startRank][startFile] = 0;
 		
+		System.out.println(startPiece.getColor() + getMoveString(startRank, startFile, endRank, endFile, startPiece.getType()));
 		System.out.println(this.toString());
 	}
 	

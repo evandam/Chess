@@ -457,14 +457,14 @@ public class Piece implements Cloneable {
 		// check for attacking moves - left diagonal
 		if(this.rank + forward != limit && this.file - 1 >= ChessBoard.A) {
 			
-			if(board.isSpotEmptyOrCapturable((byte) (this.rank + forward), (byte)(this.file - 1), this.color)) {
+			if(board.isSpotCapturable((byte) (this.rank + forward), (byte)(this.file - 1), this.color)) {
 				moves.add(new byte[] {(byte) (this.rank + forward), (byte) (this.file - 1)});
 			}
 		}
 		// check for attacking moves - right diagonal
 		if(this.rank + forward != limit && this.file + 1 <= ChessBoard.H) {
 			
-			if(board.isSpotEmptyOrCapturable((byte) (this.rank + forward), (byte) (this.file + 1), this.color)) {
+			if(board.isSpotCapturable((byte) (this.rank + forward), (byte) (this.file + 1), this.color)) {
 				moves.add(new byte[] {(byte) (this.rank + forward), (byte) (this.file + 1)});
 			}
 		}
@@ -482,13 +482,16 @@ public class Piece implements Cloneable {
 					moves.add(new byte[] {ChessBoard.R4, this.file});
 			}
 			// en passant, make sure the last moved piece was a pawn and is on the same rank - a requirement of en passant
-			else if(this.rank == ChessBoard.R5 && this.rank == ServerAPI.lastEndingMove[0] && ServerAPI.lastMovedPiece == PAWN) {
-				byte[] lastmove = ServerAPI.lastEndingMove;
-				if(lastmove != null) {
-					Piece p = board.get(lastmove[0], lastmove[1]);
+			else if(this.rank == ChessBoard.R5 && this.rank == SearchUtils.lastMove[0] && SearchUtils.lastMove[4] == PAWN) {
+				byte lastOpponentMoveRank = SearchUtils.lastMove[2];
+				byte lastOpponentMoveFile = SearchUtils.lastMove[3];
+				// make sure the last move is not default values
+				if(SearchUtils.lastMove[0] != SearchUtils.lastMove[2] &&
+						SearchUtils.lastMove[1] != SearchUtils.lastMove[3] && SearchUtils.lastMove[0] != SearchUtils.lastMove[1]) {
+					Piece p = board.get(lastOpponentMoveRank, lastOpponentMoveFile);
 					// last move was a pawn advancing 2 spaces in the file to the left of right of this piece
 					if(p != null && p.hasMoved > 1 && (p.getFile() == this.file + 1 || p.getFile() == this.file - 1)) {
-						moves.add(new byte[]{ChessBoard.R6, lastmove[1]});
+						moves.add(new byte[]{ChessBoard.R6, lastOpponentMoveFile});
 					}
 				}
 			}
@@ -501,13 +504,16 @@ public class Piece implements Cloneable {
 					moves.add(new byte[]{ChessBoard.R5, this.file});
 			}
 			// en passant, make sure the last moved piece was a pawn and is on the same rank - a requirement of en passant
-			else if(this.rank == ChessBoard.R4 && this.rank == ServerAPI.lastEndingMove[0] && ServerAPI.lastMovedPiece == PAWN) {
-				byte[] lastOpponentMove = ServerAPI.lastEndingMove;
-				if(lastOpponentMove != null) {
-					Piece p = board.get(lastOpponentMove[0], lastOpponentMove[1]);
+			else if(this.rank == ChessBoard.R4 && this.rank == SearchUtils.lastMove[0] && SearchUtils.lastMove[4] == PAWN) {
+				byte lastOpponentMoveRank = SearchUtils.lastMove[2];
+				byte lastOpponentMoveFile = SearchUtils.lastMove[3];
+				// make sure the last move is not default values
+				if(SearchUtils.lastMove[0] != SearchUtils.lastMove[2] &&
+						SearchUtils.lastMove[1] != SearchUtils.lastMove[3] && SearchUtils.lastMove[0] != SearchUtils.lastMove[1]) {
+					Piece p = board.get(lastOpponentMoveRank, lastOpponentMoveFile);
 					// last move was a pawn advancing 2 spaces in the file to the left of right of this piece
 					if(p != null && p.hasMoved > 1 && (p.getFile() == (this.file + 1) || p.getFile() == (this.file - 1))) {
-						moves.add(new byte[]{ChessBoard.R3, lastOpponentMove[1]});
+						moves.add(new byte[]{ChessBoard.R3, lastOpponentMoveFile});
 					}
 				}
 			}

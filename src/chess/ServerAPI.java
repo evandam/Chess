@@ -142,6 +142,10 @@ public class ServerAPI {//implements Runnable {
 	 * Purely for offline use as when we play offline there is no polling so we
 	 * need a way to update the last move values since move generation relies on this.
 	 * 
+	 * This is exactly the reason why en passant was causing problems, this only updates the last 
+	 * committed move and doesn't take into consideration the last move in searches...as a result we
+	 * cannot rely on the server's last move we got from polling to check for en passant.
+	 * 
 	 * @param s string - move string to parse
 	 */
 	public static void setLastMoveString(String s) {

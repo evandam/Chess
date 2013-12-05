@@ -502,12 +502,12 @@ public class Piece implements Cloneable {
 			}
 			// en passant, make sure the last moved piece was a pawn and is on the same rank - a requirement of en passant
 			else if(this.rank == ChessBoard.R4 && this.rank == ServerAPI.lastEndingMove[0] && ServerAPI.lastMovedPiece == PAWN) {
-				byte[] lastmove = ServerAPI.lastEndingMove;
-				if(lastmove != null) {
-					Piece p = board.get(lastmove[0], lastmove[1]);
+				byte[] lastOpponentMove = ServerAPI.lastEndingMove;
+				if(lastOpponentMove != null) {
+					Piece p = board.get(lastOpponentMove[0], lastOpponentMove[1]);
 					// last move was a pawn advancing 2 spaces in the file to the left of right of this piece
-					if(p != null && p.hasMoved > 1 && (p.getFile() == this.file + 1 || p.getFile() == this.file - 1)) {
-						moves.add(new byte[]{ChessBoard.R3, lastmove[1]});
+					if(p != null && p.hasMoved > 1 && (p.getFile() == (this.file + 1) || p.getFile() == (this.file - 1))) {
+						moves.add(new byte[]{ChessBoard.R3, lastOpponentMove[1]});
 					}
 				}
 			}

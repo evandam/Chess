@@ -17,6 +17,7 @@ public class SearchUtils {
 	private static int maxPly = 4;
 	
 	//private static byte[] nextMove = new byte[5];
+	public static byte[] lastMove = new byte[4];
 	
 	public static byte[] AlphaBetaSearch(ChessBoard board) {
 		startSearchTime = new Date().getTime();

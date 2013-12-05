@@ -61,10 +61,12 @@ public class SearchUtils {
 			for(byte[] endPos : moves.get(startPos)) {
 				newBoard = board.clone();
 				newBoard.move(startRank, startFile, endPos[0], endPos[1]);
+				
 				nextMove[0] = startRank; nextMove[1] = startFile;
 				nextMove[2] = endPos[0]; nextMove[3] = endPos[1];
 				Piece p = newBoard.get(endPos[0], endPos[1]);
 				nextMove[4] = p != null ? p.getType() : -1;
+				
 				v = Math.max(v, MinValue(newBoard, alpha, beta, currentPly).getLeft());
 				if(v >= beta)
 					return new Tuple<Double, byte[]>(v, nextMove);
@@ -99,6 +101,7 @@ public class SearchUtils {
 			for(byte[] endPos : moves.get(startPos)) {
 				newBoard = board.clone();
 				newBoard.move(startRank, startFile, endPos[0], endPos[1]);
+				
 				v = Math.min(v, MaxValue(newBoard, alpha, beta, currentPly).getLeft());
 				if(v <= alpha)
 					return new Tuple<Double, byte[]>(v, nextMove);

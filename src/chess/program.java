@@ -67,7 +67,7 @@ public class program {
 				board.move(startRank, startFile, endRank, endFile);
 				startSearch = true;
 			}
-			System.out.println(board.toString());
+			//System.out.println(board.toString());
 		}
 		/* ---------------------------------------------------------------------------------------------- */
 		

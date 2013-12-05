@@ -174,15 +174,15 @@ public class ChessBoard {
 	}
 	
 	/**
-	 * Method to determine if the spot on the board is occupied or not.  Useful when
+	 * Method to determine if the spot on the board is empty or not.  Useful when
 	 * we simply need to check for the presence of a piece on a spot and don't care
-	 * about what color it may be. 
+	 * about what color it may be.
 	 * 
 	 * @param rank - rank of spot we are checking
 	 * @param file - file of spot we are checking
-	 * @return bool - true if a piece is on [rank, file], false otherwise
+	 * @return bool - false if a piece is on [rank, file], true otherwise
 	 */
-	public boolean isSpotOccupied(byte rank, byte file) {
+	public boolean isSpotEmpty(byte rank, byte file) {
 		return this.board[rank][file] == 0;
 	}
 	
@@ -200,7 +200,21 @@ public class ChessBoard {
 	public boolean isSpotOccupiedWithColor(byte rank, byte file, byte color) {
 		// this works because Piece.WHITE is positive just like the white piece indexes in board[][] and
 		// Piece.BLACK is negative just like the black piece indexes in board[][]
-		return this.board[rank][file] < 0 && color < 0 || this.board[rank][file] > 0 && color > 0;
+		return this.board[rank][file] < 0 && color < 0 || (this.board[rank][file] > 0 && color > 0);
+	}
+	
+	/**
+	 * Method to return whether we can move into this spot because it is empty
+	 * or because we can capture the piece that is there.  
+	 * 
+	 * @param rank - rank of spot we are checking
+	 * @param file - file of spot we are checking
+	 * @param ourColor - our color
+	 * @return true if this is a valid spot to move to, false otherwise
+	 */
+	public boolean isSpotEmptyOrCapturable(byte rank, byte file, byte ourColor) {
+		return this.board[rank][file] == 0 || (this.board[rank][file] > 0 && ourColor < 0) ||
+				(this.board[rank][file] < 0 && ourColor > 0);
 	}
 	
 	/**
@@ -305,7 +319,7 @@ public class ChessBoard {
 		// clear out the starting spot since the piece is being moved from there
 		this.board[startRank][startFile] = 0;
 		
-		//System.out.println(this.toString());
+		System.out.println(this.toString());
 	}
 	
 	/**

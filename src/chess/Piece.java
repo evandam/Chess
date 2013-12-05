@@ -131,15 +131,17 @@ public class Piece implements Cloneable {
 	// look into castling?
 	private ArrayList<byte[]> getKingMoves(ChessBoard board) {
 		ArrayList<byte[]> moves = new ArrayList<byte[]>();
-		Piece p;
-		byte rankPos = this.rank, filePos = this.file;
+		//Piece p;
+		byte rankPos = this.rank,
+			 filePos = this.file;
+		
 		for(byte rank = (byte) (rankPos - 1); rank <= rankPos + 1; rank++) {
 			for(byte file = (byte) (filePos - 1); file <= filePos + 1; file++) {
 				// make sure it's on the board
-				if(rank >= ChessBoard.R1 && rank < ChessBoard.R8 && file >= ChessBoard.A && file < ChessBoard.H) {
-					p = board.get(rank, file);
+				if(rank >= ChessBoard.R1 && rank <= ChessBoard.R8 && file >= ChessBoard.A && file <= ChessBoard.H) {
+					//p = board.get(rank, file);
 					// can move into an empty space or take out an opponent
-					if(p == null || p.color != this.color)
+					if(board.isSpotEmptyOrCapturable(rank, filePos, this.color))
 						moves.add(new byte[]{rank, file});
 				}
 			}
@@ -148,11 +150,11 @@ public class Piece implements Cloneable {
 		// king must not have moved yet
 		if(this.hasMoved == 0) {
 			// check for king-side castling
-			p = board.get(rankPos, ChessBoard.A);
+			Piece p = board.get(rankPos, ChessBoard.A);
 			// rook must not have been moved already
 			if(p != null && p.type == ROOK && p.hasMoved == 0) {
 				// all spaces in between must be open
-				if(board.get(rankPos, ChessBoard.B) == null && board.get(rankPos, ChessBoard.C) == null) {
+				if(board.isSpotEmpty(rankPos, ChessBoard.B) && board.isSpotEmpty(rankPos, ChessBoard.C)) {
 					// the spaces in between must not be under attack
 					if(!board.isUnderAttack(rankPos, ChessBoard.C, this.color) && !board.isUnderAttack(rankPos, ChessBoard.B, this.color))
 						moves.add(new byte[]{rankPos, ChessBoard.B});
@@ -164,14 +166,14 @@ public class Piece implements Cloneable {
 			// rook must not have been moved already
 			if(p != null && p.type == ROOK && p.hasMoved == 0) {
 				// all spaces in between must be open
-				if(board.get(rankPos, ChessBoard.E) == null && board.get(rankPos, ChessBoard.F) == null) {
+				if(board.isSpotEmpty(rankPos, ChessBoard.E) && board.isSpotEmpty(rankPos, ChessBoard.F)) {
 					// the spaces in between must not be under attack
 					if(!board.isUnderAttack(rankPos, ChessBoard.E, this.color) && !board.isUnderAttack(rankPos, ChessBoard.F, this.color))
 						moves.add(new byte[]{rankPos, ChessBoard.F});
 				}
 			}
 		}
-		return moves;
+		return moves;	// TODO - how do we know to move the knight??
 	}
 
 	// A queen can move like a rook or a bishop (horizontal, vertical, diagonal)

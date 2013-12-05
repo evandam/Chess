@@ -577,7 +577,7 @@ public class ChessBoard {
 	 * @return byte - chess board representation
 	 */
 	public static byte getRank(byte i) {
-		return (byte) (i - 1);
+		return (byte) (i + 1);
 	}
 	
 	@Override

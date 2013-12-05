@@ -61,6 +61,8 @@ public class program {
 			byte[] move = SearchUtils.AlphaBetaSearch(board);
 			Date end = new Date();
 			System.out.println("Done: duration: " + (end.getTime() - start.getTime()) / 1000.0 + " seconds");
+			System.out.println(Piece.getCharType(move[4]) + "" + ChessBoard.getRank(move[0]) + "" +
+					ChessBoard.getFile(move[1]) + "" + ChessBoard.getRank(move[2]) + "" + ChessBoard.getFile(move[3]));
 			return;
 			//board.move(move[0], move[1], move[2], move[3]);
 			//ServerAPI.move(Piece.getCharType(move[4]) + move[0] + move[1] + move[2] + move[3] + "");

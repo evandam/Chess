@@ -14,15 +14,14 @@ public class SearchUtils {
 	public static long startSearchTime = 0;
 	
 	// have cutoff here which would be number of ply's?
-	private static int maxPly = 2;
+	private static int maxPly = 4;
 	
 	//private static byte[] nextMove = new byte[5];
 	public static byte[] lastMove = new byte[5];
 	
 	public static byte[] AlphaBetaSearch(ChessBoard board) {
 		startSearchTime = new Date().getTime();
-		Tuple<Double, byte[]> v = MaxValue(board, Integer.MIN_VALUE, Integer.MAX_VALUE, 0);
-		
+		Tuple<Double, byte[]> v = MaxValue(board, Double.MIN_VALUE, Double.MAX_VALUE, 0);
 		// {startRank, startFile, endRank, endFile}		TODO - need a way of knowing which piece this is
 		//return nextMove;
 		return v.getRight();
@@ -69,7 +68,7 @@ public class SearchUtils {
 				lastMove[2] = nextMove[2] = endPos[0];
 				lastMove[3] = nextMove[3] = endPos[1];
 				Piece p = newBoard.get(endPos[0], endPos[1]);
-				lastMove[4] = nextMove[4] = p != null ? p.getType() : -1;
+				lastMove[4] = nextMove[4] = p != null ? p.getType() : 0;	//TODO: -1 -> 0?
 				
 				v = Math.max(v, MinValue(newBoard, alpha, beta, currentPly).getLeft());
 				if(v >= beta) {
@@ -114,7 +113,7 @@ public class SearchUtils {
 				lastMove[2] = endPos[0];
 				lastMove[3] = endPos[1];
 				Piece p = newBoard.get(endPos[0], endPos[1]);
-				lastMove[4] = nextMove[4] = p != null ? p.getType() : -1;
+				lastMove[4] = nextMove[4] = p != null ? p.getType() : 0;	//TODO: -1 -> 0?
 				
 				v = Math.min(v, MaxValue(newBoard, alpha, beta, currentPly).getLeft());
 				if(v <= alpha) {

@@ -435,9 +435,8 @@ public class ChessBoard {
 		return count;
 	}
 	
-	public double Utility() {
-		// TODO - need to calculate the number of legal moves for each side
-		//      - might be better to keep a running tally and only subtract from it when a capture takes place,
+	public int Utility() {
+		// TODO - might be better to keep a running tally and only subtract from it when a capture takes place,
 		//      - would also be good to keep total number of moves available 
 		
 		int blackKings = 0, blackQueens = 0, blackRooks = 0, blackBishops = 0, blackKnights = 0, blackPawns = 0,
@@ -512,26 +511,26 @@ public class ChessBoard {
 		 */
 		
 		// here is where we use ourColor to determine how we calculate the utility
-		double util;
+		int util;
 		if(ServerAPI.getOurColor() == Piece.WHITE) {
 			//if(blackQueens == 0)
 			//	System.out.println();
-			util = 200 * (whiteKings - blackKings) +
-					9 * (whiteQueens - blackQueens) +
-					5 * (whiteRooks - blackRooks) +
-					3 * (whiteBishops - blackBishops + whiteKnights - blackKnights) +
-					1 * (whitePawns - blackPawns) +
-					/*-0.5 * () +*/
-					0.1 * (ourLegalMoves - opponentLegalMoves);
+			util = 2000 * (whiteKings - blackKings) +
+					90 * (whiteQueens - blackQueens) +
+					50 * (whiteRooks - blackRooks) +
+					30 * (whiteBishops - blackBishops + whiteKnights - blackKnights) +
+					10 * (whitePawns - blackPawns) +
+					/*-5 * () +*/
+					1 * (ourLegalMoves - opponentLegalMoves);
 		}
 		else {
-			util = 200 * (blackKings - whiteKings) +
-					9 * (blackQueens - whiteQueens) +
-					5 * (blackRooks - whiteRooks) +
-					3 * (blackBishops - whiteBishops + blackKnights - whiteKnights) +
-					1 * (blackPawns - whitePawns) +
-					/*-0.5 * () +*/
-					0.1 * (ourLegalMoves - opponentLegalMoves);
+			util = 2000 * (blackKings - whiteKings) +
+					90 * (blackQueens - whiteQueens) +
+					50 * (blackRooks - whiteRooks) +
+					30 * (blackBishops - whiteBishops + blackKnights - whiteKnights) +
+					10 * (blackPawns - whitePawns) +
+					/*-5 * () +*/
+					1 * (ourLegalMoves - opponentLegalMoves);
 		}
 		
 		return util;

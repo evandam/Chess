@@ -14,7 +14,7 @@ public class SearchUtils {
 	public static long startSearchTime = 0;
 	
 	// have cutoff here which would be number of ply's?
-	private static int maxPly = 7;
+	private static int maxPly = 6;
 	
 	public static byte[] lastMove = new byte[5];
 	
@@ -34,14 +34,25 @@ public class SearchUtils {
 		// that have the potential to make the most moves) then we want to explore those thoroughly and
 		// if time is getting up there, gradually back down the # of plys we go to which will speed
 		// up the search while ensuring that we will have always explored down to some base ply
-		if(new Date().getTime() - startSearchTime > 20000 && currentPly > 4)
+		if(board.terminalTest())
 			return true;
-		else if(new Date().getTime() - startSearchTime > 10000 && currentPly > 5)
-			return true;
+		/*else if((new Date().getTime() - startSearchTime) > 20000 && currentPly == 1) {
+			// can't just return at a given ply because if we are at 7 and then change
+			// the cutoff to 4, we will prune but return values that may be good because
+			// we went down farther on some but that doesn't necessarily mean they are best
+			// the solution is to change the max ply only when we get back to the root max node
+			maxPly = 4;
+			return false;
+		}
+		else if((new Date().getTime() - startSearchTime) > 10000 && currentPly == 1) {
+			maxPly = 5;
+			return false;
+		}*/
 		else if (currentPly >= maxPly)
 			return true;
 		else
-			return board.terminalTest();
+			return false;
+		
 	}
 
 	/**

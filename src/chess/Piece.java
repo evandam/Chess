@@ -155,11 +155,15 @@ public class Piece implements Cloneable {
 			// rook must not have been moved already
 			if(p != null && p.type == ROOK && p.hasMoved == 0) {
 				// all spaces in between must be open
-				if(board.isSpotEmpty(this.rank, ChessBoard.B) && board.isSpotEmpty(this.rank, ChessBoard.C)
+				if(board.isSpotEmpty(this.rank, ChessBoard.B)
+						&& board.isSpotEmpty(this.rank, ChessBoard.C)
 						&& board.isSpotEmpty(this.rank, ChessBoard.D)) {
 					// the spaces in between must not be under attack
-					if(!board.isUnderAttack(this.rank, ChessBoard.C, this.color)
-							&& !board.isUnderAttack(this.rank, ChessBoard.D, this.color)) {
+					// and we can't move out of check
+					if(!board.isUnderAttack(this.rank, ChessBoard.B, this.color)
+							&& !board.isUnderAttack(this.rank, ChessBoard.C, this.color)
+							&& !board.isUnderAttack(this.rank, ChessBoard.D, this.color)
+							&& !board.isUnderAttack(this.rank, ChessBoard.E, this.color)) {
 						moves.add(new byte[]{this.rank, ChessBoard.C});
 					}
 				}
@@ -172,8 +176,10 @@ public class Piece implements Cloneable {
 				// all spaces in between must be open
 				if(board.isSpotEmpty(this.rank, ChessBoard.F) && board.isSpotEmpty(this.rank, ChessBoard.G)) {
 					// the spaces in between must not be under attack
-					if(!board.isUnderAttack(this.rank, ChessBoard.F, this.color) &&
-							!board.isUnderAttack(this.rank, ChessBoard.G, this.color)) {
+					// and we can't move out of check
+					if(!board.isUnderAttack(this.rank, ChessBoard.F, this.color)
+							&& !board.isUnderAttack(this.rank, ChessBoard.G, this.color)
+							&& !board.isUnderAttack(this.rank, ChessBoard.E, this.color)) {
 						moves.add(new byte[]{this.rank, ChessBoard.G});
 					}
 				}

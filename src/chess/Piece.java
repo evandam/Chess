@@ -150,30 +150,31 @@ public class Piece implements Cloneable {
 		}
 		// castling - king must not have moved yet
 		if(this.hasMoved == 0) {
-			// check for king-side castling
+			// check for queen-side castling
 			Piece p = board.get(this.rank, ChessBoard.A);
 			// rook must not have been moved already
 			if(p != null && p.type == ROOK && p.hasMoved == 0) {
 				// all spaces in between must be open
-				if(board.isSpotEmpty(this.rank, ChessBoard.B) && board.isSpotEmpty(this.rank, ChessBoard.C)) {
+				if(board.isSpotEmpty(this.rank, ChessBoard.B) && board.isSpotEmpty(this.rank, ChessBoard.C)
+						&& board.isSpotEmpty(this.rank, ChessBoard.D)) {
 					// the spaces in between must not be under attack
 					if(!board.isUnderAttack(this.rank, ChessBoard.C, this.color)
-							&& !board.isUnderAttack(this.rank, ChessBoard.B, this.color)) {
-						moves.add(new byte[]{this.rank, ChessBoard.B});
+							&& !board.isUnderAttack(this.rank, ChessBoard.D, this.color)) {
+						moves.add(new byte[]{this.rank, ChessBoard.C});
 					}
 				}
 			}
 			
-			// queen-side castling
+			// king-side castling
 			p = board.get(this.rank, ChessBoard.H);
 			// rook must not have been moved already
 			if(p != null && p.type == ROOK && p.hasMoved == 0) {
 				// all spaces in between must be open
-				if(board.isSpotEmpty(this.rank, ChessBoard.E) && board.isSpotEmpty(this.rank, ChessBoard.F)) {
+				if(board.isSpotEmpty(this.rank, ChessBoard.F) && board.isSpotEmpty(this.rank, ChessBoard.G)) {
 					// the spaces in between must not be under attack
-					if(!board.isUnderAttack(this.rank, ChessBoard.E, this.color) &&
-							!board.isUnderAttack(this.rank, ChessBoard.F, this.color)) {
-						moves.add(new byte[]{this.rank, ChessBoard.F});
+					if(!board.isUnderAttack(this.rank, ChessBoard.F, this.color) &&
+							!board.isUnderAttack(this.rank, ChessBoard.G, this.color)) {
+						moves.add(new byte[]{this.rank, ChessBoard.G});
 					}
 				}
 			}

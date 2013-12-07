@@ -444,7 +444,6 @@ public class ChessBoard {
 			whiteKings = 0, whiteQueens = 0, whiteRooks = 0, whiteBishops = 0, whiteKnights = 0, whitePawns = 0,
 			ourLegalMoves =  this.countLegalMoves(ServerAPI.getOurColor()),
 			opponentLegalMoves = this.countLegalMoves(ServerAPI.getOppontentColor());
-		
 		// count the white pieces
 		for(int i = 0; i < this.whitePieces.length; i++) {
 			if(whitePieces[i] == null)

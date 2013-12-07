@@ -48,7 +48,7 @@ public class program {
 			//startSearch = true;
 		}
 		
-		while(!s.equals("q") || s.equals("Q")) {
+		while(!s.equals("q") || s.equals("Q") && !board.terminalTest()) {
 			
 			if(startSearch) {
 				startSearch = false;

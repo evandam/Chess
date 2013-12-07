@@ -230,6 +230,8 @@ public class ChessBoard {
 		
 		// remove the entry in the white pieces array
 		if(idx > 0) {
+			if(this.whitePieces[idx - 1].getType() == Piece.KING)
+				this.kingCaptured = true;
 			this.whitePieces[idx - 1] = null;
 			// remove the piece from the pieces array
 			//Piece[] newArr = new Piece[whitePieces.length - 1];
@@ -242,6 +244,8 @@ public class ChessBoard {
 		else {
 			// need to account for negative indexes
 			idx *= - 1;
+			if(this.blackPieces[idx - 1].getType() == Piece.KING)
+				this.kingCaptured = true;
 			this.blackPieces[idx - 1] = null;
 			// remove the piece from the pieces array
 			//Piece[] newArr = new Piece[blackPieces.length - 1];

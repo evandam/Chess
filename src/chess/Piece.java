@@ -149,7 +149,7 @@ public class Piece implements Cloneable {
 			}
 		}
 		// castling - king must not have moved yet
-		if(this.hasMoved == 0) {
+		/*if(this.hasMoved == 0) {
 			// check for queen-side castling
 			Piece p = board.get(this.rank, ChessBoard.A);
 			// rook must not have been moved already
@@ -184,7 +184,7 @@ public class Piece implements Cloneable {
 					}
 				}
 			}
-		}
+		}*/
 		return moves;	// TODO - how do we know to move the knight??
 	}
 

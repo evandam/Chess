@@ -3,6 +3,7 @@ package chess;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.BitSet;
 import java.util.Date;
 
 
@@ -28,24 +29,22 @@ public class program {
 		ChessBoard board = new ChessBoard();
 		
 		/* ----------------------------- Interactive game play offline ---------------------------------- */
-		/*ServerAPI.setOurColor(Piece.WHITE);
-		board.move(ChessBoard.R2, ChessBoard.C, ChessBoard.R4, ChessBoard.C);
-		board.move(ChessBoard.R7, ChessBoard.A, ChessBoard.R6, ChessBoard.A);
-		board.move(ChessBoard.R1, ChessBoard.D, ChessBoard.R3, ChessBoard.B);
-		board.move(ChessBoard.R6, ChessBoard.A, ChessBoard.R5, ChessBoard.A);
-		//board.move(ChessBoard.R1, ChessBoard.C, ChessBoard.R1, ChessBoard.D);
-		board.getAllLegalMoves(Piece.WHITE);*/
+		//ServerAPI.setOurColor(Piece.WHITE);
+		//board.move(ChessBoard.R2, ChessBoard.C, ChessBoard.R4, ChessBoard.C);
+		//board.move(ChessBoard.R7, ChessBoard.A, ChessBoard.R6, ChessBoard.A);
+		//board.move(ChessBoard.R1, ChessBoard.D, ChessBoard.R3, ChessBoard.B);
+		//board.move(ChessBoard.R6, ChessBoard.A, ChessBoard.R5, ChessBoard.A);
+		////board.move(ChessBoard.R1, ChessBoard.C, ChessBoard.R1, ChessBoard.D);
+		//board.getAllLegalMoves(Piece.WHITE);
 		
 		BufferedReader bufferRead = new BufferedReader(new InputStreamReader(System.in));
 	    String s = "";
 		
-		boolean startSearch = false;
+		boolean startSearch = true;
 		ServerAPI.setOurColor(Piece.WHITE);
 		
 		if(!startSearch) {
 			ServerAPI.setOurColor(Piece.BLACK);
-			//try { s = bufferRead.readLine(); } catch (IOException e1) { return; }
-			//startSearch = true;
 		}
 		
 		while(!s.equals("q") || s.equals("Q") && !board.terminalTest()) {
@@ -109,9 +108,9 @@ public class program {
 		}
 		
 		// start the game
-		while(ServerAPI.gameover) {
+		while(!ServerAPI.gameover) {
 			ServerAPI.poll();
-			if(!ServerAPI.ready) {
+			if(ServerAPI.ready) {
 				Date start = new Date();
 				byte[] move = SearchUtils.AlphaBetaSearch(board);
 				

@@ -185,7 +185,7 @@ public class Piece implements Cloneable {
 				}
 			}
 		}*/
-		return moves;	// TODO - how do we know to move the knight??
+		return moves;	// how do we know to move the knight? - chess board move function knows
 	}
 
 	/**

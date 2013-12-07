@@ -14,7 +14,7 @@ public class SearchUtils {
 	public static long startSearchTime = 0;
 	
 	// have cutoff here which would be number of ply's?
-	private static int maxPly = 4;
+	private static int maxPly = 7;
 	
 	public static byte[] lastMove = new byte[5];
 	
@@ -29,7 +29,16 @@ public class SearchUtils {
 		// search has been running longer than 5 seconds (5,000 milliseconds)
 		//if(new Date().getTime() - startSearchTime > 5000)
 		//	return true;
-		if (currentPly >= maxPly)
+		
+		// start with a larger max ply like 7, since we are exploring interesting pieces first (pieces
+		// that have the potential to make the most moves) then we want to explore those thoroughly and
+		// if time is getting up there, gradually back down the # of plys we go to which will speed
+		// up the search while ensuring that we will have always explored down to some base ply
+		if(new Date().getTime() - startSearchTime > 20000 && currentPly > 4)
+			return true;
+		else if(new Date().getTime() - startSearchTime > 10000 && currentPly > 5)
+			return true;
+		else if (currentPly >= maxPly)
 			return true;
 		else
 			return board.terminalTest();

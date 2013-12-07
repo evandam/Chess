@@ -13,8 +13,8 @@ package chess;
  * @param <S2> type of right value
  */
 public class Tuple<S1, S2> {
-	private final S1 left;
-	private final S2 right;
+	private S1 left;
+	private S2 right;
 	
 	/**
 	 * Default constructor, assigns null to each value.
@@ -46,4 +46,16 @@ public class Tuple<S1, S2> {
 	 * @return right value of tuple
 	 */
 	public S2 getRight() { return right; }
+	
+	/**
+	 * Sets the value in the tuple that is on the left.
+	 * @param value - new value for left item
+	 */
+	public void setLeft(S1 value) { left = value; }
+	
+	/**
+	 * Sets the value in the tuple that is on the right.
+	 * @param value - new value for right item
+	 */
+	public void setRight(S2 value) { right = value; }
 }

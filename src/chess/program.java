@@ -40,7 +40,7 @@ public class program {
 		BufferedReader bufferRead = new BufferedReader(new InputStreamReader(System.in));
 	    String s = "";
 		
-		boolean startSearch = false;
+		boolean startSearch = true;
 		ServerAPI.setOurColor(Piece.WHITE);
 		
 		if(!startSearch) {

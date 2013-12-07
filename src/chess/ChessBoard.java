@@ -515,6 +515,8 @@ public class ChessBoard {
 		// here is where we use ourColor to determine how we calculate the utility
 		double util;
 		if(ServerAPI.getOurColor() == Piece.WHITE) {
+			//if(blackQueens == 0)
+			//	System.out.println();
 			util = 200 * (whiteKings - blackKings) +
 					9 * (whiteQueens - blackQueens) +
 					5 * (whiteRooks - blackRooks) +

@@ -14,7 +14,7 @@ public class SearchUtils {
 	public static long startSearchTime = 0;
 	
 	// have cutoff here which would be number of ply's?
-	private static int maxPly = 2;
+	private static int maxPly = 4;
 	
 	//private static byte[] nextMove = new byte[5];
 	public static byte[] lastMove = new byte[5];
@@ -73,7 +73,7 @@ public class SearchUtils {
 				
 				v = Math.max(v, MinValue(newBoard, alpha, beta, currentPly).getLeft());
 				if(v >= beta) {
-					System.out.println("CUTOFF");
+					System.out.println("MAX CUTOFF v = " + v + " beta = " + beta);
 					return new Tuple<Double, byte[]>(v, nextMove);
 				}
 				alpha = Math.max(alpha, v);
@@ -118,7 +118,7 @@ public class SearchUtils {
 				
 				v = Math.min(v, MaxValue(newBoard, alpha, beta, currentPly).getLeft());
 				if(v <= alpha) {
-					System.out.println("CUTOFF");
+					System.out.println("MIN CUTOFF v = " + v + " alpha = " + alpha);
 					return new Tuple<Double, byte[]>(v, nextMove);
 				}
 				beta = Math.min(beta, v);

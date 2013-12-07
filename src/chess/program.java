@@ -27,7 +27,6 @@ public class program {
 		
 		ChessBoard board = new ChessBoard();
 		
-		
 		/* ----------------------------- Interactive game play offline ---------------------------------- */
 		/*ServerAPI.setOurColor(Piece.WHITE);
 		board.move(ChessBoard.R2, ChessBoard.C, ChessBoard.R4, ChessBoard.C);
@@ -40,7 +39,7 @@ public class program {
 		BufferedReader bufferRead = new BufferedReader(new InputStreamReader(System.in));
 	    String s = "";
 		
-		boolean startSearch = true;
+		boolean startSearch = false;
 		ServerAPI.setOurColor(Piece.WHITE);
 		
 		if(!startSearch) {

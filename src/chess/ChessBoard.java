@@ -321,7 +321,7 @@ public class ChessBoard {
 		this.board[startRank][startFile] = 0;
 		
 		//System.out.println(startPiece.getColor() + " " + getMoveString(startRank, startFile, endRank, endFile, startPiece.getType()));
-		System.out.println(this.toString());
+		//System.out.println(this.toString());
 	}
 	
 	/**

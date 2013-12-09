@@ -114,7 +114,9 @@ public class ServerAPI {//implements Runnable {
 				else if(pair[0].equals("lastmovenumber"))
 					lastmovenumber = Integer.parseInt(pair[1]);
 				else if(pair[0].equals("lastmove")) {
-					lastMoveString = pair[1];
+					lastMoveString = pair.length > 1 ? pair[1] : "";
+					if(lastMoveString == "")
+						continue;
 					lastMovedPiece = Piece.getNumericType(lastMoveString.charAt(0));
 					lastStartingMove = new byte[] { 
 							ChessBoard.getRankFromDisplay(lastMoveString.charAt(2)),

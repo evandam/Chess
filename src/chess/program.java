@@ -3,7 +3,6 @@ package chess;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.util.BitSet;
 import java.util.Date;
 
 
@@ -28,7 +27,7 @@ public class program {
 		
 		ChessBoard board = new ChessBoard();
 		
-		/* ----------------------------- Interactive game play offline ---------------------------------- */
+		/* ----------------------------- Interactive game play offline ---------------------------------- 
 		//ServerAPI.setOurColor(Piece.WHITE);
 		//board.move(ChessBoard.R2, ChessBoard.C, ChessBoard.R4, ChessBoard.C);
 		//board.move(ChessBoard.R7, ChessBoard.A, ChessBoard.R6, ChessBoard.A);
@@ -40,7 +39,7 @@ public class program {
 		BufferedReader bufferRead = new BufferedReader(new InputStreamReader(System.in));
 	    String s = "";
 		
-		boolean startSearch = true;
+		boolean startSearch = false;
 		ServerAPI.setOurColor(Piece.WHITE);
 		
 		if(!startSearch) {
@@ -83,7 +82,7 @@ public class program {
 		
 		
 		
-		//ServerAPI.setOurTeamDetails(007, "bond");		// hard code our team details here
+		ServerAPI.setOurTeamDetails(2, "1a77594c");		// hard code our team details here
 		ServerAPI.setGameId(gameId);
 		ServerAPI.setPollInterval(1);
 		
@@ -91,7 +90,7 @@ public class program {
 		
 		// if after polling, we have the ready and no moves have been made yet, then we know we are white
 		// since chess rules state that white always moves first
-		if(ServerAPI.ready == true && ServerAPI.lastmovenumber == 0 && ServerAPI.lastMoveString == null) {
+		if(ServerAPI.ready == true && ServerAPI.lastmovenumber == 0 && ServerAPI.lastMoveString == "") {
 			ServerAPI.setOurColor(Piece.WHITE);
 		}
 		// otherwise we know we are waiting for the first move which means that we are black
@@ -100,17 +99,22 @@ public class program {
 		}
 		// if we have the ready and there is a last move, then the other team has already submitted a move
 		// for which we have to record in our internal representation and we know we are black
-		else if(ServerAPI.ready == true && ServerAPI.lastMoveString != null) {
+		else if(ServerAPI.ready == true && ServerAPI.lastmovenumber > 0) {
 			ServerAPI.setOurColor(Piece.BLACK);
-			// record that move - TODO - cleaner way of doing this?
-			byte[] lastMove = ServerAPI.lastMoveBytes;
-			board.move(lastMove[0], lastMove[1], lastMove[2], lastMove[3]);
+			// we do this down below
+			//board.move(ServerAPI.lastMoveBytes[0], ServerAPI.lastMoveBytes[1],
+			//		ServerAPI.lastMoveBytes[2], ServerAPI.lastMoveBytes[3]);
 		}
 		
 		// start the game
 		while(!ServerAPI.gameover) {
 			ServerAPI.poll();
 			if(ServerAPI.ready) {
+				// need to perform the opponent's move but not if we are the first to go
+				if(ServerAPI.lastmovenumber > 0)
+					board.move(ServerAPI.lastMoveBytes[0], ServerAPI.lastMoveBytes[1],
+						ServerAPI.lastMoveBytes[2], ServerAPI.lastMoveBytes[3]);
+				
 				Date start = new Date();
 				byte[] move = SearchUtils.AlphaBetaSearch(board);
 				

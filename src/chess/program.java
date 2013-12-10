@@ -21,8 +21,15 @@ public class program {
 		if(args.length < 1) {
 			return;
 		}
+		else if(args.length > 2) {
+			gameId = Integer.parseInt(args[0]);
+			// allow for the team number and secret to be passed as command line arguments
+			ServerAPI.setOurTeamDetails(Integer.parseInt(args[1]), args[2]);
+		}
 		else {
 			gameId = Integer.parseInt(args[0]);
+			// hard code our team details here if its not passed
+			ServerAPI.setOurTeamDetails(2, "1a77594c");
 		}
 		
 		ChessBoard board = new ChessBoard();
@@ -82,7 +89,7 @@ public class program {
 		
 		
 		
-		ServerAPI.setOurTeamDetails(2, "1a77594c");		// hard code our team details here
+		
 		ServerAPI.setGameId(gameId);
 		ServerAPI.setPollInterval(1);
 		

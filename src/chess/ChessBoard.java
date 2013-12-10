@@ -314,8 +314,6 @@ public class ChessBoard {
 			else if(startFile != endFile && endPiece == null) {
 				this.capture(startRank, endFile);
 			}
-			// TODO - need to handle other promotions if opponent decides to promote to something else
-			//		  possibly have an overloaded method with promotion type to just handle this one instance?
 			else if(endRank == ChessBoard.R1 || endRank == ChessBoard.R8) {
 				startPiece.setType(Piece.QUEEN);
 			}

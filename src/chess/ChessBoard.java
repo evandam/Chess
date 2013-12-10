@@ -361,8 +361,11 @@ public class ChessBoard {
 	public void move(byte startRank, byte startFile, byte endRank, byte endFile, byte promotionPiece) {
 		// get the piece that is on the starting spot
 		Piece startPiece = this.get(startRank, startFile);
+		// change the type of the piece accordingly
 		startPiece.setType(promotionPiece);
 		
+		// move the piece from the starting spot to the ending spot
+		startPiece.updatePosition(endRank, endFile);
 		// update the board
 		this.board[endRank][endFile] = this.board[startRank][startFile];
 		// clear out the starting spot since the piece is being moved from there

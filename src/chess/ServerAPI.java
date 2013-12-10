@@ -12,9 +12,9 @@ import java.net.URL;
  * @author Evan
  */
 public class ServerAPI {//implements Runnable {
-	public static int gameId;						// need to set this when game is started 
-	private static int teamNumber = 1;				// temporary
-	private static String teamSecret = "32c68cae";	// temporary
+	public static int gameId; 
+	private static int teamNumber = 1;
+	private static String teamSecret = "32c68cae";
 	private static String root = "http://www.bencarle.com/chess/";
 	
 	private static int pollInterval = 1; 
@@ -98,6 +98,10 @@ public class ServerAPI {//implements Runnable {
 		pollInterval = interval;
 	}
 	
+	/**
+	 * Polls the server to check the status and see if the opponent made a move yet or not,
+	 * storing all the information into the member variables.
+	 */
 	public static void poll() {
 		try {
 			String url = root + "poll/" + gameId + "/" + teamNumber + "/" + teamSecret;
@@ -126,7 +130,15 @@ public class ServerAPI {//implements Runnable {
 							ChessBoard.getRankFromDisplay(lastMoveString.charAt(4)),
 							ChessBoard.getFile(lastMoveString.charAt(3))
 					};
-					lastMoveBytes = new byte[] { lastStartingMove[0], lastStartingMove[1], lastEndingMove[0], lastEndingMove[1] };
+					if(lastMoveString.length() > 5) {
+						byte promotionType = Piece.getNumericType(lastMoveString.charAt(5));
+						lastMoveBytes = new byte[] { lastStartingMove[0], lastStartingMove[1],
+								lastEndingMove[0], lastEndingMove[1], promotionType };
+					}
+					else {
+						lastMoveBytes = new byte[] { lastStartingMove[0], lastStartingMove[1],
+							lastEndingMove[0], lastEndingMove[1] };
+					}
 				}
 				else if(pair[0].equals("gameover"))
 					gameover = pair[1].equals("true");
@@ -163,6 +175,12 @@ public class ServerAPI {//implements Runnable {
 		lastMoveBytes = new byte[] { lastStartingMove[0], lastStartingMove[1], lastEndingMove[0], lastEndingMove[1] };
 	}
 	
+	/**
+	 * Sends our move to the server.
+	 * 
+	 * @param moveString - string move string formatted according to the
+	 * @return true if successful, false otherwise
+	 */
 	public static boolean move(String moveString) {
 		String url = root + "move/" + gameId + "/" + teamNumber + "/" + teamSecret + "/" + moveString;
 		try {
@@ -177,7 +195,7 @@ public class ServerAPI {//implements Runnable {
 					message = pair.length > 1 ? pair[1] : "";
 				if(pair[0].equals("result"))
 					return pair[1].equals("true");
-				else if(pair[0].equals("gameover"))		// TODO - need to kill the search somehow?
+				else if(pair[0].equals("gameover"))
 					gameover = pair[1].equals("true");
 				else if(pair[0].equals("winner"))
 					winner = Integer.parseInt(pair[1]);

@@ -48,7 +48,7 @@ public class ChessBoard {
 	
 	
 	/**
-	 * init all the pieces on the board
+	 * Default constructor, initializes all the pieces on the board.
 	 */
 	public ChessBoard() {
 		/* Board array structure
@@ -149,6 +149,14 @@ public class ChessBoard {
 		blackPieces[7] = new Piece(R8, E, Piece.KING, Piece.BLACK);
 	}
 	
+	/**
+	 * Constructor used for when we clone a board. 
+	 * 
+	 * @param b - byte[][] board representation
+	 * @param white - Piece[]
+	 * @param black - Piece[]
+	 * @param noKing - bool whether or not the king has been captured
+	 */
 	private ChessBoard(byte[][] b, Piece[] white, Piece[] black, boolean noKing) {
 		byte[][] newBoard = new byte[b.length][];
 		for(int i = 0; i < b.length; i++) {
@@ -160,10 +168,20 @@ public class ChessBoard {
 		this.kingCaptured = noKing;
 	}
 	
+	/**
+	 * Clones the current instance of the board.
+	 */
 	protected ChessBoard clone() {
 		return new ChessBoard(this.board, this.whitePieces, this.blackPieces, this.kingCaptured);
 	}
 	
+	/**
+	 * Returns the chess piece at the given rank and file.
+	 * 
+	 * @param rank - byte rank of the desired piece
+	 * @param file - byte file of the desired piece
+	 * @return Piece object at [rank, file] or null if nothing is there
+	 */
 	public Piece get(byte rank, byte file) {
 		int idx = this.board[rank][file];
 		// check for no piece in that square
@@ -260,9 +278,14 @@ public class ChessBoard {
 		this.board[rank][file] = 0;
 	}
 	
-	// don't handle any fancy moves yet
-	// maybe return a new instance of the board?
-	// TODO - handle promotions better?
+	/**
+	 * Moves a piece on the board.
+	 * 
+	 * @param startRank - byte starting rank of the piece
+	 * @param startFile - byte starting file of the piece
+	 * @param endRank - byte ending rank of the piece
+	 * @param endFile - byte ending file of the piece
+	 */
 	public void move(byte startRank, byte startFile, byte endRank, byte endFile) {
 		// get the piece that is on the starting spot
 		Piece startPiece = this.get(startRank, startFile);
@@ -329,6 +352,26 @@ public class ChessBoard {
 	}
 	
 	/**
+	 * Handle an opponent's pawn promotion.
+	 * 
+	 * @param startRank - byte starting rank of the piece
+	 * @param startFile - byte starting file of the piece
+	 * @param endRank - byte ending rank of the piece
+	 * @param endFile - byte ending file of the piece
+	 * @param promotionPiece - byte type of piece they are promoting their pawn to
+	 */
+	public void move(byte startRank, byte startFile, byte endRank, byte endFile, byte promotionPiece) {
+		// get the piece that is on the starting spot
+		Piece startPiece = this.get(startRank, startFile);
+		startPiece.setType(promotionPiece);
+		
+		// update the board
+		this.board[endRank][endFile] = this.board[startRank][startFile];
+		// clear out the starting spot since the piece is being moved from there
+		this.board[startRank][startFile] = 0;
+	}
+	
+	/**
 	 * Method to return a move string that the server can use.
 	 * 
 	 * @param startRank - starting rank of the piece
@@ -348,7 +391,15 @@ public class ChessBoard {
 		return moveString;
 	}
 	
-	// check all possible enemy moves to see if they can attack the location
+	/**
+	 * Checks all possible enemy moves to see if they can attack the location,
+	 * used for when check for castling
+	 * 
+	 * @param rank - byte rank of the spot to check
+	 * @param file - byte file of the spot to check
+	 * @param color - byte our color
+	 * @return bool - true if the spot is under attack, false otherwise
+	 */
 	public boolean isUnderAttack(byte rank, byte file, byte color) {
 		Piece[] pieces = whitePieces;
 		if(color == Piece.WHITE)
@@ -366,7 +417,11 @@ public class ChessBoard {
 		return false;
 	}
 	
-	// checkmate (one player doesn't have a king..pretty crude for now)
+	/**
+	 * Checks if the game is over, i.e. a king is captured.
+	 * 
+	 * @return - bool true if a king is captured, false otherwise
+	 */
 	public boolean terminalTest() {
 		// don't know that is where the king's piece is since the array shrinks as pieces are captured
 		//return (whitePieces[KING] == null || blackPieces[KING] == null);
@@ -439,6 +494,11 @@ public class ChessBoard {
 		return count;
 	}
 	
+	/**
+	 * Calculate the linear weighted utility function of the current state.
+	 * 
+	 * @return int - utility value
+	 */
 	public int Utility() {
 		// TODO - might be better to keep a running tally and only subtract from it when a capture takes place,
 		//      - would also be good to keep total number of moves available 

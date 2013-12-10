@@ -41,10 +41,21 @@ public class Piece implements Cloneable {
 		this.hasMoved = moved;
 	}
 	
+	/**
+	 * Clones this instance of a piece using the constructor.
+	 * 
+	 * @return cloned Piece object
+	 */
 	private Piece clonePiece() {
 		return new Piece(this.rank, this.file, this.type, this.color, this.hasMoved);
 	}
 	
+	/**
+	 * Clones an entire array of Pieces like whitePieces or blackPieces.
+	 * 
+	 * @param p - array of Pieces
+	 * @return cloned Pieces array
+	 */
 	protected static Piece[] cloneArray(Piece[] p) {
 		Piece[] newArray = new Piece[p.length];
 		for(int i = 0; i < p.length; i++) {
@@ -148,7 +159,7 @@ public class Piece implements Cloneable {
 				}
 			}
 		}
-		// castling - king must not have moved yet
+		// castling - king must not have moved yet 		<-- causes stack overflows
 		/*if(this.hasMoved == 0) {
 			// check for queen-side castling
 			Piece p = board.get(this.rank, ChessBoard.A);
@@ -185,7 +196,7 @@ public class Piece implements Cloneable {
 				}
 			}
 		}*/
-		return moves;	// how do we know to move the knight? - chess board move function knows
+		return moves;
 	}
 
 	/**

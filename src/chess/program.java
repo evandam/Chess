@@ -119,7 +119,7 @@ public class program {
 			if(ServerAPI.ready) {
 				// need to perform the opponent's move but not if we are the first to go
 				if(ServerAPI.lastmovenumber > 0) {
-					// oponent's pawn promotion
+					// opponent's pawn promotion
 					if(ServerAPI.lastMoveBytes.length > 4) {
 						board.move(ServerAPI.lastMoveBytes[0], ServerAPI.lastMoveBytes[1],
 								ServerAPI.lastMoveBytes[2], ServerAPI.lastMoveBytes[3], ServerAPI.lastMoveBytes[4]);
